@@ -19,7 +19,6 @@ class ModelCloudKit {
         databasePublic = container.publicCloudDatabase
     }
     
-    // Fetch Artists from CloudKit
     func fetchArtists(_ completion: @escaping (Result<[Artist], Error>) -> Void) {
         let predicate = NSPredicate(value: true)
         let query = CKQuery(recordType: "Artist", predicate: predicate)
@@ -44,7 +43,6 @@ class ModelCloudKit {
         }
     }
     
-    // Fetch Works from CloudKit
     func fetchWorks(_ completion: @escaping (Result<[Work], Error>) -> Void) {
         let predicate = NSPredicate(value: true)
         let query = CKQuery(recordType: "Work", predicate: predicate)
