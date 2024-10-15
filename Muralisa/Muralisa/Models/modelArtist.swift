@@ -14,15 +14,15 @@ class Artist {
     private let id: CKRecord.ID
     let name: String
     let image: Image?
-    let works: [Works]
+    let work: [Work]
     let biography: String?
     
     
-    init(id: CKRecord.ID, name: String, image: Image?, works: [Works], biography: String?) {
+    init(id: CKRecord.ID, name: String, image: Image?, works: [Work], biography: String?) {
         self.id = id
         self.name = name
         self.image = image
-        self.works = works
+        self.work = works
         self.biography = biography
     }
     
