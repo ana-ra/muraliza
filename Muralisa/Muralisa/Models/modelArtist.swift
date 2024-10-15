@@ -5,25 +5,30 @@
 //  Created by Silvana Rodrigues Alves on 15/10/24.
 //
 import Foundation
-import SwiftUI
 import CloudKit
-
+import SwiftUI
 
 class Artist {
     static let recordType: String = "Artist"
-    private let id: CKRecord.ID
+    
+    let id: CKRecord.ID
     let name: String
-    let image: Image?
-    let work: [Work]
+    let image: CKAsset?
     let biography: String?
+    var works: [Work] = []
     
+    init(record: CKRecord) {
+        self.id = record.recordID
+        self.name = record["Name"] as? String ?? "Unknown Artist"
+        self.biography = record["Biography"] as? String
+        self.image = record["Photo"] as? CKAsset
+    }
     
-    init(id: CKRecord.ID, name: String, image: Image?, works: [Work], biography: String?) {
+    init(id: CKRecord.ID, name: String, image: CKAsset?, biography: String?) {
         self.id = id
         self.name = name
         self.image = image
-        self.work = works
         self.biography = biography
     }
-    
 }
+

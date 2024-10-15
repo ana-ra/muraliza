@@ -21,10 +21,10 @@ class ModelCloudKit {
     
     func fetchArtists(_ completion: @escaping (Result<[Artist], Error>) -> Void) {
         let predicate = NSPredicate(value: true)
-        let query = CKQuery(recordType: "Artist", predicate: predicate)
+        let query = CKQuery(recordType: Artist.recordType, predicate: predicate)
         
-        databasePublic.perform(query, inZoneWith: CKRecordZone.default().zoneID) { results, errors in
-            if let error = errors {
+        databasePublic.perform(query, inZoneWith: CKRecordZone.default().zoneID) { results, error in
+            if let error = error {
                 DispatchQueue.main.async {
                     completion(.failure(error))
                 }
@@ -33,9 +33,7 @@ class ModelCloudKit {
             
             guard let result = results else { return }
             
-            let artists = result.compactMap {
-                Artist(record: $0)
-            }
+            let artists = result.compactMap { Artist(record: $0) }
             
             DispatchQueue.main.async {
                 completion(.success(artists))
@@ -43,12 +41,13 @@ class ModelCloudKit {
         }
     }
     
-    func fetchWorks(_ completion: @escaping (Result<[Work], Error>) -> Void) {
-        let predicate = NSPredicate(value: true)
-        let query = CKQuery(recordType: "Work", predicate: predicate)
+    func fetchWorks(for artist: Artist, completion: @escaping (Result<[Work], Error>) -> Void) {
+        let reference = CKRecord.Reference(recordID: artist.id, action: .none)
+        let predicate = NSPredicate(format: "Artist == %@", reference)
+        let query = CKQuery(recordType: Work.recordType, predicate: predicate)
         
-        databasePublic.perform(query, inZoneWith: CKRecordZone.default().zoneID) { results, errors in
-            if let error = errors {
+        databasePublic.perform(query, inZoneWith: CKRecordZone.default().zoneID) { results, error in
+            if let error = error {
                 DispatchQueue.main.async {
                     completion(.failure(error))
                 }
@@ -57,9 +56,7 @@ class ModelCloudKit {
             
             guard let result = results else { return }
             
-            let works = result.compactMap {
-                Work(record: $0)
-            }
+            let works = result.compactMap { Work(record: $0) }
             
             DispatchQueue.main.async {
                 completion(.success(works))
