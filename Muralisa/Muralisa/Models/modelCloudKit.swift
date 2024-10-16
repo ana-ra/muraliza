@@ -9,14 +9,16 @@ import CloudKit
 
 class ModelCloudKit {
     
-    let container: CKContainer
+    var artistsArray: [Artist] = []
+    var worksArray: [Work] = []
+
+    static var currentModel = ModelCloudKit()
+    let container = CKContainer.init(identifier: "iCloud.muralisa")
     let databasePublic: CKDatabase
     
-    static var currentModel = ModelCloudKit()
-    
     init() {
-        container = CKContainer.default()
-        databasePublic = container.publicCloudDatabase
+        self.databasePublic = container.publicCloudDatabase
+        self.loadArtists()
     }
     
     func fetchArtists(_ completion: @escaping (Result<[Artist], Error>) -> Void) {
@@ -63,4 +65,18 @@ class ModelCloudKit {
             }
         }
     }
+    
+    func loadArtists() {
+        fetchArtists { result in
+            switch result {
+            case .success(let artists):
+                self.artistsArray = artists  // Armazena os dados no array
+                print("Artists fetched and saved!")
+                print(self.artistsArray)
+            case .failure(let error):
+                print("Error fetching artists: \(error)")
+            }
+        }
+    }
+    
 }

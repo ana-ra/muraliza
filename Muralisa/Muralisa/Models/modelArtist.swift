@@ -15,7 +15,6 @@ class Artist {
     let name: String
     let image: CKAsset?
     let biography: String?
-    var works: [Work] = []
     
     init(record: CKRecord) {
         self.id = record.recordID
