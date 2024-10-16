@@ -6,27 +6,28 @@
 //
 
 import Foundation
-import CloudKit
+import CoreLocation
+import UIKit
 
 class Work {
     static let recordType: String = "Work"
     
     let id: UUID
-    let title: String
-    let description: String
-    let image: CKAsset?
-    let location: CLLocation?
-    let style: String
+    let title: String?
+    let description: String?
+    let image: UIImage
+    let location: CLLocation
+    let tag: [String]
     let artistID: UUID?
     
     // Inicializador
-    init(id: UUID, title: String, description: String, image: CKAsset?, location: CLLocation?, style: String, artistID: UUID?) {
+    init(id: UUID, title: String?, description: String?, image: UIImage, location: CLLocation, tag: [String], artistID: UUID?) {
         self.id = id
         self.title = title
         self.description = description
         self.image = image
         self.location = location
-        self.style = style
+        self.tag = tag
         self.artistID = artistID
     }
 }

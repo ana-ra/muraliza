@@ -6,6 +6,7 @@
 
 import Foundation
 import CloudKit
+import UIKit
 
 class ModelCloudKit {
     
@@ -48,9 +49,10 @@ class ModelCloudKit {
         let id = UUID()
         let name = record["name"] as? String ?? "Unknown Artist"
         let biography = record["biography"] as? String
-        let photo = record["photo"] as? CKAsset
+        let photo = record["photo"] as? UIImage
+        let works = (record["works"] as? [Work])!
         
-        return Artist(id: id, name: name, image: photo, biography: biography)
+        return Artist(id: id, name: name, image: photo, biography: biography, works: works)
     }
 
     // Função para buscar todas as obras relacionadas a um artista
@@ -83,31 +85,17 @@ class ModelCloudKit {
         let id = UUID() // Cria um UUID para a obra
         let title = record["title"] as? String ?? "Unknown Title"
         let description = record["description"] as? String ?? "No Description"
-        let style = record["style"] as? String ?? "Unknown Style"
-        let image = record["image"] as? CKAsset
-        let location = record["location"] as? CLLocation
+        let tag = record["tag"] as? [String] ?? ["No tags"]
+        let image = (record["image"] as? UIImage ?? UIImage(systemName: "custom.photo.slash"))!
+        let location = (record["location"] as? CLLocation)!
         let artistReference = record["Artist"] as? CKRecord.Reference
         
         // Se tiver referência a um artista, cria o UUID com base no recordName
         let artistID = artistReference.map { UUID(uuidString: $0.recordID.recordName) } ?? nil
         
         // Retorna um objeto Work
-        return Work(id: id, title: title, description: description, image: image, location: location, style: style, artistID: artistID)
+        return Work(id: id, title: title, description: description, image: image, location: location, tag: tag, artistID: artistID)
     }
 }
-
-    
-//    func loadArtists() {
-//        fetchArtists { result in
-//            switch result {
-//            case .success(let artists):
-//                self.artistsArray = artists  // Armazena os dados no array
-//                print("Artists fetched and saved!")
-//                print(self.artistsArray)
-//            case .failure(let error):
-//                print("Error fetching artists: \(error)")
-//            }
-//        }
-//    }
     
 
