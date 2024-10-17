@@ -32,11 +32,11 @@ class CloudKitService {
             switch result {
             case .success(let works):
                 for work in works {
-                    print("Work Title: \(work.title)")
-                    print("Description: \(work.description)")
+                    print("Work Title: \(String(describing: work.title))")
+                    print("Description: \(String(describing: work.description))")
                     print("Tags: \(work.tag.joined(separator: ", "))")
                     
-
+                    print("\n")
                 }
             case .failure(let error):
                 print("Error fetching works: \(error.localizedDescription)")
