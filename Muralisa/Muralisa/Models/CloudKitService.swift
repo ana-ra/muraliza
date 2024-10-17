@@ -8,7 +8,7 @@
 class CloudKitService {
     var modelCloudKit = ModelCloudKit()
     
-    init(){
+    init() {
         self.fetchAndPrintArtists()
     }
     
@@ -17,12 +17,31 @@ class CloudKitService {
             switch result {
             case .success(let artists):
                 for artist in artists {
-                    print(artist.name)
-                    print(artist.biography)
+                    print("Artist: \(artist.name)")
+                    print("Biography: \(artist.biography ?? "No biography")")
+                    self.fetchAndPrintWorks(for: artist) // Chama a função para buscar as obras
                 }
             case .failure(let error):
                 print("Error fetching artists: \(error.localizedDescription)")
             }
         }
     }
+    
+    func fetchAndPrintWorks(for artist: Artist) {
+        modelCloudKit.fetchWorks(for: artist) { result in
+            switch result {
+            case .success(let works):
+                for work in works {
+                    print("Work Title: \(work.title)")
+                    print("Description: \(work.description)")
+                    print("Tags: \(work.tag.joined(separator: ", "))")
+                    
+
+                }
+            case .failure(let error):
+                print("Error fetching works: \(error.localizedDescription)")
+            }
+        }
+    }
+
 }
