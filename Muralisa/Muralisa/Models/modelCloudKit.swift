@@ -61,17 +61,13 @@ class ModelCloudKit {
         return Artist(id: id, name: name, image: photo, biography: biography, works: [])
     }
     
-    // Função para buscar todas as obras relacionadas a um artista
     func fetchWorks(for artist: Artist, completion: @escaping (Result<[Work], Error>) -> Void) {
-        // Cria a referência para o artista
         let artistRecordID = CKRecord.ID(recordName: artist.id.uuidString)
         let artistReference = CKRecord.Reference(recordID: artistRecordID, action: .none)
         
-        // Cria um predicado para buscar as obras que tenham a referência ao artista
         let predicate = NSPredicate(format: "Artist == %@", artistReference)
         let query = CKQuery(recordType: Work.recordType, predicate: predicate)
         
-        // Executa a consulta no banco de dados público
         databasePublic.perform(query, inZoneWith: CKRecordZone.default().zoneID) { results, error in
             if let error = error {
                 DispatchQueue.main.async {
@@ -82,24 +78,20 @@ class ModelCloudKit {
             
             guard let result = results else { return }
             
-            // Converter os CKRecords para objetos Work
             let works = result.compactMap { self.convertRecordToWork($0) }
             
-            // Retorna os resultados na thread principal
             DispatchQueue.main.async {
                 completion(.success(works))
             }
         }
     }
     
-    // Função para converter CKRecord para Work com as referências
     func convertRecordToWork(_ record: CKRecord) -> Work {
         let id = UUID() // Cria um UUID para a obra
         let title = record["Title"] as? String ?? "Unknown Title"
         let description = record["Description"] as? String ?? "No Description"
         let tag = record["Tag"] as? [String] ?? ["No tags"]
 
-        // Recebe imagem como CKAsset, converte para Data e depois converte para UIImage
         var image: UIImage? = nil
         if let imageAsset = record["Image"] as? CKAsset,
            let url = imageAsset.fileURL {
@@ -110,16 +102,12 @@ class ModelCloudKit {
             }
         }
         
-        // Pega a localização como CLLocation
         let location = record["Location"] as? CLLocation
         
-        // Pega a referência do artista
         let artistReference = record["Artist"] as? CKRecord.Reference
 
-        // Mapeia o recordName para UUID se o artista existir
         let artistID = artistReference?.recordID.recordName
 
-        // Retorna o objeto Work com a referência ao artista
         return Work(
             id: id,
             title: title,
