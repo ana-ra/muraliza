@@ -31,5 +31,3 @@ class Work {
         self.artistID = artistID
     }
 }
-
-

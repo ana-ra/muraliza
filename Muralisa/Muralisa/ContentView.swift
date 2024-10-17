@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    var modelCK = ModelCloudKit()
+    var CLService = CloudKitService()
     
     var body: some View {
         VStack {

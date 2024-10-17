@@ -9,15 +9,13 @@ import CloudKit
 import UIKit
 
 class ModelCloudKit {
-    
-    let container: CKContainer
+    let container = CKContainer.init(identifier: "iCloud.muralisa")
     let databasePublic: CKDatabase
     
     static var currentModel = ModelCloudKit()
     
     init() {
-        container = CKContainer.default()
-        databasePublic = container.publicCloudDatabase
+        self.databasePublic = container.publicCloudDatabase
     }
     
     // Função para buscar todos os artistas e converter CKRecord para Artist
@@ -47,12 +45,22 @@ class ModelCloudKit {
     // Função para converter CKRecord para Artist
     func convertRecordToArtist(_ record: CKRecord) -> Artist {
         let id = UUID()
-        let name = record["name"] as? String ?? "Unknown Artist"
-        let biography = record["biography"] as? String
-        let photo = record["photo"] as? UIImage
-        let works = (record["works"] as? [Work])!
+        let name = record["Name"] as? String ?? "Unknown Artist"
+        let biography = record["Biography"] as? String
         
-        return Artist(id: id, name: name, image: photo, biography: biography, works: works)
+        // Recebe foto como CKAsset, converte para Data e depois converte para UIImage
+        // Recomendado converter de Data para UIImage na view model
+        var photo:UIImage? = nil
+        if let photoAsset = record["Photo"] as? CKAsset,
+           let url = photoAsset.fileURL {
+            if let photoData = try? Data(contentsOf: url) {
+                photo = UIImage(data: photoData)
+            }
+        }
+
+       // let works = (record["Work"] as? [Work])!
+        
+        return Artist(id: id, name: name, image: photo, biography: biography, works: [])
     }
 
     // Função para buscar todas as obras relacionadas a um artista
@@ -83,11 +91,11 @@ class ModelCloudKit {
     // Função para converter CKRecord para Work
     func convertRecordToWork(_ record: CKRecord) -> Work {
         let id = UUID() // Cria um UUID para a obra
-        let title = record["title"] as? String ?? "Unknown Title"
-        let description = record["description"] as? String ?? "No Description"
-        let tag = record["tag"] as? [String] ?? ["No tags"]
-        let image = (record["image"] as? UIImage ?? UIImage(systemName: "custom.photo.slash"))!
-        let location = (record["location"] as? CLLocation)!
+        let title = record["Title"] as? String ?? "Unknown Title"
+        let description = record["Description"] as? String ?? "No Description"
+        let tag = record["Tag"] as? [String] ?? ["No tags"]
+        let image = (record["Image"] as? UIImage ?? UIImage(systemName: "custom.photo.slash"))!
+        let location = (record["Location"] as? CLLocation)!
         let artistReference = record["Artist"] as? CKRecord.Reference
         
         // Se tiver referência a um artista, cria o UUID com base no recordName

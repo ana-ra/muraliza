@@ -5,7 +5,7 @@
 //  Created by Silvana Rodrigues Alves on 15/10/24.
 //
 import Foundation
-import SwiftUI
+import UIKit
 
 class Artist {
     static let recordType: String = "Artist"
