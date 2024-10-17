@@ -18,7 +18,8 @@ class CloudKitService {
             case .success(let artists):
                 for artist in artists {
                     print(artist.name)
-                    print(artist.biography)
+                    print(artist.works)
+                    
                 }
             case .failure(let error):
                 print("Error fetching artists: \(error.localizedDescription)")

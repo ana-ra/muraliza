@@ -44,6 +44,7 @@ class ModelCloudKit {
     
     // Função para converter CKRecord para Artist
     func convertRecordToArtist(_ record: CKRecord) -> Artist {
+        print(record)
         let id = UUID()
         let name = record["Name"] as? String ?? "Unknown Artist"
         let biography = record["Biography"] as? String
@@ -57,10 +58,10 @@ class ModelCloudKit {
                 photo = UIImage(data: photoData)
             }
         }
-
-       // let works = (record["Work"] as? [Work])!
+        let workReferences = record["Work"] as? [CKRecord.Reference] ?? []
+        let worksIDs = workReferences.compactMap { $0.recordID.recordName}
         
-        return Artist(id: id, name: name, image: photo, biography: biography, works: [])
+        return Artist(id: id, name: name, image: photo, biography: biography, works: worksIDs)
     }
 
     // Função para buscar todas as obras relacionadas a um artista
