@@ -22,7 +22,7 @@ class CloudKitService {
     }
     
     func fetchWorks(for artist: Artist) {
-        modelCloudKit.fetchWorks(for: artist) { result in
+        modelCloudKit.fetchWorks() { result in
             switch result {
             case .success(let works):
                 if works.isEmpty {

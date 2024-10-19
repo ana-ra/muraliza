@@ -19,7 +19,7 @@ class ModelCloudKit {
     }
     
     func fetchArtists(_ completion: @escaping (Result<[Artist], Error>) -> Void) {
-        let predicate = NSPredicate(value: true) // Busca todos os registros
+        let predicate = NSPredicate(value: true)
         let query = CKQuery(recordType: Artist.recordType, predicate: predicate)
         
         databasePublic.perform(query, inZoneWith: CKRecordZone.default().zoneID) { results, error in
@@ -30,7 +30,10 @@ class ModelCloudKit {
                 return
             }
             
-            guard let result = results else { return }
+            guard let result = results else {
+                print("No Works found in Database.")
+                return
+             }
             
             let artists = result.compactMap { self.convertRecordToArtist($0) }
             
@@ -42,7 +45,7 @@ class ModelCloudKit {
     
     func convertRecordToArtist(_ record: CKRecord) -> Artist {
         let id = UUID() // Cria um UUID único para o artista
-        let name = record["Name"] as? String ?? "Unknown Artist"
+        let name = record["Nickname"] as? String ?? "Unknown Artist"
         let biography = record["Biography"] as? String
         
         var photo: UIImage? = nil
@@ -56,11 +59,8 @@ class ModelCloudKit {
         return Artist(id: id, name: name, image: photo, biography: biography, works: [])
     }
     
-    func fetchWorks(for artist: Artist, completion: @escaping (Result<[Work], Error>) -> Void) {
-        let artistRecordID = CKRecord.ID(recordName: artist.id.uuidString)
-        let artistReference = CKRecord.Reference(recordID: artistRecordID, action: .none)
-        
-        let predicate = NSPredicate(format: "Artist == %@", artistReference)
+    func fetchWorks(completion: @escaping (Result<[Work], Error>) -> Void) {
+        let predicate = NSPredicate(value: true)
         let query = CKQuery(recordType: Work.recordType, predicate: predicate)
         
         databasePublic.perform(query, inZoneWith: CKRecordZone.default().zoneID) { results, error in
@@ -73,12 +73,11 @@ class ModelCloudKit {
             }
             
             guard let result = results else {
-                print("No results found.")
+                print("No Works found in Database.")
                 return
-            }
+             }
             
-            print("Found \(result.count) works for artist ID: \(artist.id.uuidString)")
-            let works = result.compactMap { self.convertRecordToWork($0) }
+            let works = result.compactMap { self.convertRecordToWork($0)}
             
             DispatchQueue.main.async {
                 completion(.success(works))
@@ -104,7 +103,18 @@ class ModelCloudKit {
         
         let location = record["Location"] as? CLLocation
         let artistReference = record["Artist"] as? CKRecord.Reference
-        let artistID = artistReference?.recordID.recordName
+        fetchArtistRecord(from: artistReference) { result in
+            switch result {
+            case .success(let artist):
+                if artist == nil {
+                    print("The artist does not exist in Database.")
+                } else {
+                    print("The artist with reference \(artist?.name) was found")
+                }
+            case .failure(let error):
+                print("Error fetching works: \(error.localizedDescription)")
+            }
+        }
 
         return Work(
             id: id,
@@ -113,7 +123,33 @@ class ModelCloudKit {
             image: image!,
             location: location!,
             tag: tag,
-            artistID: UUID(uuidString: artistID ?? "")
+            artist: nil
         )
+    }
+    
+    func fetchArtistRecord(from reference: CKRecord.Reference?, completion: @escaping (Result<Artist?, Error>) -> Void) {
+        if let artistRecordID = reference?.recordID {
+            databasePublic.fetch(withRecordID: artistRecordID) { result, error in
+                if let error = error {
+                    DispatchQueue.main.async {
+                        completion(.failure(error))
+                    }
+                    return
+                }
+                
+                guard let result = result else {
+                    print("No Artist found from reference \(artistRecordID) in Database.")
+                    return
+                 }
+                
+                let artist = self.convertRecordToArtist(result)
+                
+                DispatchQueue.main.async {
+                    completion(.success(artist))
+                }
+            }
+
+        }
+        
     }
 }
