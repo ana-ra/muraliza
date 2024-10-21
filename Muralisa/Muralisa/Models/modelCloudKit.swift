@@ -3,6 +3,7 @@
 // Muralisa
 //
 // Created by Silvana Rodrigues Alves on 15/10/24.
+
 import Foundation
 import CloudKit
 import UIKit
@@ -26,39 +27,52 @@ class ModelCloudKit {
         let query = CKQuery(recordType: Artist.recordType, predicate: predicate)
         let results = try await databasePublic.records(matching: query)
         
-        // For every element in results, we try to convert the CKRecord, and then return only the non-nil results
         let records = results.matchResults.compactMap { try? convertRecordToArtist($0.1.get()) }
         return records
-        
     }
     
     func fetchWorks() async throws -> [Work] {
         let predicate = NSPredicate(value: true)
         let query = CKQuery(recordType: Work.recordType, predicate: predicate)
-        let results = try await databasePublic.records(matching: query)
-        
-        // For every element in results, we try to convert the CKRecord, and then return only the non-nil results
-        
-        var records: [Work] = []
-        let ckRecords = results.matchResults.compactMap { try? $0.1.get() }
-        // Can Throw Error
-        for record in ckRecords {
-            let work = try await convertRecordToWork(record)
-            records.append(work)
+        do {
+            let results = try await databasePublic.records(matching: query)
+            
+            var records: [Work] = []
+            let ckRecords = results.matchResults.compactMap { try? $0.1.get() }
+            
+            for record in ckRecords {
+                print("Work Record: \(record)")
+                
+                let work = try await convertRecordToWork(record)
+                
+                print("Converted Work: \(work)")
+                
+                records.append(work)
+            }
+            return records
+        } catch {
+            // Print the error if something goes wrong while fetching works
+            print("Erro ao buscar obras: \(error)")
+            throw error
         }
-        return records
     }
     
     func fetchArtistRecordFromReference(from reference: CKRecord.Reference?) async throws -> Artist {
         guard let recordID = reference?.recordID else {
             throw ArtistFetchError.invalidReference
         }
-        let record = try await databasePublic.record(for: recordID)
-        return convertRecordToArtist(record)
+        do {
+            let record = try await databasePublic.record(for: recordID)
+            return convertRecordToArtist(record)
+        } catch {
+            // Print error if something goes wrong while fetching the artist record
+            print("Erro ao buscar artista: \(error)")
+            throw ArtistFetchError.recordNotFound
+        }
     }
     
     func convertRecordToArtist(_ record: CKRecord) -> Artist {
-        let id = UUID() // Cria um UUID único para o artista
+        let id = UUID() // Generate a UUID for the artist
         let name = record["Nickname"] as? String ?? "Unknown Artist"
         let biography = record["Biography"] as? String
         var photo: UIImage? = nil
@@ -72,10 +86,12 @@ class ModelCloudKit {
     }
     
     func convertRecordToWork(_ record: CKRecord) async throws -> Work {
-        let id = UUID() // Cria um UUID para a obra
+        let id = UUID() // Generate a UUID for the work
         let title = record["Title"] as? String ?? "Unknown Title"
         let description = record["Description"] as? String ?? "No Description"
         let tag = record["Tag"] as? [String] ?? ["No tags"]
+        
+        // Handle image loading
         var image: UIImage? = nil
         if let imageAsset = record["Image"] as? CKAsset,
            let url = imageAsset.fileURL {
@@ -85,14 +101,20 @@ class ModelCloudKit {
                 image = UIImage(systemName: "custom.photo.slash")
             }
         }
-        let location = record["Location"] as? CLLocation
-        let artistReference = record["Artist"] as? CKRecord.Reference
-        let artist: Artist?
         
-        // Fetch the artist record, handling any potential errors
-        if let reference = artistReference {
-            artist = try await fetchArtistRecordFromReference(from: reference)
-        } else {
+        let location = record["Location"] as? CLLocation ?? CLLocation(latitude: 0, longitude: 0)
+        
+        let artistReference = record["Artist"] as? CKRecord.Reference
+        var artist: Artist? = nil
+        
+        do {
+            if let reference = artistReference {
+                artist = try await fetchArtistRecordFromReference(from: reference)
+            } else {
+                print("Obra sem referência de artista: \(title)")
+            }
+        } catch {
+            print("Erro ao buscar o artista associado à obra \(title): \(error)")
             artist = nil
         }
         
@@ -100,8 +122,8 @@ class ModelCloudKit {
             id: id,
             title: title,
             description: description,
-            image: image!,
-            location: location!,
+            image: image ?? UIImage(systemName: "custom.photo.slash")!,
+            location: location,
             tag: tag,
             artist: artist
         )
