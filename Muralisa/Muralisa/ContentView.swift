@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     var CLService = CloudKitService()
+    var recommendationService = RecommendationService()
     
     var body: some View {
         VStack {
