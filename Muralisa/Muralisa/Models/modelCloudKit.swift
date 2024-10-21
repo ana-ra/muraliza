@@ -82,7 +82,17 @@ class ModelCloudKit {
                 photo = UIImage(data: photoData)
             }
         }
-        return Artist(id: id, name: name, image: photo, biography: biography, works: [])
+        
+        // Primeiro, obter a lista de referências de obras
+        var worksReferences: [CKRecord.Reference] = []
+        if let references = record["Work"] as? [CKRecord.Reference] {
+            worksReferences = references
+        }
+        
+        // Depois, converter essas referências para strings (normalmente o recordID)
+        let worksReferencesStrings = worksReferences.map { $0.recordID.recordName }
+        
+        return Artist(id: id, name: name, image: photo, biography: biography, works: worksReferencesStrings)
     }
     
     func convertRecordToWork(_ record: CKRecord) async throws -> Work {
