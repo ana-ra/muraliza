@@ -34,42 +34,42 @@ class ModelCloudKit {
     func fetchWorks() async throws -> [Work] {
         let predicate = NSPredicate(value: true)
         let query = CKQuery(recordType: Work.recordType, predicate: predicate)
-        do {
-            let results = try await databasePublic.records(matching: query)
+        let results = try await databasePublic.records(matching: query)
+        
+        var records: [Work] = []
+        let ckRecords = results.matchResults.compactMap { try? $0.1.get() }
+        
+        for record in ckRecords {
+            print("Work Record: \(record)")
             
-            var records: [Work] = []
-            let ckRecords = results.matchResults.compactMap { try? $0.1.get() }
+            let work = try await convertRecordToWork(record)
             
-            for record in ckRecords {
-                print("Work Record: \(record)")
-                
-                let work = try await convertRecordToWork(record)
-                
-                print("Converted Work: \(work)")
-                
-                records.append(work)
-            }
-            return records
-        } catch {
-            // Print the error if something goes wrong while fetching works
-            print("Erro ao buscar obras: \(error)")
-            throw error
+            print("Converted Work: \(work)")
+            
+            records.append(work)
         }
+        return records
     }
     
-    func fetchArtistRecordFromReference(from reference: CKRecord.Reference?) async throws -> Artist {
+    func fetchRecordFromReference(from reference: CKRecord.Reference?) async throws -> CKRecord {
         guard let recordID = reference?.recordID else {
             throw ArtistFetchError.invalidReference
         }
-        do {
-            let record = try await databasePublic.record(for: recordID)
-            return convertRecordToArtist(record)
-        } catch {
-            // Print error if something goes wrong while fetching the artist record
-            print("Erro ao buscar artista: \(error)")
-            throw ArtistFetchError.recordNotFound
-        }
+        let record = try await databasePublic.record(for: recordID)
+        return record
+        
     }
+    
+    func fetchWorkFromReference(from reference: String) async throws -> Work {
+        let recordID = CKRecord.ID(recordName: reference)
+        
+        let record = try await databasePublic.record(for: recordID)
+        
+        let work = try await convertRecordToWork(record)
+        
+        return work
+    }
+    
     
     func convertRecordToArtist(_ record: CKRecord) -> Artist {
         let id = UUID() // Generate a UUID for the artist
@@ -117,22 +117,18 @@ class ModelCloudKit {
         let artistReference = record["Artist"] as? CKRecord.Reference
         var artist: Artist? = nil
         
-        do {
-            if let reference = artistReference {
-                artist = try await fetchArtistRecordFromReference(from: reference)
-            } else {
-                print("Obra sem referência de artista: \(title)")
-            }
-        } catch {
-            print("Erro ao buscar o artista associado à obra \(title): \(error)")
-            artist = nil
+        if let reference = artistReference {
+            let artistRecord = try await fetchRecordFromReference(from: reference)
+            artist = convertRecordToArtist(artistRecord)
+        } else {
+            print("Obra sem referência de artista: \(title)")
         }
         
         return Work(
             id: id,
             title: title,
             description: description,
-            image: image ?? UIImage(systemName: "custom.photo.slash")!,
+            image: image ?? UIImage(systemName: "photo.badge.exclamationmark")!,
             location: location,
             tag: tag,
             artist: artist
