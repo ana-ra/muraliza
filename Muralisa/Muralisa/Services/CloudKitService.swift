@@ -13,10 +13,10 @@ enum ArtistFetchError: Error {
     case recordNotFound
 }
 
-class ModelCloudKit {
+class CloudKitService {
     let container = CKContainer(identifier: "iCloud.muralisa")
     let databasePublic: CKDatabase
-    static var currentModel = ModelCloudKit()
+    static var currentModel = CloudKitService()
     
     init() {
         self.databasePublic = container.publicCloudDatabase

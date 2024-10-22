@@ -2,13 +2,13 @@ import SwiftUI
 
 class WorkService {
     
-    var modelCloudKit = ModelCloudKit()
+    var ckService = CloudKitService()
     
     func fetchWorks() -> [Work] {
         var resultWorks: [Work] = []
         Task {
             do {
-                let works = try await self.modelCloudKit.fetchWorks()
+                let works = try await self.ckService.fetchWorks()
                 resultWorks = works
             } catch {
                 print("Failed to fetch works: \(error.localizedDescription)")
@@ -22,7 +22,7 @@ class WorkService {
             do {
                 var listWorks:[Work] = []
                 for workReference in artist.works {
-                    let work = try await self.modelCloudKit.fetchWorkFromReference(from: workReference)
+                    let work = try await self.ckService.fetchWorkFromReference(from: workReference)
                     listWorks.append(work)
                 }
                 

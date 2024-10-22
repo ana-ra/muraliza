@@ -2,12 +2,12 @@ import SwiftUI
 
 class ArtistService {
     
-    var modelCloudKit = ModelCloudKit()
+    var ckService = CloudKitService()
 
     func fetchArtistsAndPrint() {
         Task {
             do {
-                let artists = try await self.modelCloudKit.fetchArtists()
+                let artists = try await self.ckService.fetchArtists()
                                 
                 print("Fetched \(artists.count) artists:")
                 for artist in artists {
