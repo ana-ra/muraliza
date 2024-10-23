@@ -16,6 +16,16 @@ struct ContentView: View {
                 .imageScale(.large)
                 .foregroundStyle(.tint)
             Text("Hello, world!")
+            
+            if let title = recommendationService.todayWork.title {
+                Text(title)
+            }
+            
+            if let description = recommendationService.todayWork.workDescription {
+                Text(description)
+            }
+            
+            Image(uiImage: recommendationService.todayWork.image)
         }
         .padding()
         .task {

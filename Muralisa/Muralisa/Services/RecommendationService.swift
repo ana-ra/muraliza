@@ -20,7 +20,7 @@ class RecommendationService {
     init() {
         self.todayWork = Work(id: UUID(),
                               title: "",
-                              description: "",
+                              workDescription: "",
                               image: UIImage(systemName: "photo.badge.exclamationmark")!,
                               location: CLLocation(latitude: 0, longitude: 0),
                               tag: [""],
@@ -84,7 +84,7 @@ class RecommendationService {
         
         return Work(id: UUID(),
                     title: "",
-                    description: "",
+                    workDescription: "",
                     image: UIImage(systemName: "photo.badge.exclamationmark")!,
                     location: CLLocation(latitude: 0, longitude: 0),
                     tag: [""],

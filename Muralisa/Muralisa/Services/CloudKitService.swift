@@ -127,7 +127,7 @@ class CloudKitService {
         return Work(
             id: id,
             title: title,
-            description: description,
+            workDescription: description,
             image: image ?? UIImage(systemName: "photo.badge.exclamationmark")!,
             location: location,
             tag: tag,
