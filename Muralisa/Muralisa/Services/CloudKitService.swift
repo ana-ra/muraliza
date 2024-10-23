@@ -55,7 +55,9 @@ class CloudKitService {
         guard let recordID = reference?.recordID else {
             throw ArtistFetchError.invalidReference
         }
+        print("Retrieving \(recordID)")
         let record = try await databasePublic.record(for: recordID)
+        print("Retrievei!")
         return record
         
     }
@@ -100,7 +102,7 @@ class CloudKitService {
         let title = record["Title"] as? String ?? "Unknown Title"
         let description = record["Description"] as? String ?? "No Description"
         let tag = record["Tag"] as? [String] ?? ["No tags"]
-        
+        print("Ate aqui foi")
         // Handle image loading
         var image: UIImage? = nil
         if let imageAsset = record["Image"] as? CKAsset,
@@ -111,11 +113,15 @@ class CloudKitService {
                 image = UIImage(systemName: "custom.photo.slash")
             }
         }
-        
+        print("Imaginando..")
         let location = record["Location"] as? CLLocation ?? CLLocation(latitude: 0, longitude: 0)
+        
+        print("Location")
         
         let artistReference = record["Artist"] as? CKRecord.Reference
         var artist: Artist? = nil
+        
+        print("Artista")
         
         if let reference = artistReference {
             let artistRecord = try await fetchRecordFromReference(from: reference)
@@ -123,6 +129,7 @@ class CloudKitService {
         } else {
             print("Obra sem referência de artista: \(title)")
         }
+        print("Vou retornar")
         
         return Work(
             id: id,

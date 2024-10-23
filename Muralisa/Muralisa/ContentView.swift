@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var recommendationService = RecommendationService()
+    @StateObject var recommendationService = RecommendationService()
     
     var body: some View {
         VStack {
@@ -25,14 +25,17 @@ struct ContentView: View {
                 Text(description)
             }
             
-            Image(uiImage: recommendationService.todayWork.image)
+           Image(uiImage: recommendationService.todayWork.image)
+                .resizable()
+                .scaledToFit()
         }
         .padding()
         .task {
             do {
                 try await recommendationService.setupRecommendation()
             } catch {
-                
+                print("deu erro \(error)")
+                print("deu erro \(error.localizedDescription)")
             }
         }
     }
