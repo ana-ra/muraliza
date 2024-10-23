@@ -36,15 +36,30 @@ struct ImageSubview: View {
                         }}
                 
                 
+                
+                
+                
+                
+                
+                
+//                Button("􀊵") {isLiked.toggle()}
+//                        .buttonStyle(.borderedProminent)
+//                        .tint(.blue)
+//                        .controlSize(.large)
+//                        .disabled(isLiked)
+                
                 Button {
                     isLiked.toggle()
                 } label: {
+                    
                     ZStack{
-                        
-                        Image(systemName: isLiked ? "heart.circle.fill" : "heart.circle")
+                        Circle()
+                            .frame(width: 50)
+                            .foregroundStyle( isLiked ? Color.blue : Color.gray.opacity(0.20) )
+                        Image(systemName: isLiked ? "heart.fill" : "heart.fill")
                             .resizable()
-                            .foregroundStyle( isLiked ? Color.gray : Color.blue )
-                            .frame(width: 50,height: 50,alignment: .trailing)
+                            .foregroundStyle(Color.white)
+                            .frame(width: 16,height: 16,alignment: .trailing)
                         
                     }.padding()
                 }
