@@ -9,11 +9,16 @@ import Foundation
 import CoreLocation
 import UIKit
 
-class Work {
+class Work: NSObject {
     static let recordType: String = "Work"
+    
+    static func == (lhs: Work, rhs: Work) -> Bool {
+        return lhs.id == rhs.id && lhs.id == rhs.id
+    }
     
     let id: UUID
     let title: String?
+    /*override */
     let description: String?
     let image: UIImage
     let location: CLLocation

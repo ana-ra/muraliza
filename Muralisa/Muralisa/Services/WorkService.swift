@@ -4,17 +4,12 @@ class WorkService {
     
     var ckService = CloudKitService()
     
-    func fetchWorks() -> [Work] {
+    func fetchWorks() async throws ->  [Work] {
         var resultWorks: [Work] = []
-        Task {
-            do {
                 let works = try await self.ckService.fetchWorks()
                 resultWorks = works
-            } catch {
-                print("Failed to fetch works: \(error.localizedDescription)")
-            }
-        }
-        return resultWorks
+                return resultWorks
+        
     }
     
     func fetchWorksFromArtist(artist: Artist) {
@@ -27,7 +22,7 @@ class WorkService {
                 }
                 
                 for work in listWorks {
-                    print("o nome da obras do artista é: \(work.title)")
+                    print("o nome da obras do artista é: \(String(describing: work.title))")
                 }
                 
             } catch{

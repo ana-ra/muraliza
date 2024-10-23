@@ -8,8 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    var CLService = CloudKitService()
-    var recommendationService = RecommendationService()
+    @State var recommendationService = RecommendationService()
     
     var body: some View {
         VStack {
@@ -19,6 +18,13 @@ struct ContentView: View {
             Text("Hello, world!")
         }
         .padding()
+        .task {
+            do {
+                try await recommendationService.setupRecommendation()
+            } catch {
+                
+            }
+        }
     }
 }
 
