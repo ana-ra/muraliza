@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		537C27482CC927650004835E /* WrappingHStack in Frameworks */ = {isa = PBXBuildFile; productRef = 537C27472CC927650004835E /* WrappingHStack */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		7AC75B382CBD4EF20002F7C6 /* Muralisa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Muralisa.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				537C27482CC927650004835E /* WrappingHStack in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +70,7 @@
 			);
 			name = Muralisa;
 			packageProductDependencies = (
+				537C27472CC927650004835E /* WrappingHStack */,
 			);
 			productName = Muralisa;
 			productReference = 7AC75B382CBD4EF20002F7C6 /* Muralisa.app */;
@@ -94,6 +100,9 @@
 			);
 			mainGroup = 7AC75B2F2CBD4EF20002F7C6;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				537C27462CC927650004835E /* XCRemoteSwiftPackageReference "WrappingHStack" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 7AC75B392CBD4EF20002F7C6 /* Products */;
 			projectDirPath = "";
@@ -324,6 +333,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		537C27462CC927650004835E /* XCRemoteSwiftPackageReference "WrappingHStack" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ksemianov/WrappingHStack";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.2.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		537C27472CC927650004835E /* WrappingHStack */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 537C27462CC927650004835E /* XCRemoteSwiftPackageReference "WrappingHStack" */;
+			productName = WrappingHStack;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 7AC75B302CBD4EF20002F7C6 /* Project object */;
 }
