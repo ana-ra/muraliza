@@ -61,7 +61,7 @@ struct artistSubview: View {
                 HStack {
                     Label(work.artist?.name ?? "Unknown", systemImage: "person.circle")
                         .padding(.vertical, 8)
-                        .padding(.horizontal)
+                        .padding(.horizontal, 16)
                         .background {
                             RoundedRectangle(cornerRadius: 40)
                                 .foregroundStyle(.gray)

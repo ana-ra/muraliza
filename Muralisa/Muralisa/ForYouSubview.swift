@@ -13,27 +13,24 @@ var mockedList: [String] = ["imagePlaceholder", "imagePlaceholder", "imagePlaceh
 struct ForYouSubview: View {
     var body: some View {
         ScrollView(.horizontal){
-        HStack{
-            ForEach(mockedList, id: \.self) { item in
-                
-                Button {
-                    print("id: \(item)")
-                } label: {
-                    Image(item)
-                        .resizable()
-                        .frame(width: 143, height: 128)
-                }
-
+            HStack{
+                ForEach(mockedList, id: \.self) { item in
                     
-                
+                    Button {
+                        print("id: \(item)")
+                    } label: {
+                        Image(item)
+                            .resizable()
+                            .frame(width: 143, height: 128)
+                    }
                     
-            }.padding(.trailing, -8)
+                }.padding(.trailing, -8)
             }
         }
-
-
-
-
+        
+        
+        
+        
     }
 }
 
