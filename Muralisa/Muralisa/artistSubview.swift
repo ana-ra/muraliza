@@ -65,7 +65,7 @@ struct artistSubview: View {
                         .background {
                             RoundedRectangle(cornerRadius: 40)
                                 .foregroundStyle(.gray)
-                                .opacity(0.25)
+                                .opacity(0.2)
                         }
                     Spacer()
                 }
