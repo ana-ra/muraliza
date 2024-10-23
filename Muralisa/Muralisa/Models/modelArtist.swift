@@ -10,14 +10,14 @@ import UIKit
 class Artist {
     static let recordType: String = "Artist"
     
-    let id: UUID
+    let id: String
     let name: String
     let image: UIImage?
     let biography: String?
     let works: [String]
     
     // Inicializador
-    init(id: UUID, name: String, image: UIImage?, biography: String?, works: [String]) {
+    init(id: String, name: String, image: UIImage?, biography: String?, works: [String]) {
         self.id = id
         self.name = name
         self.image = image

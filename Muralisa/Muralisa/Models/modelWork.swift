@@ -16,7 +16,7 @@ class Work: NSObject {
         return lhs.id == rhs.id && lhs.id == rhs.id
     }
     
-    let id: UUID
+    let id: String
     let title: String?
     let workDescription: String?
     let image: UIImage
@@ -25,7 +25,7 @@ class Work: NSObject {
     let artist: Artist?
     
     // Inicializador
-    init(id: UUID, title: String?, workDescription: String?, image: UIImage, location: CLLocation, tag: [String], artist: Artist?) {
+    init(id: String, title: String?, workDescription: String?, image: UIImage, location: CLLocation, tag: [String], artist: Artist?) {
         self.id = id
         self.title = title
         self.workDescription = workDescription

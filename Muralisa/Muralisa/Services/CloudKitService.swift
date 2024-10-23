@@ -40,12 +40,7 @@ class CloudKitService {
         let ckRecords = results.matchResults.compactMap { try? $0.1.get() }
         
         for record in ckRecords {
-            print("Work Record: \(record)")
-            
             let work = try await convertRecordToWork(record)
-            
-            print("Converted Work: \(work)")
-            
             records.append(work)
         }
         return records
@@ -55,9 +50,7 @@ class CloudKitService {
         guard let recordID = reference?.recordID else {
             throw ArtistFetchError.invalidReference
         }
-        print("Retrieving \(recordID)")
         let record = try await databasePublic.record(for: recordID)
-        print("Retrievei!")
         return record
         
     }
@@ -74,7 +67,7 @@ class CloudKitService {
     
     
     func convertRecordToArtist(_ record: CKRecord) -> Artist {
-        let id = UUID() // Generate a UUID for the artist
+        let id = record["Name"] as? String ?? UUID().uuidString
         let name = record["Nickname"] as? String ?? "Unknown Artist"
         let biography = record["Biography"] as? String
         var photo: UIImage? = nil
@@ -98,11 +91,11 @@ class CloudKitService {
     }
     
     func convertRecordToWork(_ record: CKRecord) async throws -> Work {
-        let id = UUID() // Generate a UUID for the work
+        let id = String(record.recordID.recordName)
         let title = record["Title"] as? String ?? "Unknown Title"
         let description = record["Description"] as? String ?? "No Description"
         let tag = record["Tag"] as? [String] ?? ["No tags"]
-        print("Ate aqui foi")
+
         // Handle image loading
         var image: UIImage? = nil
         if let imageAsset = record["Image"] as? CKAsset,
@@ -113,23 +106,17 @@ class CloudKitService {
                 image = UIImage(systemName: "custom.photo.slash")
             }
         }
-        print("Imaginando..")
         let location = record["Location"] as? CLLocation ?? CLLocation(latitude: 0, longitude: 0)
-        
-        print("Location")
-        
+                
         let artistReference = record["Artist"] as? CKRecord.Reference
         var artist: Artist? = nil
-        
-        print("Artista")
-        
+                
         if let reference = artistReference {
             let artistRecord = try await fetchRecordFromReference(from: reference)
             artist = convertRecordToArtist(artistRecord)
         } else {
             print("Obra sem referência de artista: \(title)")
         }
-        print("Vou retornar")
         
         return Work(
             id: id,
