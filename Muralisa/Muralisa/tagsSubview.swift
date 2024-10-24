@@ -12,7 +12,6 @@ import WrappingHStack
 struct TagsSubView: View {
     let work: LocalWork
     
-    
     var body: some View {
         VStack(alignment: .leading) {
             HStack {
