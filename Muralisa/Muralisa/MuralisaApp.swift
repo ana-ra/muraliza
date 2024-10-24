@@ -15,3 +15,14 @@ struct MuralisaApp: App {
         }
     }
 }
+
+extension View {
+    
+    func getHeight() -> CGFloat {
+        return UIScreen.main.bounds.height
+    }
+    
+    func getWidth() -> CGFloat {
+        return UIScreen.main.bounds.width
+    }
+}

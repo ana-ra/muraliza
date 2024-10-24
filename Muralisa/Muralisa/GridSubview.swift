@@ -18,11 +18,14 @@ struct GridSubview: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text("Similares a Gustavo")
-                .font(.title2)
-                .fontWeight(.bold)
-                .padding(.leading)
-                .padding(.top, 8)
+            HStack {
+                Text("Similares a Gustavo")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .padding(.leading)
+                Spacer()
+            }
+
             
             ScrollView {
                 LazyVGrid(columns: fixedColumn, spacing: 8) {

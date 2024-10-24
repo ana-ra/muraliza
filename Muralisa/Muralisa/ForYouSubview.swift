@@ -13,11 +13,15 @@ var mockedList: [String] = ["imagePlaceholder", "imagePlaceholder", "imagePlaceh
 struct ForYouSubview: View {
     var body: some View {
         VStack(alignment:.leading){
-            Text("Para Você")
-                .font(.title2)
-                .fontWeight(.bold)
-                .padding(.leading, -190)
-            
+            HStack {
+                Text("Para Você")
+                    .font(.title2)
+                    .fontWeight(.bold)
+                    .padding(.leading)
+
+                
+                Spacer()
+            }
             
         }
         ScrollView(.horizontal){
