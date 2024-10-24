@@ -8,29 +8,36 @@
 import SwiftUI
 
 struct GridSubview: View {
-    var mockedList: [String] = ["imagePlaceholder", "imag", "imag","imagePlaceholder", "ima", "imagePlaceholder"]
-    let columns = [
-        GridItem(.flexible()),
-        GridItem(.flexible()),
-        GridItem(.flexible())
-    ]
+    private var data = Array(1...12)
     
+    private let fixedColumn = [
+        GridItem(.fixed(125)),
+        GridItem(.fixed(125)),
+        GridItem(.fixed(125))
+    ]
+
     var body: some View {
-        ScrollView {
-            LazyVGrid(columns: columns, spacing: 5) {
-                ForEach(mockedList, id: \.self) { item in
-                    Button {
-                        print("Button tapped")
-                    } label: {
-                        Image("\(item)")
-                            .resizable()
-                            .frame(width: 100, height: 100)
-                            .scaledToFill()
+        VStack(alignment: .leading) {
+            Text("Similares a Gustavo")
+                .font(.title2)
+                .fontWeight(.bold)
+                .padding(.leading)
+                .padding(.top, 8)
+            
+            ScrollView {
+                LazyVGrid(columns: fixedColumn, spacing: 8) {
+                    ForEach(data, id: \.self) { item in
+                        Text(String(item))
+                            .frame(width: 125, height: 125, alignment: .center)
+                            .background(Color.green)
+//                            .cornerRadius(8)
+                            .font(.title)
                     }
                 }
+                .padding(8)
             }
-            
         }
+        .padding(.horizontal, 8)
     }
 }
 
