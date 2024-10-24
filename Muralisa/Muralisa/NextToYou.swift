@@ -41,10 +41,6 @@ struct NextToYou: View {
                 }.padding(.trailing, -8)
             }.padding(.horizontal)
         }
-        
-        
-        
-        
     }
 }
 

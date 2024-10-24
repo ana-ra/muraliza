@@ -23,7 +23,7 @@ struct ImageSubview: View {
                 Image(uiImage: work.image)
                     .resizable()
                     .aspectRatio(contentMode: isCompressed ? .fill : .fit)
-                    .frame(height: isCompressed ? 330 : nil)
+                    .frame(height: isCompressed ? getHeight()/2.5 : nil)
                     .frame(maxWidth: isCompressed ? nil : .infinity)
                     .cornerRadius(25)
                 

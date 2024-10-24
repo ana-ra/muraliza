@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-//@State var pageAtualization: Bool = false
 var mockedList: [String] = ["imagePlaceholder", "imagePlaceholder", "imagePlaceholder","imagePlaceholder", "imagePlaceholder", "imagePlaceholder"]
 
 struct ForYouSubview: View {

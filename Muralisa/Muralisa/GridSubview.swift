@@ -10,7 +10,8 @@ import SwiftUI
 struct GridSubview: View {
     private var data = Array(1...12)
     
-    private let fixedColumn = [
+
+    @State var fixedColumn = [
         GridItem(.fixed(125)),
         GridItem(.fixed(125)),
         GridItem(.fixed(125))
@@ -25,22 +26,28 @@ struct GridSubview: View {
                     .padding(.leading)
                 Spacer()
             }
+            
 
             
             ScrollView {
-                LazyVGrid(columns: fixedColumn, spacing: 8) {
+                LazyVGrid(columns: fixedColumn, spacing: 0) {
                     ForEach(data, id: \.self) { item in
-                        Text(String(item))
-                            .frame(width: 125, height: 125, alignment: .center)
-                            .background(Color.green)
-//                            .cornerRadius(8)
-                            .font(.title)
+                        Image("imagePlaceholder")
+                            .resizable()
+                            .scaledToFit()
+//                            .frame(height: getWidth()/3*1.34)
                     }
                 }
-                .padding(8)
             }
+            
         }
-        .padding(.horizontal, 8)
+        .onAppear {
+              fixedColumn = [
+                GridItem(.flexible(),spacing: 0),
+                GridItem(.flexible(),spacing: 0),
+                GridItem(.flexible(),spacing: 0),
+            ]
+        }
     }
 }
 
