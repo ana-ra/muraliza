@@ -12,6 +12,14 @@ var mockedList: [String] = ["imagePlaceholder", "imagePlaceholder", "imagePlaceh
 
 struct ForYouSubview: View {
     var body: some View {
+        VStack(alignment:.leading){
+            Text("Para Você")
+                .font(.title2)
+                .fontWeight(.bold)
+                .padding(.leading, -190)
+            
+            
+        }
         ScrollView(.horizontal){
             HStack{
                 ForEach(mockedList, id: \.self) { item in
