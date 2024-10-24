@@ -12,6 +12,8 @@ struct ContentView: View {
     
     var body: some View {
         VStack {
+            GridSubview()
+
             Image(systemName: "globe")
                 .imageScale(.large)
                 .foregroundStyle(.tint)
@@ -39,6 +41,7 @@ struct ContentView: View {
             }
         }
     }
+    
 }
 
 #Preview {
