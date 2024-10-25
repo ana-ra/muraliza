@@ -38,7 +38,9 @@ struct ContentView: View {
                 print("deu erro \(error.localizedDescription)")
             }
         }
+        GridSubview()
     }
+    
 }
 
 #Preview {
