@@ -10,7 +10,7 @@ import CoreLocation
 import WrappingHStack
 
 struct TagsSubView: View {
-    let work: LocalWork
+    let work: Work
     
     
     var body: some View {
@@ -44,8 +44,4 @@ struct TagsSubView: View {
         }
         .padding()
     }
-}
-
-#Preview {
-    TagsSubView(work: LocalWork(id: UUID(), title: "Teste", description: "Rorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis.", image: UIImage(), location: CLLocation(latitude: -22, longitude: 47), tag: ["Colorido", "Bomb", "Lettering", "Teste1", "Teste2", "Teste3"], artist: nil))
 }

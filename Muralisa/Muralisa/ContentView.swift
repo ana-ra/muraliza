@@ -9,36 +9,33 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject var recommendationService = RecommendationService()
+    @State var isCompressed: Bool = true
     
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-            
-            if let title = recommendationService.todayWork.title {
-                Text(title)
+        NavigationStack {
+            ScrollView {
+                VStack {
+                    ImageSubview(work: recommendationService.todayWork, isCompressed: $isCompressed)
+                    ArtistSubview(work: recommendationService.todayWork, address: "Rua Albertina de Jesus Martins, 35", distance: 5000)
+                    TagsSubView(work: recommendationService.todayWork)
+                    VStack(spacing: 24) {
+                        ForYouSubview()
+                        NextToYou()
+                        GridSubview()
+                    }
+                }
+                .animation(.easeInOut, value: isCompressed)
             }
-            
-            if let description = recommendationService.todayWork.workDescription {
-                Text(description)
-            }
-            
-           Image(uiImage: recommendationService.todayWork.image)
-                .resizable()
-                .scaledToFit()
-        }
-        .padding()
-        .task {
-            do {
-                try await recommendationService.setupRecommendation()
-            } catch {
-                print("deu erro \(error)")
-                print("deu erro \(error.localizedDescription)")
+            .navigationTitle("Sugestão")
+            .task {
+                do {
+                    try await recommendationService.setupRecommendation()
+                } catch {
+                    print("deu erro \(error)")
+                    print("deu erro \(error.localizedDescription)")
+                }
             }
         }
-        GridSubview()
     }
     
 }

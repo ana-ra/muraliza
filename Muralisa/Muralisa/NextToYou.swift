@@ -22,24 +22,22 @@ struct NextToYou: View {
                 Spacer()
             
             }
-
             
-            
-        }
-        ScrollView(.horizontal){
-            HStack{
-                ForEach(mockedList2, id: \.self) { item in
-                    
-                    Button {
-                        print("id: \(item)")
-                    } label: {
-                        Image(item)
-                            .resizable()
-                            .frame(width: getWidth()/3, height: getHeight()/6)
-                    }
-                    
-                }.padding(.trailing, -8)
-            }.padding(.horizontal)
+            ScrollView(.horizontal){
+                HStack{
+                    ForEach(mockedList2, id: \.self) { item in
+                        
+                        Button {
+                            print("id: \(item)")
+                        } label: {
+                            Image(item)
+                                .resizable()
+                                .frame(width: getWidth()/3, height: getHeight()/6)
+                        }
+                        
+                    }.padding(.trailing, -8)
+                }.padding(.horizontal)
+            }
         }
     }
 }

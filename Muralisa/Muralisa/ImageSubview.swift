@@ -10,12 +10,14 @@ import CoreLocation
 
 struct ImageSubview: View {
     
-    var work: LocalWork
-//    let workImage: UIImage
+    var work: Work
     @State var isLiked = false
-    @State var isCompressed = true
-    @State var showMore = true
-//    let work: Work?
+    @State private var isVisible = true
+    
+    // Animation
+    @Binding var isCompressed: Bool
+//    @Binding var showMore: Bool
+
     var body: some View {
         VStack(alignment:.leading) {
             ZStack(alignment:.bottomTrailing){
@@ -47,10 +49,12 @@ struct ImageSubview: View {
                 Spacer()
                 Button {
                     isCompressed.toggle()
-                    showMore.toggle()
+                    toggleOpacityWithDelay()
+                    isVisible = false
                 } label: {
-                    Label(showMore ? "Mostrar Mais" : "Mostrar Menos", systemImage: showMore ? "arrow.down.left.and.arrow.up.right" : "arrow.up.right.and.arrow.down.left")
-                        .animation(.interactiveSpring(duration: 0), value: showMore)
+                    Label(isCompressed ? "Mostrar Mais" : "Mostrar Menos", systemImage: isCompressed ? "arrow.down.left.and.arrow.up.right" : "arrow.up.right.and.arrow.down.left")
+                        .opacity(isVisible ? 1.0 : 0.0) // Apply opacity based on state
+                        .animation(.easeInOut(duration: 0), value: isVisible)
                 }
                 Spacer()
             }
@@ -61,13 +65,13 @@ struct ImageSubview: View {
                     .font(Font.title)
                     .fontWeight(.bold)
                 
-                if let description = work.description {
+                if let description = work.workDescription {
                     Text(description)
                         .multilineTextAlignment(.leading)
                 }
             }
             else {
-                if let description = work.description {
+                if let description = work.workDescription {
                     Text("Sem Título")
                         .padding(.top)
                         .font(Font.title)
@@ -78,11 +82,16 @@ struct ImageSubview: View {
                 }
             }
         }
-        .animation(.easeInOut, value: isCompressed)
         .padding()
     }
-}
-
-#Preview {
-    ImageSubview(work: LocalWork(id: UUID(), title: "Título", description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc vulputate libero et velit interdum, ac aliquet odio mattis.", image: UIImage(named: "imagePlaceholder") ?? UIImage(), location: CLLocation(latitude: 13, longitude: 15), tag: ["teste"], artist: nil))
+    
+    // Toggle opacity on and off with a delay
+    func toggleOpacityWithDelay() {
+        // Repeat with a timer or dispatch after a delay
+        Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false) { _ in
+            withAnimation {
+                isVisible = true
+            }
+        }
+    }
 }

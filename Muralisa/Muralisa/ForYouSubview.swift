@@ -22,26 +22,23 @@ struct ForYouSubview: View {
                 Spacer()
             }
             
-        }
-        ScrollView(.horizontal){
-            HStack{
-                ForEach(mockedList, id: \.self) { item in
-                    
-                    Button {
-                        print("id: \(item)")
-                    } label: {
-                        Image(item)
-                            .resizable()
-                            .frame(width: 143, height: 128)
-                    }
-                    
-                }.padding(.trailing, -8)
+            ScrollView(.horizontal){
+                HStack{
+                    ForEach(mockedList, id: \.self) { item in
+                        
+                        Button {
+                            print("id: \(item)")
+                        } label: {
+                            Image(item)
+                                .resizable()
+                                .frame(width: 143, height: 128)
+                        }
+                        
+                    }.padding(.trailing, -8)
+                }.padding(.horizontal)
             }
+            
         }
-        
-        
-        
-        
     }
 }
 
