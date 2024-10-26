@@ -26,6 +26,37 @@ class RecommendationService: ObservableObject {
                               tag: [""],
                               artist: nil)
     }
+    
+    func setupRecommendation2() async throws {
+        // Retrieve last exhibited data from UserDefaults
+        let lastDate = defaults.value(forKey: "lastDateExhibited") as? Date
+        let worksExhibited = defaults.value(forKey: "worksExhibited") as? [String] ?? []
+        
+        // Check if its been a day since the last exhibition, if not, just fetch today's work
+        if let lastDate = lastDate, let lastWork = worksExhibited.last, !compareDates(lastDate, today) {
+            if let work = try await workService.fetchWorkFromReference(from: lastWork) {
+                todayWork = work
+            }
+            
+            return
+        }
+        
+        // If work data is missing or outdated, fetch new works
+        let workResults = try await workService.fetchWorks()
+        
+        // Check if there are already exhibited works
+        if !worksExhibited.isEmpty {
+            // Add new work if today's recommendation was already shown
+            addNewRandomWorkToExhibitedList(chooseRandomWorkFrom: workResults, exhibitedList: worksExhibited)
+        } else {
+            // First time fetching works; initialize recommendation
+            todayWork = workResults.first!
+            defaults.set([todayWork.id], forKey: "worksExhibited")
+            defaults.set(today, forKey: "lastDateExhibited")
+        }
+        
+        works = workResults
+    }
 
     //TODO: limit the time interval that works cannot be repeated
     func setupRecommendation() async throws {

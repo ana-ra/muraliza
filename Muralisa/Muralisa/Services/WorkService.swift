@@ -30,5 +30,10 @@ class WorkService {
             }
         }
     }
+    
+    func fetchWorkFromReference(from reference: String) async throws -> Work? {
+        let work = try await ckService.fetchWorkFromReference(from: reference)
+        return work
+    }
 
 }

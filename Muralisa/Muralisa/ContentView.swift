@@ -10,30 +10,48 @@ import SwiftUI
 struct ContentView: View {
     @StateObject var recommendationService = RecommendationService()
     @State var isCompressed: Bool = true
+    @State var isFetched: Bool = false
     
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack {
-                    ImageSubview(work: recommendationService.todayWork, isCompressed: $isCompressed)
-                    ArtistSubview(work: recommendationService.todayWork, address: "Rua Albertina de Jesus Martins, 35", distance: 5000)
-                    TagsSubView(work: recommendationService.todayWork)
-                    VStack(spacing: 24) {
-                        ForYouSubview()
-                        NextToYou()
-                        GridSubview()
+            if isFetched {
+                ScrollView {
+                    VStack {
+                        ImageSubview(work: recommendationService.todayWork, isCompressed: $isCompressed)
+                        ArtistSubview(work: recommendationService.todayWork, address: "Rua Albertina de Jesus Martins, 35", distance: 5000)
+                        TagsSubView(work: recommendationService.todayWork)
+                        VStack(spacing: 24) {
+                            ForYouSubview()
+                            NextToYou()
+                            GridSubview()
+                        }
                     }
+                    .animation(.easeInOut, value: isCompressed)
                 }
-                .animation(.easeInOut, value: isCompressed)
+                .navigationTitle("Sugestão")
+            } else {
+                // TODO: Design Empty state view or fetching message
+                Text("Fetching your daily works")
             }
-            .navigationTitle("Sugestão")
-            .task {
+        }
+        .refreshable {
+            Task {
                 do {
-                    try await recommendationService.setupRecommendation()
+                    try await recommendationService.setupRecommendation2()
                 } catch {
                     print("deu erro \(error)")
                     print("deu erro \(error.localizedDescription)")
                 }
+            }
+            print("refreshed")
+        }
+        .task {
+            do {
+                try await recommendationService.setupRecommendation2()
+                isFetched = true
+            } catch {
+                print("deu erro \(error)")
+                print("deu erro \(error.localizedDescription)")
             }
         }
     }
