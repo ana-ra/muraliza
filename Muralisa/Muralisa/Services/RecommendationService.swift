@@ -34,10 +34,8 @@ class RecommendationService: ObservableObject {
         
         // Check if its been a day since the last exhibition, if not, just fetch today's work
         if let lastDate = lastDate, let lastWork = worksExhibited.last, !compareDates(lastDate, today) {
-            if let work = try await workService.fetchWorkFromReference(from: lastWork) {
-                todayWork = work
-            }
-            
+            // Will throw if this doesnt work, no need to check
+            todayWork = try await workService.fetchWorkFromRecordName(from: lastWork)
             return
         }
         

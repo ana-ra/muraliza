@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct SuggestionView: View {
     @StateObject var recommendationService = RecommendationService()
     @StateObject var imageService = ImageService()
     @State var isCompressed: Bool = true
@@ -62,5 +62,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    SuggestionView()
 }

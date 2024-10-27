@@ -11,13 +11,12 @@ import SwiftUI
 struct MuralisaApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            SuggestionView()
         }
     }
 }
 
 extension View {
-    
     func getHeight() -> CGFloat {
         return UIScreen.main.bounds.height
     }

@@ -10,7 +10,7 @@ import SwiftUI
 //@State var pageAtualization: Bool = false
 var mockedList2: [String] = ["imagePlaceholder", "imagePlaceholder", "imagePlaceholder","imagePlaceholder", "imagePlaceholder", "imagePlaceholder"]
 
-struct NextToYouSubView: View {
+struct NextToYouSubview: View {
     var body: some View {
         VStack(alignment:.leading){
             HStack{
@@ -43,5 +43,5 @@ struct NextToYouSubView: View {
 }
 
 #Preview {
-    NextToYouSubView()
+    NextToYouSubview()
 }
