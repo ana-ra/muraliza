@@ -7,10 +7,8 @@
 
 import SwiftUI
 
-//@State var pageAtualization: Bool = false
-var mockedList2: [String] = ["imagePlaceholder", "imagePlaceholder", "imagePlaceholder","imagePlaceholder", "imagePlaceholder", "imagePlaceholder"]
-
 struct NextToYouSubview: View {
+    @State var works: [Work]
     var body: some View {
         VStack(alignment:.leading){
             HStack{
@@ -20,21 +18,18 @@ struct NextToYouSubview: View {
                     .padding(.leading)
 
                 Spacer()
-            
             }
             
             ScrollView(.horizontal){
                 HStack{
-                    ForEach(mockedList2, id: \.self) { item in
-                        
+                    ForEach(works, id: \.self) { work in
                         Button {
-                            print("id: \(item)")
+                            print("id: \(work.id)")
                         } label: {
-                            Image(item)
+                            Image(uiImage: work.image)
                                 .resizable()
                                 .frame(width: getWidth()/3, height: getHeight()/6)
                         }
-                        
                     }.padding(.trailing, -8)
                 }.padding(.horizontal)
             }
@@ -42,6 +37,6 @@ struct NextToYouSubview: View {
     }
 }
 
-#Preview {
-    NextToYouSubview()
-}
+//#Preview {
+//    NextToYouSubview()
+//}

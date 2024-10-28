@@ -5,9 +5,9 @@
 //  Created by Silvana Rodrigues Alves on 15/10/24.
 //
 
-import Foundation
+import SwiftUI
 import CoreLocation
-import UIKit
+import CloudKit
 
 class Work: NSObject {
     static let recordType: String = "Work"
@@ -22,10 +22,9 @@ class Work: NSObject {
     let image: UIImage
     let location: CLLocation
     let tag: [String]
-    let artist: Artist?
+    let artist: CKRecord.Reference?
     
-    // Inicializador
-    init(id: String, title: String?, workDescription: String?, image: UIImage, location: CLLocation, tag: [String], artist: Artist?) {
+    init(id: String, title: String?, workDescription: String?, image: UIImage, location: CLLocation, tag: [String], artist: CKRecord.Reference?) {
         self.id = id
         self.title = title
         self.workDescription = workDescription

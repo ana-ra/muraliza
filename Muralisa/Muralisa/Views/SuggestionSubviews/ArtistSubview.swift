@@ -9,31 +9,59 @@ import SwiftUI
 import CoreLocation
 
 struct ArtistSubview: View {
+    @StateObject private var manager = CachedArtistManager()
+    @State var isFetched: Bool = false
     let work: Work
     let address: String
     let distance: Double // Distance in meters
     
     var body: some View {
         VStack(alignment: .leading) {
-            
-            //Artist Button
-            Button {
-                // Navigation to artist view
-            } label: {
-                HStack {
-                    Label(work.artist?.name ?? "Unknown", systemImage: "person.circle")
-                        .padding(.vertical, 8)
-                        .padding(.horizontal, 16)
-                        .background {
-                            RoundedRectangle(cornerRadius: 40)
-                                .foregroundStyle(.gray)
-                                .opacity(0.2)
-                        }
-                    Spacer()
+            switch manager.currentState {
+            case .loading:
+                ProgressView()
+            case .success(artist: let artist):
+                //Artist Button
+                Button {
+                    // Navigation to artist view
+                } label: {
+                    HStack {
+                        Label(artist.name, systemImage: "person.circle")
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 16)
+                            .background {
+                                RoundedRectangle(cornerRadius: 40)
+                                    .foregroundStyle(.gray)
+                                    .opacity(0.2)
+                            }
+                        Spacer()
+                    }
+                    .padding(.bottom, 8)
                 }
-                .padding(.bottom, 8)
+            case .failed(let error):
+                Text("Error loading artist: \(error.localizedDescription)")
+            case .unknown:
+                //Artist Button
+                Button {
+                    // Navigation to artist view
+                } label: {
+                    HStack {
+                        Label("Unknown", systemImage: "person.circle")
+                            .padding(.vertical, 8)
+                            .padding(.horizontal, 16)
+                            .background {
+                                RoundedRectangle(cornerRadius: 40)
+                                    .foregroundStyle(.gray)
+                                    .opacity(0.2)
+                            }
+                        Spacer()
+                    }
+                    .padding(.bottom, 8)
+                }
+                .disabled(work.artist == nil)
+            default:
+                EmptyView()
             }
-            .disabled(work.artist == nil)
             
             // Address
             Text(address)
@@ -54,6 +82,15 @@ struct ArtistSubview: View {
                 } label: {
                     Text("Ver rotas")
                 }
+            }
+        }
+        .animation(.easeInOut, value: manager.currentState)
+        .task {
+            do {
+                try await manager.load(from: work.artist?.recordID.recordName)
+                isFetched = true
+            } catch {
+                print("error loading work: \(error.localizedDescription)")
             }
         }
         .padding()

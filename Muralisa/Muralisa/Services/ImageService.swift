@@ -15,7 +15,7 @@ import CloudKit
 @Observable
 class ImageService: ObservableObject {
     var works: [CKRecord] = []
-    var service = CloudKitService()
+    var service = CloudKitService.currentModel
     
     // Only fetches the records, does not convert
     func populate() async throws {

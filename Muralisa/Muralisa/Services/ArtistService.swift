@@ -9,6 +9,16 @@ class ArtistService {
         return records.map { convertRecordToArtist($0) }
     }
     
+    func fetchArtistFromReference(_ reference: CKRecord.Reference?) async throws -> Artist {
+        let record = try await ckService.fetchRecordFromReference(from: reference)
+        return convertRecordToArtist(record)
+    }
+    
+    func fetchArtistFromRecordName(from recordName: String) async throws -> Artist {
+        let record = try await ckService.fetchRecordFromRecordName(from: recordName)
+        return convertRecordToArtist(record)
+    }
+    
     func convertRecordToArtist(_ record: CKRecord) -> Artist {
         let id = record["Name"] as? String ?? UUID().uuidString
         let name = record["Nickname"] as? String ?? "Unknown Artist"

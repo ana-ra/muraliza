@@ -7,9 +7,9 @@
 
 import SwiftUI
 
-var mockedList: [String] = ["imagePlaceholder", "imagePlaceholder", "imagePlaceholder","imagePlaceholder", "imagePlaceholder", "imagePlaceholder"]
-
 struct ForYouSubview: View {
+    @State var works: [Work]
+    
     var body: some View {
         VStack(alignment:.leading){
             HStack {
@@ -17,19 +17,17 @@ struct ForYouSubview: View {
                     .font(.title2)
                     .fontWeight(.bold)
                     .padding(.leading)
-
                 
                 Spacer()
             }
             
             ScrollView(.horizontal){
                 HStack{
-                    ForEach(mockedList, id: \.self) { item in
-                        
+                    ForEach(works, id: \.self) { work in
                         Button {
-                            print("id: \(item)")
+                            print("id: \(work.id)")
                         } label: {
-                            Image(item)
+                            Image(uiImage: work.image)
                                 .resizable()
                                 .frame(width: 143, height: 128)
                         }
@@ -42,6 +40,6 @@ struct ForYouSubview: View {
     }
 }
 
-#Preview {
-    ForYouSubview()
-}
+//#Preview {
+//    ForYouSubview(imageService: ImageService())
+//}

@@ -21,10 +21,11 @@ struct SuggestionView: View {
                         ImageSubview(work: recommendationService.todayWork, isCompressed: $isCompressed)
                         ArtistSubview(work: recommendationService.todayWork, address: "Rua Albertina de Jesus Martins, 35", distance: 5000)
                         TagsSubView(work: recommendationService.todayWork)
+                        
                         VStack(spacing: 24) {
-                            ForYouSubview()
-                            NextToYouSubview()
-                            GridSubview()
+//                            ForYouSubview(works: recommendationService.works)
+//                            NextToYouSubview(works: recommendationService.works)
+                            GridSubview(workRecords: recommendationService.works)
                         }
                     }
                     .animation(.easeInOut, value: isCompressed)
@@ -39,7 +40,7 @@ struct SuggestionView: View {
             Task {
                 do {
                     try await recommendationService.setupRecommendation2()
-                    try await imageService.populate()
+//                    try await imageService.populate()
                 } catch {
                     print("deu erro \(error)")
                     print("deu erro \(error.localizedDescription)")
@@ -50,15 +51,15 @@ struct SuggestionView: View {
         .task {
             do {
                 try await recommendationService.setupRecommendation2()
-                try await imageService.populate()
-                isFetched = true
+//                try await imageService.populate()
+                withAnimation {
+                    isFetched = true
+                }
             } catch {
-                print("deu erro \(error)")
                 print("deu erro \(error.localizedDescription)")
             }
         }
     }
-    
 }
 
 #Preview {

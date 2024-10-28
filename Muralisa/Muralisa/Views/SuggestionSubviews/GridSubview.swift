@@ -6,15 +6,15 @@
 //
 
 import SwiftUI
+import CloudKit
 
 struct GridSubview: View {
-    private var data = Array(1...12)
+    @State var workRecords: [CKRecord]
     
-
-    @State var fixedColumn = [
-        GridItem(.fixed(125)),
-        GridItem(.fixed(125)),
-        GridItem(.fixed(125))
+    var fixedColumn = [
+        GridItem(.flexible(),spacing: 0),
+        GridItem(.flexible(),spacing: 0),
+        GridItem(.flexible(),spacing: 0),
     ]
 
     var body: some View {
@@ -26,31 +26,40 @@ struct GridSubview: View {
                     .padding(.leading)
                 Spacer()
             }
-            
-
-            
+                        
             ScrollView {
                 LazyVGrid(columns: fixedColumn, spacing: 0) {
-                    ForEach(data, id: \.self) { item in
-                        Image("imagePlaceholder")
-                            .resizable()
-                            .scaledToFit()
-//                            .frame(height: getWidth()/3*1.34)
+                    ForEach(workRecords, id: \.self) { record in
+                        CachedWork(workRecordName: record.recordID.recordName, animation: .easeInOut, transition: .scale.combined(with: .opacity)) { phase in
+                            switch phase {
+                            case .empty:
+                                ProgressView()
+                                    .frame(width: 100, height: 100)
+//                                    .background(.blue, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                            case .success(let image):
+                                image
+                                    .resizable()
+                                    .scaledToFit()
+                            case .failure(let error):
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundStyle(.white)
+                                    .scaledToFit()
+                                    .background(.blue, in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+                            default:
+                                EmptyView()
+                            }
+                        }
+//                        Image(uiImage: work.image)
+//                            .resizable()
+//                            .scaledToFit()
+//                            .frame(height: getWidth()/3*1.34])
                     }
                 }
             }
-            
-        }
-        .onAppear {
-              fixedColumn = [
-                GridItem(.flexible(),spacing: 0),
-                GridItem(.flexible(),spacing: 0),
-                GridItem(.flexible(),spacing: 0),
-            ]
         }
     }
 }
 
-#Preview {
-    GridSubview()
-}
+//#Preview {
+//    GridSubview()
+//}
