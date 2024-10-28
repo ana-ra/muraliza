@@ -14,31 +14,38 @@ class CachedArtistManager: ObservableObject {
     let artistService = ArtistService()
     
     @MainActor
-    func load(from recordName: String?, cache: ArtistCache = .shared) async throws {
+    func load(from references: [CKRecord.Reference]?, cache: ArtistCache = .shared) async throws {
         self.currentState = .loading
+        var artists: [Artist] = []
         
-        if let recordName {
-            // Check if the Work object is already in the cache
-            if let cachedArtist = ArtistCache.shared.getArtist(forKey: recordName) {
-                self.currentState = .success(artist: cachedArtist)
-                #if DEBUG
-                print("Fetching artist: \(recordName) from cache...")
-                #endif
-                return
+        if let references {
+            // Checks every reference to see if it's already in the cache
+            for reference in references {
+                let recordName = reference.recordID.recordName
+                if let cachedArtist = ArtistCache.shared.getArtist(forKey: recordName) {
+                    artists.append(cachedArtist)
+                    #if DEBUG
+                    print("Fetching artist: \(recordName) from cache...")
+                    #endif
+                    
+                } else {
+                    // Get the artist from the record name
+                    // Add the work to cache
+                    do {
+                        let artist = try await artistService.fetchArtistFromRecordName(from: recordName)
+                        cache.setArtist(artist, forKey: recordName)
+                        artists.append(artist)
+                        #if DEBUG
+                        print("Caching artist: \(recordName)...")
+                        #endif
+                    } catch {
+                        self.currentState = .failed(error: error)
+                        return
+                    }
+                }
             }
             
-            // Get the work from the record name
-            // Add the work to cache
-            do {
-                let artist = try await artistService.fetchArtistFromRecordName(from: recordName)
-                self.currentState = .success(artist: artist)
-                cache.setArtist(artist, forKey: recordName)
-                #if DEBUG
-                print("Caching artist: \(recordName)...")
-                #endif
-            } catch {
-                self.currentState = .failed(error: error)
-            }
+            self.currentState = .success(artists: artists)
         } else {
             self.currentState = .unknown
             #if DEBUG
@@ -52,7 +59,7 @@ extension CachedArtistManager {
     enum CurrentState {
         case loading
         case failed(error: Error)
-        case success(artist: Artist)
+        case success(artists: [Artist])
         case unknown
     }
 }

@@ -7,36 +7,41 @@
 
 import SwiftUI
 import CoreLocation
+import WrappingHStack
 
 struct ArtistSubview: View {
-    @StateObject private var manager = CachedArtistManager()
+    @StateObject var manager: CachedArtistManager
     @State var isFetched: Bool = false
-    let work: Work
-    let address: String
-    let distance: Double // Distance in meters
+    @State var work: Work
+    @State var address: String
+    @State var distance: Double // Distance in meters
     
     var body: some View {
         VStack(alignment: .leading) {
             switch manager.currentState {
             case .loading:
                 ProgressView()
-            case .success(artist: let artist):
-                //Artist Button
-                Button {
-                    // Navigation to artist view
-                } label: {
-                    HStack {
-                        Label(artist.name, systemImage: "person.circle")
-                            .padding(.vertical, 8)
-                            .padding(.horizontal, 16)
-                            .background {
-                                RoundedRectangle(cornerRadius: 40)
-                                    .foregroundStyle(.gray)
-                                    .opacity(0.2)
+            case .success(artists: let artists):
+                WrappingHStack(alignment: .leading) {
+                    ForEach(artists, id:\.self) { artist in
+                        //Artist Button
+                        Button {
+                            // Navigation to artist view
+                        } label: {
+                            HStack {
+                                Label(artist.name, systemImage: "person.circle")
+                                    .padding(.vertical, 8)
+                                    .padding(.horizontal, 16)
+                                    .background {
+                                        RoundedRectangle(cornerRadius: 40)
+                                            .foregroundStyle(.gray)
+                                            .opacity(0.2)
+                                    }
+                                Spacer()
                             }
-                        Spacer()
+                            .padding(.bottom, 8)
+                        }
                     }
-                    .padding(.bottom, 8)
                 }
             case .failed(let error):
                 Text("Error loading artist: \(error.localizedDescription)")
@@ -58,7 +63,7 @@ struct ArtistSubview: View {
                     }
                     .padding(.bottom, 8)
                 }
-                .disabled(work.artist == nil)
+                .disabled(true)
             default:
                 EmptyView()
             }
@@ -85,14 +90,14 @@ struct ArtistSubview: View {
             }
         }
         .animation(.easeInOut, value: manager.currentState)
-        .task {
-            do {
-                try await manager.load(from: work.artist?.recordID.recordName)
-                isFetched = true
-            } catch {
-                print("error loading work: \(error.localizedDescription)")
-            }
-        }
+//        .task {
+//            do {
+//                try await manager.load(from: work.artist)
+//                isFetched = true
+//            } catch {
+//                print("error loading work: \(error.localizedDescription)")
+//            }
+//        }
         .padding()
     }
 }

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SuggestionView: View {
     @StateObject var recommendationService = RecommendationService()
+    @StateObject var manager = CachedArtistManager()
     @StateObject var imageService = ImageService()
     @State var isCompressed: Bool = true
     @State var isFetched: Bool = false
@@ -19,7 +20,7 @@ struct SuggestionView: View {
                 ScrollView {
                     VStack {
                         ImageSubview(work: recommendationService.todayWork, isCompressed: $isCompressed)
-                        ArtistSubview(work: recommendationService.todayWork, address: "Rua Albertina de Jesus Martins, 35", distance: 5000)
+                        ArtistSubview(manager: manager, work: recommendationService.todayWork, address: "Rua Albertina de Jesus Martins, 35", distance: 5000)
                         TagsSubView(work: recommendationService.todayWork)
                         
                         VStack(spacing: 24) {
@@ -40,8 +41,12 @@ struct SuggestionView: View {
             Task {
                 do {
                     try await recommendationService.setupRecommendation2()
+                    try await manager.load(from: recommendationService.todayWork.artist)
+                    withAnimation {
+                        isFetched.toggle()
+                        isFetched.toggle()
+                    }
                 } catch {
-                    print("deu erro \(error)")
                     print("deu erro \(error.localizedDescription)")
                 }
             }
@@ -50,6 +55,7 @@ struct SuggestionView: View {
         .task {
             do {
                 try await recommendationService.setupRecommendation2()
+                try await manager.load(from: recommendationService.todayWork.artist)
                 withAnimation {
                     isFetched = true
                 }

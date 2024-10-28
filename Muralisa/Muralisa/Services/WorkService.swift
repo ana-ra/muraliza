@@ -107,15 +107,7 @@ class WorkService {
         let location = record["Location"] as? CLLocation ?? CLLocation(latitude: 0, longitude: 0)
 
         // Fetch artist record, if it exists
-        let artistReference = record["Artist"] as? CKRecord.Reference
-//        var artist: Artist? = nil
-
-//        if let reference = artistReference {
-//            let artistRecord = try await ckService.fetchRecordFromReference(from: reference)
-//            artist = artistService.convertRecordToArtist(artistRecord)
-//        } else {
-//            print("Work has no artist reference: \(title)")
-//        }
+        let artistReference = record["Artist"] as? [CKRecord.Reference]
 
         return Work(
             id: id,

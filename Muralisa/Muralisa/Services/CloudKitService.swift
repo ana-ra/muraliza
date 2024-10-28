@@ -14,7 +14,7 @@ enum FetchError: Error {
 }
 
 class CloudKitService {
-    let container = CKContainer(identifier: "iCloud.muralisa")
+    let container = CKContainer(identifier: "iCloud.muralisa2")
     let databasePublic: CKDatabase
     static var currentModel = CloudKitService()
     

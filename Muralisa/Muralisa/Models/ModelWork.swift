@@ -10,7 +10,7 @@ import CoreLocation
 import CloudKit
 
 class Work: NSObject {
-    static let recordType: String = "Work"
+    static let recordType: String = "Artwork"
     
     static func == (lhs: Work, rhs: Work) -> Bool {
         return lhs.id == rhs.id && lhs.id == rhs.id
@@ -22,9 +22,9 @@ class Work: NSObject {
     let image: UIImage
     let location: CLLocation
     let tag: [String]
-    let artist: CKRecord.Reference?
+    let artist: [CKRecord.Reference]?
     
-    init(id: String, title: String?, workDescription: String?, image: UIImage, location: CLLocation, tag: [String], artist: CKRecord.Reference?) {
+    init(id: String, title: String?, workDescription: String?, image: UIImage, location: CLLocation, tag: [String], artist: [CKRecord.Reference]?) {
         self.id = id
         self.title = title
         self.workDescription = workDescription
