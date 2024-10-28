@@ -40,7 +40,6 @@ struct SuggestionView: View {
             Task {
                 do {
                     try await recommendationService.setupRecommendation2()
-//                    try await imageService.populate()
                 } catch {
                     print("deu erro \(error)")
                     print("deu erro \(error.localizedDescription)")
@@ -51,7 +50,6 @@ struct SuggestionView: View {
         .task {
             do {
                 try await recommendationService.setupRecommendation2()
-//                try await imageService.populate()
                 withAnimation {
                     isFetched = true
                 }

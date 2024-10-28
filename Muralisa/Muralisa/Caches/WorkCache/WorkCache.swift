@@ -10,7 +10,9 @@ import SwiftUI
 class WorkCache {
     static let shared = WorkCache()
     private let cache = NSCache<NSString, Work>()
-    private init() {}
+    private init() {
+        cache.countLimit = 100
+    }
     
     func getWork(forKey key: String) -> Work? {
         cache.object(forKey: NSString(string: key))
