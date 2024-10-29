@@ -15,21 +15,46 @@ struct ArtistSubview: View {
     @State var work: Work
     @State var address: String
     @State var distance: Double // Distance in meters
-    
+    @State var date: String
+
     var body: some View {
         VStack(alignment: .leading) {
-            switch manager.currentState {
-            case .loading:
-                ProgressView()
-            case .success(artists: let artists):
-                WrappingHStack(alignment: .leading) {
-                    ForEach(artists, id:\.self) { artist in
+            HStack {
+                VStack {
+                    switch manager.currentState {
+                    case .loading:
+                        ProgressView()
+                    case .success(artists: let artists):
+                        WrappingHStack(alignment: .leading) {
+                            ForEach(artists, id:\.self) { artist in
+                                //Artist Button
+                                Button {
+                                    // Navigation to artist view
+                                } label: {
+                                    HStack {
+                                        Label(artist.name, systemImage: "person.circle")
+                                            .padding(.vertical, 8)
+                                            .padding(.horizontal, 16)
+                                            .background {
+                                                RoundedRectangle(cornerRadius: 40)
+                                                    .foregroundStyle(.gray)
+                                                    .opacity(0.2)
+                                            }
+                                        Spacer()
+                                    }
+                                    .padding(.bottom, 8)
+                                }
+                            }
+                        }
+                    case .failed(let error):
+                        Text("Error loading artist: \(error.localizedDescription)")
+                    case .unknown:
                         //Artist Button
                         Button {
                             // Navigation to artist view
                         } label: {
                             HStack {
-                                Label(artist.name, systemImage: "person.circle")
+                                Label("Unknown", systemImage: "person.circle")
                                     .padding(.vertical, 8)
                                     .padding(.horizontal, 16)
                                     .background {
@@ -41,32 +66,21 @@ struct ArtistSubview: View {
                             }
                             .padding(.bottom, 8)
                         }
+                        .disabled(true)
+                    default:
+                        EmptyView()
                     }
                 }
-            case .failed(let error):
-                Text("Error loading artist: \(error.localizedDescription)")
-            case .unknown:
-                //Artist Button
-                Button {
-                    // Navigation to artist view
-                } label: {
-                    HStack {
-                        Label("Unknown", systemImage: "person.circle")
-                            .padding(.vertical, 8)
-                            .padding(.horizontal, 16)
-                            .background {
-                                RoundedRectangle(cornerRadius: 40)
-                                    .foregroundStyle(.gray)
-                                    .opacity(0.2)
-                            }
-                        Spacer()
-                    }
-                    .padding(.bottom, 8)
+                
+                //Insertion date
+                HStack {
+                    Image(systemName: "calendar")
+                    Text(date)
                 }
-                .disabled(true)
-            default:
-                EmptyView()
+                .font(.footnote)
+                .foregroundStyle(.secondary)
             }
+            Spacer()
             
             // Address
             Text(address)
@@ -90,14 +104,6 @@ struct ArtistSubview: View {
             }
         }
         .animation(.easeInOut, value: manager.currentState)
-//        .task {
-//            do {
-//                try await manager.load(from: work.artist)
-//                isFetched = true
-//            } catch {
-//                print("error loading work: \(error.localizedDescription)")
-//            }
-//        }
         .padding()
     }
 }

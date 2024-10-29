@@ -11,6 +11,7 @@ struct SuggestionView: View {
     @StateObject var recommendationService = RecommendationService()
     @StateObject var manager = CachedArtistManager()
     @StateObject var imageService = ImageService()
+    @StateObject var viewModel = SuggestionViewModel()
     @State var isCompressed: Bool = true
     @State var isFetched: Bool = false
     
@@ -20,7 +21,9 @@ struct SuggestionView: View {
                 ScrollView {
                     VStack {
                         ImageSubview(work: recommendationService.todayWork, isCompressed: $isCompressed)
-                        ArtistSubview(manager: manager, work: recommendationService.todayWork, address: "Rua Albertina de Jesus Martins, 35", distance: 5000)
+                        
+                        
+                        ArtistSubview(manager: manager, work: recommendationService.todayWork, address: "Rua Albertina de Jesus Martins, 35", distance: 5000, date: viewModel.distanceDate(from: recommendationService.todayWork.creationDate))
                         TagsSubView(work: recommendationService.todayWork)
                         
                         VStack(spacing: 24) {

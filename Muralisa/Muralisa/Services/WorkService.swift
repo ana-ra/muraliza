@@ -92,6 +92,7 @@ class WorkService {
         let title = record["Title"] as? String ?? "Unknown Title"
         let description = record["Description"] as? String ?? "No Description"
         let tag = record["Tag"] as? [String] ?? ["No tags"]
+        let creationDate = record.creationDate ?? Date()
         
         // Handle image loading asynchronously
         var image: UIImage? = nil
@@ -108,6 +109,8 @@ class WorkService {
 
         // Fetch artist record, if it exists
         let artistReference = record["Artist"] as? [CKRecord.Reference]
+        print("data de criação da função \(creationDate)")
+        print("data de agora \(Date())")
 
         return Work(
             id: id,
@@ -116,7 +119,8 @@ class WorkService {
             image: image ?? UIImage(systemName: "photo.badge.exclamationmark")!,
             location: location,
             tag: tag,
-            artist: artistReference
+            artist: artistReference,
+            creationDate: creationDate
         )
     }
 }
