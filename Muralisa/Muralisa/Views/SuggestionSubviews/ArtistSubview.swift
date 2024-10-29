@@ -62,7 +62,6 @@ struct ArtistSubview: View {
                                             .foregroundStyle(.gray)
                                             .opacity(0.2)
                                     }
-                                Spacer()
                             }
                             .padding(.bottom, 8)
                         }
@@ -71,6 +70,7 @@ struct ArtistSubview: View {
                         EmptyView()
                     }
                 }
+                Spacer()
                 
                 //Insertion date
                 HStack {

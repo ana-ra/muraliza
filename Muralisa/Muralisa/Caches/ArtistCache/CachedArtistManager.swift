@@ -18,7 +18,7 @@ class CachedArtistManager: ObservableObject {
         self.currentState = .loading
         var artists: [Artist] = []
         
-        if let references {
+        if let references, !references.isEmpty {
             // Checks every reference to see if it's already in the cache
             for reference in references {
                 let recordName = reference.recordID.recordName
@@ -27,7 +27,6 @@ class CachedArtistManager: ObservableObject {
                     #if DEBUG
                     print("Fetching artist: \(recordName) from cache...")
                     #endif
-                    
                 } else {
                     // Get the artist from the record name
                     // Add the work to cache
@@ -44,7 +43,6 @@ class CachedArtistManager: ObservableObject {
                     }
                 }
             }
-            
             self.currentState = .success(artists: artists)
         } else {
             self.currentState = .unknown
