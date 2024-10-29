@@ -15,6 +15,8 @@ struct ArtistSubview: View {
     @State var work: Work
     @State var address: String
     @State var distance: Double // Distance in meters
+    @Binding var showArtistSheet: Bool
+    @Binding var selectedArtist: Artist?
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -26,7 +28,10 @@ struct ArtistSubview: View {
                     ForEach(artists, id:\.self) { artist in
                         //Artist Button
                         Button {
-                            // Navigation to artist view
+                            withAnimation(.easeInOut) {
+                                showArtistSheet = true
+                            }
+                            selectedArtist = artist
                         } label: {
                             HStack {
                                 Label(artist.name, systemImage: "person.circle")
