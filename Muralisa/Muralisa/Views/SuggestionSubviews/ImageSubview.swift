@@ -22,11 +22,12 @@ struct ImageSubview: View {
         VStack(alignment:.leading) {
             ZStack(alignment:.bottomTrailing){
                 
+                
                 Image(uiImage: work.image)
                     .resizable()
                     .aspectRatio(contentMode: isCompressed ? .fill : .fit)
                     .frame(height: isCompressed ? getHeight()/2.5 : nil)
-                    .frame(maxWidth: isCompressed ? nil : .infinity)
+                    .frame(maxWidth: isCompressed ? getWidth() - 32 : .infinity)
                     .cornerRadius(25)
                 
                 Button {
