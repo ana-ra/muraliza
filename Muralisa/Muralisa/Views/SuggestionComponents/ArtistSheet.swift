@@ -45,21 +45,19 @@ struct ArtistSheet: View {
                     }
                 }
                 
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Redes Sociais")
-                        .font(.body)
-                        .fontWeight(.semibold)
-                    
-                    ForEach(urlLinks, id:\.self) { link in
-                        VStack(alignment: .leading, spacing: 8) {
-                            HStack {
-                                Image(systemName: "globe")
-                                    .foregroundStyle(.black)
-                                Link(destination: link, label: {
-                                    /// Drops the 'https://'
-                                    Text(link.absoluteString.dropFirst(8))
-                                })
-                            }
+                if let instaHandle = artist.instagram, let instaLink = URL(string: "https://\(instaHandle)") {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Redes Sociais")
+                            .font(.body)
+                            .fontWeight(.semibold)
+                        
+                        HStack {
+                            Image(systemName: "globe")
+                                .foregroundStyle(.black)
+                            Link(destination: instaLink, label: {
+                                /// Drops the 'https://'
+                                Text("@\(instaHandle)")
+                            })
                         }
                     }
                 }
@@ -81,5 +79,5 @@ struct ArtistSheet: View {
 }
 
 #Preview {
-    ArtistSheet(artist: Artist(id: "", name: "Test", image: nil, biography: "This is the biography", works: ["394-13", "qjfaspo"]))
+    ArtistSheet(artist: Artist(id: "", name: "Test", image: nil, biography: "This is the biography", works: ["394-13", "qjfaspo"], instagram: "gustavo_sacramento"))
 }
