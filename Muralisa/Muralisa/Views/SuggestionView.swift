@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct SuggestionView: View {
+    @SceneStorage("isZooming") var isZooming: Bool = false
+    
     @StateObject var recommendationService = RecommendationService()
     @StateObject var manager = CachedArtistManager()
     @StateObject var imageService = ImageService()
@@ -21,8 +23,8 @@ struct SuggestionView: View {
                 ScrollView {
                     VStack {
                         ImageSubview(work: recommendationService.todayWork, isCompressed: $isCompressed)
-                        
-                        
+                            .zIndex(isZooming ? 1000 : 0)
+                        DescriptionSubview(work: recommendationService.todayWork)
                         ArtistSubview(manager: manager, work: recommendationService.todayWork, address: "Rua Albertina de Jesus Martins, 35", distance: 5000, date: viewModel.distanceDate(from: recommendationService.todayWork.creationDate))
                         TagsSubView(work: recommendationService.todayWork)
                         
@@ -35,6 +37,7 @@ struct SuggestionView: View {
                     .animation(.easeInOut, value: isCompressed)
                 }
                 .navigationTitle("Sugestão")
+                .toolbarBackgroundVisibility(isZooming ? .visible : .automatic, for: .navigationBar)
             } else {
                 // TODO: Design Empty state view or fetching message
                 Text("Fetching your daily works")

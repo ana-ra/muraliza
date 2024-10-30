@@ -10,6 +10,9 @@ import CoreLocation
 import WrappingHStack
 
 struct ArtistSubview: View {
+    
+    @SceneStorage("isZooming") var isZooming: Bool = false
+    
     @StateObject var manager: CachedArtistManager
     @State var isFetched: Bool = false
     @State var work: Work
@@ -45,6 +48,7 @@ struct ArtistSubview: View {
                                 }
                             }
                         }
+                        
                     case .failed(let error):
                         Text("Error loading artist: \(error.localizedDescription)")
                     case .unknown:
