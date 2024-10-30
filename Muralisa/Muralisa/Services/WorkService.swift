@@ -4,6 +4,38 @@ import CloudKit
 class WorkService {
     var ckService = CloudKitService()
     var artistService = ArtistService()
+    let variables = Variables()
+    
+    func fetchWorksInTheRadius(currentLocation: CLLocation, onWorkConverted: @escaping (Work) -> Void) async throws -> [Work] {
+        
+        let records = try await ckService.fetchRecordsByDistance(location: currentLocation, distanceInMeters: variables.distanceToCloseArtworks)
+        var works: [Work] = []
+        
+        await withTaskGroup(of: Work?.self) { group in
+            for record in records {
+                group.addTask {
+                    do {
+                        let work = try await self.convertRecordToWork(record)
+                        DispatchQueue.main.async {
+                            onWorkConverted(work)
+                        }
+                        return work
+                    } catch {
+                        print("Error converting record \(record.recordID.recordName): \(error)")
+                        return nil
+                    }
+                }
+            }
+            
+            for await work in group {
+                if let work = work {
+                    works.append(work)
+                }
+            }
+        }
+        return works
+        
+    }
     
     func fetchWorks(onWorkConverted: @escaping (Work) -> Void) async throws -> [Work] {
         let records = try await ckService.fetchRecordsByType(Work.recordType)
@@ -33,7 +65,7 @@ class WorkService {
         }
         return works
         
-//        return try await convertRecordsToWorks(records)
+        //        return try await convertRecordsToWorks(records)
     }
     
     // TODO: See if this function is really necessary, and if so, see if this is the best place for it
@@ -66,27 +98,10 @@ class WorkService {
         await withTaskGroup(of: Work?.self) { group in
             var works: [Work] = []
             
-            for record in records {
-                group.addTask {
-                    do {
-                        return try await self.convertRecordToWork(record)
-                    } catch {
-                        print("Error converting record \(record.recordID.recordName): \(error)")
-                        return nil
-                    }
-                }
-            }
-            
-            for await work in group {
-                if let work = work {
-                    works.append(work)
-                }
-            }
-            
             return works
         }
     }
-
+    
     func convertRecordToWork(_ record: CKRecord) async throws -> Work {
         let id = String(record.recordID.recordName)
         let title = record["Title"] as? String ?? "Unknown Title"
@@ -106,12 +121,12 @@ class WorkService {
         }
         
         let location = record["Location"] as? CLLocation ?? CLLocation(latitude: 0, longitude: 0)
-
+        
         // Fetch artist record, if it exists
         let artistReference = record["Artist"] as? [CKRecord.Reference]
         print("data de criação da função \(creationDate)")
         print("data de agora \(Date())")
-
+        
         return Work(
             id: id,
             title: title,

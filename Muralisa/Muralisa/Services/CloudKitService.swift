@@ -28,6 +28,15 @@ class CloudKitService {
         let results = try await databasePublic.records(matching: query)
         return results.matchResults.compactMap { try? $0.1.get() }
     }
+
+    func fetchRecordsByDistance(location: CLLocation, distanceInMeters: Double) async throws -> [CKRecord] {
+        let locationFieldName = "location"
+        let region = CLCircularRegion(center: location.coordinate, radius: distanceInMeters, identifier: "region")
+        let predicate = NSPredicate(format: "distanceToLocation:fromLocation:(%K, %@) < %f", locationFieldName, location, distanceInMeters)
+        let query = CKQuery(recordType: "Artwork", predicate: predicate)
+        let results = try await databasePublic.records(matching: query)
+        return results.matchResults.compactMap { try? $0.1.get() }
+    }
     
     func fetchRecordFromReference(from reference: CKRecord.Reference?) async throws -> CKRecord {
         guard let recordID = reference?.recordID else {
