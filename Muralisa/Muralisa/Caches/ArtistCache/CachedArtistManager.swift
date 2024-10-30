@@ -27,7 +27,6 @@ class CachedArtistManager: ObservableObject {
                     #if DEBUG
                     print("Fetching artist: \(recordName) from cache...")
                     #endif
-                    
                 } else {
                     // Get the artist from the record name
                     // Add the work to cache

@@ -103,7 +103,7 @@ class WorkService {
             
             image = UIImage(data: imageData)
         }
-        
+//        
         let location = record["Location"] as? CLLocation ?? CLLocation(latitude: 0, longitude: 0)
 
         // Fetch artist record, if it exists

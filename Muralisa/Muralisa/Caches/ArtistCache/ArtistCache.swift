@@ -8,7 +8,8 @@ import SwiftUI
 
 class ArtistCache {
     static let shared = ArtistCache()
-    private let cache = NSCache<NSString, Artist>()
+    let cache = NSCache<NSString, Artist>()
+    private var itemCount = 0
     private init() {}
     
     func getArtist(forKey key: String) -> Artist? {
@@ -19,5 +20,10 @@ class ArtistCache {
     func setArtist(_ artist: Artist, forKey key: String) {
         // Might add animation
         cache.setObject(artist, forKey: key as NSString)
+        itemCount += 1
+    }
+    
+    func count() -> Int {
+        itemCount
     }
 }

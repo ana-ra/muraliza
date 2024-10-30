@@ -31,6 +31,13 @@ class CachedWorkManager: ObservableObject {
             let work = try await workService.fetchWorkFromRecordName(from: recordName)
             self.currentState = .success(work: work)
             cache.setWork(work, forKey: recordName)
+            print("Memory size in bytes of image \(recordName): \(work.image.memorySizeInBytes)")
+            if let jpegData = work.image.jpegData(compressionQuality: 1.0) {
+                print("JPEG disk size in bytes: \(jpegData.count)")
+            }
+            if let pngData = work.image.pngData() {
+                print("PNG disk size in bytes: \(pngData.count)")
+            }
             #if DEBUG
             print("Caching work: \(recordName)...")
             #endif
@@ -61,5 +68,13 @@ extension CachedWorkManager.CurrentState: Equatable {
         default:
             return false
         }
+    }
+}
+
+extension UIImage {
+    var memorySizeInBytes: Int {
+        guard let cgImage = self.cgImage else { return 0 }
+        let bytesPerPixel = 4 // Assuming RGBA, which is common
+        return cgImage.width * cgImage.height * bytesPerPixel
     }
 }
