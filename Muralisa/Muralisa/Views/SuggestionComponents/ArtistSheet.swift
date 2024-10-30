@@ -45,7 +45,7 @@ struct ArtistSheet: View {
                     }
                 }
                 
-                if let instaHandle = artist.instagram, let instaLink = URL(string: "https://\(instaHandle)") {
+                if let instaHandle = artist.instagram, let instaLink = URL(string: "https://www.instagram.com/\(instaHandle)") {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Redes Sociais")
                             .font(.body)
@@ -55,7 +55,6 @@ struct ArtistSheet: View {
                             Image(systemName: "globe")
                                 .foregroundStyle(.black)
                             Link(destination: instaLink, label: {
-                                /// Drops the 'https://'
                                 Text("@\(instaHandle)")
                             })
                         }
