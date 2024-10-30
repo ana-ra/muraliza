@@ -8,7 +8,7 @@
 import SwiftUI
 
 let socialLinks: [String] = ["www.google.com", "linkedin.com/in/gustavo-santos21"]
-let urlLinks: [URL] = socialLinks.compactMap { URL(string: "https://\($0)")}
+let urlLinks: [URL] = socialLinks.compactMap { URL(string: "https://www.instagram.com/\($0)")}
 
 struct ArtistSheet: View {
     @Environment(\.dismiss) var dismiss
