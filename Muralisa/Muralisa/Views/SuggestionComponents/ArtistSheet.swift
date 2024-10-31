@@ -16,7 +16,7 @@ struct ArtistSheet: View {
     
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading, spacing: 24) {
+            VStack(alignment: .leading) {
                 HStack {
                     Text(artist.name)
                         .font(.title3)
@@ -28,28 +28,32 @@ struct ArtistSheet: View {
                         Image(systemName: "xmark.circle.fill")
                             .symbolRenderingMode(.hierarchical)
                             .foregroundStyle(.gray)
+                            .font(.title)
 //                            .scaleEffect(1.5)
                     }
-                    
                 }
+                .padding(.bottom, 16)
                 
                 if let biography = artist.biography, biography != "" {
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading) {
                         Text("Sobre")
                             .font(.body)
                             .fontWeight(.semibold)
+                            .padding(.bottom, 16)
                         
                         Text(biography)
                             .font(.body)
                             .fontWeight(.regular)
+                            .padding(.bottom, 40)
                     }
                 }
                 
                 if let instaHandle = artist.instagram, let instaLink = URL(string: "https://www.instagram.com/\(instaHandle)") {
-                    VStack(alignment: .leading, spacing: 8) {
+                    VStack(alignment: .leading) {
                         Text("Redes Sociais")
                             .font(.body)
                             .fontWeight(.semibold)
+                            .padding(.bottom, 16)
                         
                         HStack {
                             Image(systemName: "globe")
@@ -59,6 +63,7 @@ struct ArtistSheet: View {
                             })
                         }
                     }
+                    .padding(.bottom, 16)
                 }
                 
                 Spacer()
