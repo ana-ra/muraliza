@@ -4,7 +4,8 @@
 //
 //  Created by Guilherme Ferreira Lenzolari on 30/10/24.
 //
+import Foundation
 
 struct Variables {
-    let distanceToCloseArtworks: Double = 1000 //meters
+    let distanceToCloseArtworks: CGFloat = 10 //meters
 }

@@ -28,8 +28,8 @@ struct SuggestionView: View {
                         
                         VStack(spacing: 24) {
 //                            ForYouSubview(works: recommendationService.works)
-//                            NextToYouSubview(works: recommendationService.works)
-                            GridSubview(workRecords: recommendationService.works)
+                            NextToYouSubview(works: recommendationService.nearbyWorks)
+//                            GridSubview(workRecords: recommendationService.works)
                         }
                     }
                     .animation(.easeInOut, value: isCompressed)
@@ -45,6 +45,7 @@ struct SuggestionView: View {
                 do {
                     try await recommendationService.setupRecommendation2()
                     try await manager.load(from: recommendationService.todayWork.artist)
+                    try await recommendationService.setupRecommendationByDistance()
                     withAnimation {
                         isFetched.toggle()
                         isFetched.toggle()
@@ -59,6 +60,7 @@ struct SuggestionView: View {
             do {
                 try await recommendationService.setupRecommendation2()
                 try await manager.load(from: recommendationService.todayWork.artist)
+                try await recommendationService.setupRecommendationByDistance()
                 withAnimation {
                     isFetched = true
                 }

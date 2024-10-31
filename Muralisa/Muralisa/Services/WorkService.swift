@@ -4,69 +4,7 @@ import CloudKit
 class WorkService {
     var ckService = CloudKitService()
     var artistService = ArtistService()
-    let variables = Variables()
     
-    func fetchWorksInTheRadius(currentLocation: CLLocation, onWorkConverted: @escaping (Work) -> Void) async throws -> [Work] {
-        
-        let records = try await ckService.fetchRecordsByDistance(location: currentLocation, distanceInMeters: variables.distanceToCloseArtworks)
-        var works: [Work] = []
-        
-        await withTaskGroup(of: Work?.self) { group in
-            for record in records {
-                group.addTask {
-                    do {
-                        let work = try await self.convertRecordToWork(record)
-                        DispatchQueue.main.async {
-                            onWorkConverted(work)
-                        }
-                        return work
-                    } catch {
-                        print("Error converting record \(record.recordID.recordName): \(error)")
-                        return nil
-                    }
-                }
-            }
-            
-            for await work in group {
-                if let work = work {
-                    works.append(work)
-                }
-            }
-        }
-        return works
-        
-    }
-    
-    func fetchWorks(onWorkConverted: @escaping (Work) -> Void) async throws -> [Work] {
-        let records = try await ckService.fetchRecordsByType(Work.recordType)
-        var works: [Work] = []
-        
-        await withTaskGroup(of: Work?.self) { group in
-            for record in records {
-                group.addTask {
-                    do {
-                        let work = try await self.convertRecordToWork(record)
-                        DispatchQueue.main.async {
-                            onWorkConverted(work)
-                        }
-                        return work
-                    } catch {
-                        print("Error converting record \(record.recordID.recordName): \(error)")
-                        return nil
-                    }
-                }
-            }
-            
-            for await work in group {
-                if let work = work {
-                    works.append(work)
-                }
-            }
-        }
-        return works
-        
-        //        return try await convertRecordsToWorks(records)
-    }
     
     // TODO: See if this function is really necessary, and if so, see if this is the best place for it
     // Maybe make it async throw, and remove Task block
@@ -95,11 +33,12 @@ class WorkService {
     }
     
     func convertRecordsToWorks(_ records: [CKRecord]) async throws -> [Work] {
-        await withTaskGroup(of: Work?.self) { group in
-            var works: [Work] = []
-            
-            return works
+        var works: [Work] = []
+        for record in records {
+            let work = try await self.convertRecordToWork(record)
+            works.append(work)
         }
+        return works
     }
     
     func convertRecordToWork(_ record: CKRecord) async throws -> Work {
