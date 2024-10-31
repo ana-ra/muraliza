@@ -26,7 +26,8 @@ class RecommendationService: ObservableObject {
                               image: UIImage(systemName: "photo.badge.exclamationmark")!,
                               location: CLLocation(latitude: 0, longitude: 0),
                               tag: [""],
-                              artist: nil)
+                              artist: nil,
+                              creationDate: Date())
     }
     
     func setupRecommendation2() async throws {
