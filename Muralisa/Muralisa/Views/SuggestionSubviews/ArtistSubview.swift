@@ -10,6 +10,9 @@ import CoreLocation
 import WrappingHStack
 
 struct ArtistSubview: View {
+    
+    @SceneStorage("isZooming") var isZooming: Bool = false
+    
     @StateObject var manager: CachedArtistManager
     @State var isFetched: Bool = false
     @State var work: Work
@@ -19,7 +22,7 @@ struct ArtistSubview: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            HStack {
+            VStack {
                 VStack {
                     switch manager.currentState {
                     case .loading:
@@ -40,12 +43,12 @@ struct ArtistSubview: View {
                                                     .foregroundStyle(.gray)
                                                     .opacity(0.2)
                                             }
-                                        Spacer()
                                     }
                                     .padding(.bottom, 8)
                                 }
                             }
                         }
+                        
                     case .failed(let error):
                         Text("Error loading artist: \(error.localizedDescription)")
                     case .unknown:
@@ -62,6 +65,7 @@ struct ArtistSubview: View {
                                             .foregroundStyle(.gray)
                                             .opacity(0.2)
                                     }
+                                Spacer()
                             }
                             .padding(.bottom, 8)
                         }
@@ -70,13 +74,14 @@ struct ArtistSubview: View {
                         EmptyView()
                     }
                 }
-                Spacer()
                 
                 //Insertion date
                 HStack {
                     Image(systemName: "calendar")
                     Text(date)
+                    Spacer()
                 }
+                .padding(.vertical, 8)
                 .font(.footnote)
                 .foregroundStyle(.secondary)
             }
