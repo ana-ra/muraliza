@@ -16,6 +16,8 @@ struct SuggestionView: View {
     @StateObject var viewModel = SuggestionViewModel()
     @State var isCompressed: Bool = true
     @State var isFetched: Bool = false
+    @State var showArtistSheet: Bool = false
+    @State var selectedArtist: Artist?
     
     var body: some View {
         NavigationStack {
@@ -25,7 +27,7 @@ struct SuggestionView: View {
                         ImageSubview(work: recommendationService.todayWork, isCompressed: $isCompressed)
                             .zIndex(isZooming ? 1000 : 0)
                         DescriptionSubview(work: recommendationService.todayWork)
-                        ArtistSubview(manager: manager, work: recommendationService.todayWork, address: "Rua Albertina de Jesus Martins, 35", distance: 5000, date: viewModel.distanceDate(from: recommendationService.todayWork.creationDate))
+                        ArtistSubview(manager: manager, work: recommendationService.todayWork, address: "Rua Albertina de Jesus Martins, 35", distance: 5000, date: viewModel.distanceDate(from: recommendationService.todayWork.creationDate), showArtistSheet: $showArtistSheet, selectedArtist: $selectedArtist)
                         TagsSubView(work: recommendationService.todayWork)
                         
                         VStack(spacing: 24) {
@@ -41,6 +43,12 @@ struct SuggestionView: View {
             } else {
                 // TODO: Design Empty state view or fetching message
                 Text("Fetching your daily works")
+            }
+        }
+        .sheet(isPresented: $showArtistSheet) {
+            if let selectedArtist = selectedArtist {
+                ArtistSheet(artist: selectedArtist)
+                    .presentationDetents([.medium, .large])
             }
         }
         .refreshable {
@@ -72,6 +80,6 @@ struct SuggestionView: View {
     }
 }
 
-#Preview {
-    SuggestionView()
-}
+//#Preview {
+//    SuggestionView()
+//}
