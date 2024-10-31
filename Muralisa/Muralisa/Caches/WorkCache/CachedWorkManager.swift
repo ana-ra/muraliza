@@ -31,13 +31,6 @@ class CachedWorkManager: ObservableObject {
             let work = try await workService.fetchWorkFromRecordName(from: recordName)
             self.currentState = .success(work: work)
             cache.setWork(work, forKey: recordName)
-            print("Memory size in bytes of image \(recordName): \(work.image.memorySizeInBytes)")
-            if let jpegData = work.image.jpegData(compressionQuality: 1.0) {
-                print("JPEG disk size in bytes: \(jpegData.count)")
-            }
-            if let pngData = work.image.pngData() {
-                print("PNG disk size in bytes: \(pngData.count)")
-            }
             #if DEBUG
             print("Caching work: \(recordName)...")
             #endif

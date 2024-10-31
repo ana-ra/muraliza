@@ -12,9 +12,7 @@ class WorkCache {
     private let cache = NSCache<NSString, Work>()
     private var itemCount = 0
     
-    private init() {
-        cache.countLimit = 100
-    }
+    private init() {}
     
     func getWork(forKey key: String) -> Work? {
         cache.object(forKey: NSString(string: key))
