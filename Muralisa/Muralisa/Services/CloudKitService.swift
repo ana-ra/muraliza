@@ -40,4 +40,13 @@ class CloudKitService {
         let recordID = CKRecord.ID(recordName: recordName)
         return try await databasePublic.record(for: recordID)
     }
+    
+    func saveRecord(_ record: CKRecord) {
+        databasePublic.save(record) { [weak self] returnedRecord, returnedError in
+            print("Record: \(returnedRecord)")
+            if let returnedError {
+                print("Error: \(returnedError)")
+            }
+        }
+    }
 }
