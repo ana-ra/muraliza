@@ -22,13 +22,13 @@ class CloudKitService {
         self.databasePublic = container.publicCloudDatabase
     }
     
-    func fetchRecordsByType(_ recordType: String) async throws -> [CKRecord] {
-        let predicate = NSPredicate(value: true)
+    
+    func fetchRecordsByType(_ recordType: String, predicate: NSPredicate = NSPredicate(value: true)) async throws -> [CKRecord] {
         let query = CKQuery(recordType: recordType, predicate: predicate)
         let results = try await databasePublic.records(matching: query)
         return results.matchResults.compactMap { try? $0.1.get() }
     }
-    
+
     func fetchRecordFromReference(from reference: CKRecord.Reference?) async throws -> CKRecord {
         guard let recordID = reference?.recordID else {
             throw FetchError.invalidReference
