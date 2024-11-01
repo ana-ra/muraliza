@@ -14,9 +14,22 @@
 		7AC75B382CBD4EF20002F7C6 /* Muralisa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Muralisa.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		20DA1FCA2CD51ABD00DF2AF4 /* Exceptions for "Muralisa" folder in "Muralisa" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 7AC75B372CBD4EF20002F7C6 /* Muralisa */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		7AC75B3A2CBD4EF20002F7C6 /* Muralisa */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				20DA1FCA2CD51ABD00DF2AF4 /* Exceptions for "Muralisa" folder in "Muralisa" target */,
+			);
 			path = Muralisa;
 			sourceTree = "<group>";
 		};
