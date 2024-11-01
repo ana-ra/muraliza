@@ -28,16 +28,18 @@ class RecommendationService: ObservableObject {
                               location: CLLocation(latitude: 0, longitude: 0),
                               tag: [""],
                               artist: nil,
-                              creationDate: Date())
+                              creationDate: Date(),
+                              status: 1)
         
         self.nearbyWorks = [Work(id: UUID().uuidString,
-                                 title: "",
-                                 workDescription: "",
-                                 image: UIImage(systemName: "photo.badge.exclamationmark")!,
-                                 location: CLLocation(latitude: 0, longitude: 0),
-                                 tag: [""],
-                                 artist: nil,
-                                 creationDate: Date())]
+                              title: "",
+                              workDescription: "",
+                              image: UIImage(systemName: "photo.badge.exclamationmark")!,
+                              location: CLLocation(latitude: 0, longitude: 0),
+                              tag: [""],
+                              artist: nil,
+                              creationDate: Date(),
+                              status: 1)]
     }
     
     func setupRecommendationByDistance() async throws {

@@ -63,3 +63,11 @@ extension CachedWorkManager.CurrentState: Equatable {
         }
     }
 }
+
+extension UIImage {
+    var memorySizeInBytes: Int {
+        guard let cgImage = self.cgImage else { return 0 }
+        let bytesPerPixel = 4 // Assuming RGBA, which is common
+        return cgImage.width * cgImage.height * bytesPerPixel
+    }
+}

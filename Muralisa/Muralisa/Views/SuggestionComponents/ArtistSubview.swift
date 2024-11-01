@@ -10,16 +10,21 @@ import CoreLocation
 import WrappingHStack
 
 struct ArtistSubview: View {
+    
+    @SceneStorage("isZooming") var isZooming: Bool = false
+    
     @StateObject var manager: CachedArtistManager
     @State var isFetched: Bool = false
     @State var work: Work
     @State var address: String
     @State var distance: Double // Distance in meters
     @State var date: String
-
+    @Binding var showArtistSheet: Bool
+    @Binding var selectedArtist: Artist?
+    
     var body: some View {
         VStack(alignment: .leading) {
-            HStack {
+            VStack {
                 VStack {
                     switch manager.currentState {
                     case .loading:
@@ -29,7 +34,10 @@ struct ArtistSubview: View {
                             ForEach(artists, id:\.self) { artist in
                                 //Artist Button
                                 Button {
-                                    // Navigation to artist view
+                                    withAnimation(.easeInOut) {
+                                        showArtistSheet = true
+                                    }
+                                    selectedArtist = artist
                                 } label: {
                                     HStack {
                                         Label(artist.name, systemImage: "person.circle")
@@ -40,18 +48,18 @@ struct ArtistSubview: View {
                                                     .foregroundStyle(.gray)
                                                     .opacity(0.2)
                                             }
-                                        Spacer()
                                     }
                                     .padding(.bottom, 8)
                                 }
                             }
                         }
+                        
                     case .failed(let error):
                         Text("Error loading artist: \(error.localizedDescription)")
                     case .unknown:
                         //Artist Button
                         Button {
-                            // Navigation to artist view
+                            
                         } label: {
                             HStack {
                                 Label("Unknown", systemImage: "person.circle")
@@ -62,6 +70,7 @@ struct ArtistSubview: View {
                                             .foregroundStyle(.gray)
                                             .opacity(0.2)
                                     }
+                                Spacer()
                             }
                             .padding(.bottom, 8)
                         }
@@ -70,13 +79,14 @@ struct ArtistSubview: View {
                         EmptyView()
                     }
                 }
-                Spacer()
                 
                 //Insertion date
                 HStack {
                     Image(systemName: "calendar")
                     Text(date)
+                    Spacer()
                 }
+                .padding(.vertical, 8)
                 .font(.footnote)
                 .foregroundStyle(.secondary)
             }
