@@ -10,9 +10,9 @@ import SwiftUI
 class WorkCache {
     static let shared = WorkCache()
     private let cache = NSCache<NSString, Work>()
-    private init() {
-        cache.countLimit = 100
-    }
+    private var itemCount = 0
+    
+    private init() {}
     
     func getWork(forKey key: String) -> Work? {
         cache.object(forKey: NSString(string: key))
@@ -22,5 +22,10 @@ class WorkCache {
     func setWork(_ work: Work, forKey key: String) {
         // Might add animation
         cache.setObject(work, forKey: key as NSString)
+        itemCount += 1
+    }
+    
+    func count() -> Int {
+        itemCount
     }
 }
