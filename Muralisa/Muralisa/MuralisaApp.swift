@@ -11,10 +11,18 @@ import SwiftUI
 struct MuralisaApp: App {
     var body: some Scene {
         WindowGroup {
-            SuggestionView()
-                .onDisappear {
-                    deleteFilesInAssets()
+            TabView {
+                Tab("Sugestão", systemImage: "wand.and.rays.inverse") {
+                    SuggestionView()
+                        .onDisappear {
+                            deleteFilesInAssets()
+                        }
                 }
+                
+                Tab("Curadoria", systemImage: "rectangle.and.text.magnifyingglass") {
+                    CurationView()
+                }
+            }
         }
     }
 }
