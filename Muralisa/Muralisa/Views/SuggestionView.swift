@@ -43,7 +43,7 @@ struct SuggestionView: View {
         .refreshable {
             Task {
                 do {
-                    try await recommendationService.setupDailyRecommendation()
+                    try await recommendationService.setupRecommendation()
                     try await manager.load(from: recommendationService.todayWork.artist)
                     withAnimation {
                         isFetched.toggle()
@@ -57,7 +57,7 @@ struct SuggestionView: View {
         }
         .task {
             do {
-                try await recommendationService.setupDailyRecommendation()
+                try await recommendationService.setupRecommendation()
                 try await manager.load(from: recommendationService.todayWork.artist)
                 withAnimation {
                     isFetched = true

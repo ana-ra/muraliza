@@ -71,6 +71,7 @@ class RecommendationService: ObservableObject {
         print("Today's work ID: \(todayWorkID)")
     }
     
+    // Returns true if there's a 1 day or more difference between last date exhibited
     private func compareDates(_ date1: Date, _ date2: Date) -> Bool {
         let calendar = Calendar.current
         let startOfDay1 = calendar.startOfDay(for: date1)
@@ -103,5 +104,43 @@ class RecommendationService: ObservableObject {
         var worksExhibited = defaults.value(forKey: "worksExhibited") as? [String] ?? []
         worksExhibited.append(id)
         defaults.set(worksExhibited, forKey: "worksExhibited")
+    }
+    
+    func setupRecommendation() async throws {
+        let lastDate = defaults.value(forKey: "lastDateExhibited") as? Date
+        let worksExhibited = defaults.value(forKey: "worksExhibited") as? [String] ?? []
+        
+        if let lastDate = lastDate, let lastWork = worksExhibited.last, compareDates(lastDate, today) {
+            todayWork = try await workService.fetchWorkFromRecordName(from: lastWork)
+            return
+        }
+        
+        // Usage in an async context:
+        if let fetchedRecord = await fetchSingleNonExhibitedWork(excluding: worksExhibited) {
+            print("Funcionou, fetched record: \(fetchedRecord)")
+            todayWork = try await workService.fetchWorkFromRecordName(from: fetchedRecord.recordID.recordName)
+        } else {
+            print("No record found or error fetching")
+        }
+    }
+    
+    private func fetchSingleNonExhibitedWork(excluding excludedWorks: [String]) async -> CKRecord? {
+        await withCheckedContinuation { continuation in
+            service.fetchSingleWorkExcluding(recordNamesToExclude: excludedWorks) { [weak self] record in
+                guard let self = self, let record = record else {
+                    print("No record found or error fetching")
+                    continuation.resume(returning: nil)
+                    return
+                }
+
+                // Update the exhibited works and last date
+                var worksExhibited = excludedWorks
+                worksExhibited.append(record.recordID.recordName)
+                self.defaults.set(worksExhibited, forKey: "worksExhibited")
+                self.defaults.set(self.today, forKey: "lastDateExhibited")
+
+                continuation.resume(returning: record)
+            }
+        }
     }
 }
