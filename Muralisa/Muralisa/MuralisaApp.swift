@@ -14,14 +14,14 @@ struct MuralisaApp: App {
             TabView {
                 Tab("Sugestão", systemImage: "wand.and.rays.inverse") {
                     SuggestionView()
-                        .onDisappear {
-                            deleteFilesInAssets()
-                        }
                 }
                 
                 Tab("Curadoria", systemImage: "rectangle.and.text.magnifyingglass") {
                     CurationView()
                 }
+            }
+            .onDisappear {
+                deleteFilesInAssets()
             }
         }
     }
