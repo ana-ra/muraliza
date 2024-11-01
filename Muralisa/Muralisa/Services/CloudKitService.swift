@@ -25,7 +25,7 @@ class CloudKitService {
     
     func fetchRecordsByType(_ recordType: String) async throws -> [CKRecord] {
         let predicate = NSPredicate(value: true)
-        let query = CKQuer(recordType: recordType, predicate: predicate)
+        let query = CKQuery(recordType: recordType, predicate: predicate)
         let results = try await databasePublic.records(matching: query)
         return results.matchResults.compactMap { try? $0.1.get() }
     }
