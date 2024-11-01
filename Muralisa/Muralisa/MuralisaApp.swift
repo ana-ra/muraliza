@@ -11,7 +11,15 @@ import SwiftUI
 struct MuralisaApp: App {
     var body: some Scene {
         WindowGroup {
-            SuggestionView()
+            TabView {
+                Tab("Sugestão", systemImage: "wand.and.rays.inverse") {
+                    SuggestionView()
+                }
+                
+                Tab("Curadoria", systemImage: "rectangle.and.text.magnifyingglass") {
+                    CurationView()
+                }
+            }
         }
     }
 }
