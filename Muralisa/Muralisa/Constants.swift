@@ -6,6 +6,6 @@
 //
 import Foundation
 
-struct Variables {
-    let distanceToCloseArtworks: CGFloat = 10 //meters
+struct Constants {
+    let distanceToCloseArtworks: CGFloat = 1000000 //km
 }

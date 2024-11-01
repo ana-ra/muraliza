@@ -25,18 +25,16 @@ class CloudKitService {
     
     func fetchRecordsByType(_ recordType: String) async throws -> [CKRecord] {
         let predicate = NSPredicate(value: true)
-        let query = CKQuery(recordType: recordType, predicate: predicate)
+        let query = CKQuer(recordType: recordType, predicate: predicate)
         let results = try await databasePublic.records(matching: query)
         return results.matchResults.compactMap { try? $0.1.get() }
     }
-
-    func fetchRecordsByDistance(distanceInMeters: CGFloat) async throws -> [CKRecord] {
-        let location = CLLocation(latitude: -22.824721, longitude: 47.080082)
-//        let predicate = NSPredicate(format: "distanceToLocation:fromLocation:(Location, %@) < %f", location, distanceInMeters)
+    
+    func fetchRecordsByDistance(distanceInKilometers: CGFloat) async throws -> [CKRecord] {
+        let location = CLLocation(latitude: -22.82492000, longitude: -47.08052000)
         
-        let predicate = NSPredicate(format: "distanceToLocation:fromLocation:(Location, %@) < %f", location, Variables().distanceToCloseArtworks)
-        
-        let query = CKQuery(recordType: "Artwork", predicate: predicate)
+        let predicate = NSPredicate(format: "distanceToLocation:fromLocation:(Location, %@) < %f", location, Constants().distanceToCloseArtworks)
+        let query = CKQuery(recordType: Work.recordType, predicate: predicate)
         let results = try await databasePublic.records(matching: query)
         
         //TODO: limitar a quantidade de obras requisitas pra 6

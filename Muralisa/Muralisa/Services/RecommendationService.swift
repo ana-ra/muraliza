@@ -41,7 +41,7 @@ class RecommendationService: ObservableObject {
     }
     
     func setupRecommendationByDistance() async throws {
-        let worksByDistanceRecords = try await service.fetchRecordsByDistance( distanceInMeters: Variables().distanceToCloseArtworks)
+        let worksByDistanceRecords = try await service.fetchRecordsByDistance( distanceInKilometers: Constants().distanceToCloseArtworks)
         nearbyWorks = try await workService.convertRecordsToWorks(worksByDistanceRecords)
     }
     
