@@ -9,6 +9,11 @@ import SwiftUI
 
 @main
 struct MuralisaApp: App {
+    init(){
+      // override alerts tintColor bug
+        UIView.appearance(whenContainedInInstancesOf: [UIAlertController.self]).tintColor = UIColor(.accent)
+    }
+    
     var body: some Scene {
         WindowGroup {
             TabView {
