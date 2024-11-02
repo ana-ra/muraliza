@@ -12,7 +12,6 @@ struct SuggestionView: View {
     @StateObject var locationManager = LocationManager()
     @StateObject var recommendationService = RecommendationService()
     @StateObject var manager = CachedArtistManager()
-    @StateObject var imageService = ImageService()
     @State var isCompressed: Bool = true
     @State var isFetched: Bool = false
     @State var showArtistSheet: Bool = false
