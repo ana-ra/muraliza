@@ -8,13 +8,17 @@
 import SwiftUI
 
 struct CustomBorderedProminentButtonStyle: ButtonStyle {
-    var color: Color
+    let color: Color
+    let isFullScreen: Bool
     
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .padding(16)
+            .frame(maxWidth: isFullScreen ? .infinity : nil)
+            .padding(.vertical, 16)
+            .padding(.horizontal, isFullScreen ? 0 : 16)
             .foregroundColor(.white)
             .background(color)
             .cornerRadius(10)
+            .scaleEffect(configuration.isPressed ? 0.95 : 1)
     }
 }

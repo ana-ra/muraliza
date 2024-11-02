@@ -125,7 +125,7 @@ struct WorkDetailView: View {
                             showPopup = true
                         }
                     }
-                    .buttonStyle(CustomBorderedProminentButtonStyle(color: .green))
+                    .buttonStyle(CustomBorderedProminentButtonStyle(color: .green, isFullScreen: false))
                     Spacer()
                     
                     Button("Reprovar") {
@@ -135,7 +135,7 @@ struct WorkDetailView: View {
                             showPopup = true
                         }
                     }
-                    .buttonStyle(CustomBorderedProminentButtonStyle(color: .red))
+                    .buttonStyle(CustomBorderedProminentButtonStyle(color: .red, isFullScreen: false))
                     Spacer()
                 }
             }
