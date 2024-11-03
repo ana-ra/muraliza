@@ -18,7 +18,7 @@ struct TagsSubView: View {
             HStack {
                 Text("Tags")
                     .font(.subheadline)
-                
+
                 Spacer()
             }
             

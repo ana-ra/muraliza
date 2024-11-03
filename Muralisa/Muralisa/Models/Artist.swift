@@ -19,14 +19,16 @@ class Artist: NSObject {
     let image: UIImage?
     let biography: String?
     let works: [String]
+    let instagram: String?
     
     // Inicializador
-    init(id: String, name: String, image: UIImage?, biography: String?, works: [String]) {
+    init(id: String, name: String, image: UIImage?, biography: String?, works: [String], instagram: String?) {
         self.id = id
         self.name = name
         self.image = image
         self.biography = biography
         self.works = works
+        self.instagram = instagram
     }
 }
 

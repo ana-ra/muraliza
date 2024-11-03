@@ -30,7 +30,7 @@ struct GridSubview: View {
             ScrollView {
                 LazyVGrid(columns: fixedColumn, spacing: 0) {
                     ForEach(workRecords, id: \.self) { record in
-                        CachedWork(workRecordName: record.recordID.recordName, animation: .easeInOut, transition: .scale.combined(with: .opacity)) { phase in
+                        CachedWorkImage(workRecordName: record.recordID.recordName, animation: .easeInOut, transition: .scale.combined(with: .opacity)) { phase in
                             switch phase {
                             case .empty:
                                 ProgressView()
@@ -49,10 +49,6 @@ struct GridSubview: View {
                                 EmptyView()
                             }
                         }
-//                        Image(uiImage: work.image)
-//                            .resizable()
-//                            .scaledToFit()
-//                            .frame(height: getWidth()/3*1.34])
                     }
                 }
             }
