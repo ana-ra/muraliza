@@ -38,7 +38,7 @@ class WorkService: ObservableObject {
     
     func fetchPendingWorkRecords() async throws {
         let predicate = NSPredicate(format: "Status == 2")
-        let fetchedRecords = try await ckService.fetchRecordsByType(Work.recordType, withPredicate: predicate)
+        let fetchedRecords = try await ckService.fetchRecordsByType(Work.recordType)
         pendingWorkRecords = fetchedRecords
     }
     
