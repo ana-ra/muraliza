@@ -18,7 +18,7 @@ class RecommendationService: ObservableObject {
     
     let today = Date()
     var todayWork: Work
-    var nearbyWorks: [Work]
+    var nearbyWorks: [Work]? = []
     
     init() {
         self.todayWork = Work(id: UUID().uuidString,
@@ -30,21 +30,14 @@ class RecommendationService: ObservableObject {
                               artist: nil,
                               creationDate: Date(),
                               status: 1)
-        
-        self.nearbyWorks = [Work(id: UUID().uuidString,
-                              title: "",
-                              workDescription: "",
-                              image: UIImage(systemName: "photo.badge.exclamationmark")!,
-                              location: CLLocation(latitude: 0, longitude: 0),
-                              tag: [""],
-                              artist: nil,
-                              creationDate: Date(),
-                              status: 1)]
     }
     
-    func setupRecommendationByDistance() async throws {
-        let worksByDistanceRecords = try await service.fetchRecordsByDistance( distanceInKilometers: Constants().distanceToCloseArtworks)
-        nearbyWorks = try await workService.convertRecordsToWorks(worksByDistanceRecords)
+    func setupRecommendationByDistance(userPosition: CLLocation?) async throws {
+        let worksByDistanceRecords = try await service.fetchRecordsByDistance(userPosition: userPosition)
+        
+        if worksByDistanceRecords != nil && !worksByDistanceRecords!.isEmpty {
+            self.nearbyWorks = try await workService.convertRecordsToWorks(worksByDistanceRecords!)
+        }
     }
     
     func setupRecommendation2() async throws {

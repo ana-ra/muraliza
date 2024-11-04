@@ -14,6 +14,8 @@ struct SuggestionView: View {
     @StateObject var manager = CachedArtistManager()
     @StateObject var imageService = ImageService()
     @StateObject var viewModel = SuggestionViewModel()
+    @StateObject var locationManager = LocationManager()
+    
     @State var isCompressed: Bool = true
     @State var isFetched: Bool = false
     @State var showArtistSheet: Bool = false
@@ -32,7 +34,9 @@ struct SuggestionView: View {
                         
                         VStack(spacing: 24) {
 //                            ForYouSubview(works: recommendationService.works)
-                            NextToYouSubview(works: recommendationService.nearbyWorks)
+                            if recommendationService.nearbyWorks != nil && !recommendationService.nearbyWorks!.isEmpty {
+                                NextToYouSubview(works: recommendationService.nearbyWorks!)
+                            }
 //                            GridSubview(workRecords: recommendationService.works)
                         }
                     }
@@ -56,7 +60,7 @@ struct SuggestionView: View {
                 do {
                     try await recommendationService.setupRecommendation2()
                     try await manager.load(from: recommendationService.todayWork.artist)
-                    try await recommendationService.setupRecommendationByDistance()
+                    try await recommendationService.setupRecommendationByDistance(userPosition: locationManager.location)
                     withAnimation {
                         isFetched.toggle()
                         isFetched.toggle()
@@ -71,7 +75,7 @@ struct SuggestionView: View {
             do {
                 try await recommendationService.setupRecommendation2()
                 try await manager.load(from: recommendationService.todayWork.artist)
-                try await recommendationService.setupRecommendationByDistance()
+                try await recommendationService.setupRecommendationByDistance(userPosition: locationManager.location)
                 withAnimation {
                     isFetched = true
                 }

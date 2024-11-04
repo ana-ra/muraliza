@@ -8,6 +8,7 @@ import Foundation
 import CloudKit
 import UIKit
 import CoreLocation
+import SwiftUICore
 
 enum FetchError: Error {
     case invalidReference
@@ -29,12 +30,16 @@ class CloudKitService {
         return results.matchResults.compactMap { try? $0.1.get() }
     }
     
-    func fetchRecordsByDistance(distanceInKilometers: CGFloat) async throws -> [CKRecord] {
-        let location = CLLocation(latitude: -22.82492000, longitude: -47.08052000)
+    func fetchRecordsByDistance(userPosition: CLLocation?) async throws -> [CKRecord]? {
+        guard let location = userPosition else {return nil}
         
         let predicate = NSPredicate(format: "distanceToLocation:fromLocation:(Location, %@) < %f", location, Constants().distanceToCloseArtworks)
         let query = CKQuery(recordType: Work.recordType, predicate: predicate)
+        
         let results = try await databasePublic.records(matching: query)
+        
+        let queryOperation = CKQueryOperation(query: query)
+        queryOperation.resultsLimit = 6
         
         //TODO: limitar a quantidade de obras requisitas pra 6
         return results.matchResults.compactMap { try? $0.1.get() }
