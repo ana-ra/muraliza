@@ -31,88 +31,48 @@ class RecommendationService: ObservableObject {
                               status: 1)
     }
     
-    func setupRecommendation2() async throws {
-        // Retrieve last exhibited data from UserDefaults
-        let lastDate = defaults.value(forKey: "lastDateExhibited") as? Date
-        let worksExhibited = defaults.value(forKey: "worksExhibited") as? [String] ?? []
-        
-        // Check if its been a day since the last exhibition, if not, just fetch today's work
-        if let lastDate = lastDate, let lastWork = worksExhibited.last, compareDates(lastDate, today) {
-            // Will throw if this doesnt work, no need to check
-            todayWork = try await workService.fetchWorkFromRecordName(from: lastWork)
-            return
-        }
-        
-        // If work data is missing or outdated, fetch new works
-        let workResults = try await service.fetchRecordsByType(Work.recordType)
-        
-        // Check if there are already exhibited works
-        if !worksExhibited.isEmpty {
-            // Add new work if today's recommendation was already shown
-            try await addNewRandomWorkToExhibitedList(chooseRandomWorkFrom: workResults, exhibitedList: worksExhibited)
-        } else {
-            // First time fetching works; initialize recommendation
-            todayWork = try await workService.convertRecordToWork(workResults.first!)
-            defaults.set([todayWork.id], forKey: "worksExhibited")
-            defaults.set(today, forKey: "lastDateExhibited")
-        }
-        
-        works = workResults
-    }
-
-    //TODO: limit the time interval that works cannot be repeated
-//    func setupRecommendation() async throws {
-//        let workResults = try await workService.fetchWorks { work in
-//            self.works.append(work)
+//    func setupDailyRecommendation() async throws {
+//        let lastDate = defaults.value(forKey: "lastDateExhibited") as? Date
+//        let worksExhibited = defaults.value(forKey: "worksExhibited") as? [String] ?? []
+//        
+//        if let lastDate = lastDate, let lastWork = worksExhibited.last, compareDates(lastDate, today) {
+//            print("Fetching today's work from UserDefaults")
+//            todayWork = try await workService.fetchWorkFromRecordName(from: lastWork)
+//            return
 //        }
 //        
-//        // if there are works that have already been seen
-//        if let worksExhibited = defaults.value(forKey: "worksExhibited") as? [String] {
-//            let lastDate = defaults.value(forKey: "lastDateExhibited") as! Date
-//            
-//            //if the last date is more than one day apart from today
-//            if compareDates(today, lastDate) {
-//                self.addNewRandomWorkToExhibitedList(chooseRandomWorkFrom: workResults, exhibitedList: worksExhibited)
-//                
-//            // if the last date is no more than one day apart from today
-//            } else {
-//                let lastWorkUiidString = worksExhibited.last!
-//                
-//                // tries to access the last element of the saved list
-//                if let lastWorkObject = self.findWork(by: lastWorkUiidString, in: workResults) {
-//                    self.todayWork = lastWorkObject
-//                    
-//                //if can't access it, search for new art and add it to the saved list
-//                } else {
-//                    self.addNewRandomWorkToExhibitedList(chooseRandomWorkFrom: workResults, exhibitedList: worksExhibited)
-//                }
-//            }
-//            
-//        //if no work has been seen before
-//        } else {
-//            todayWork = workResults.first!
-//         
-//            defaults.set([todayWork.id], forKey: "worksExhibited")
-//            defaults.set(today, forKey: "lastDateExhibited")
+//        print("Fetching all works from CloudKit...")
+//        let workResults = try await service.fetchRecordsByType(Work.recordType)
+//        print("Total works fetched from CloudKit: \(workResults.count)")
+//        
+//        let newWorks = workResults.filter { !worksExhibited.contains($0.recordID.recordName) }
+//        print("Total new works after filtering: \(newWorks.count)")
+//        
+//        guard !newWorks.isEmpty else {
+//            print("No new works available")
+//            throw NSError(domain: "No new works available", code: 1, userInfo: nil)
 //        }
 //        
-//        works = workResults
+//        print("Choosing a new work to exhibit...")
+//        try await addNewRandomWorkToExhibitedList(chooseRandomWorkFrom: newWorks, exhibitedList: worksExhibited)
+//        works = newWorks
+//        print("Work successfully added for today's recommendation")
 //    }
-    
+//    
     private func addNewRandomWorkToExhibitedList(chooseRandomWorkFrom: [CKRecord], exhibitedList: [String]) async throws {
-        let todayWorkRecord = chooseWork(chooseRandomWorkFrom, exhibitedList)
+        let todayWorkRecord = chooseRandomWorkFrom.first!
         let todayWorkID = todayWorkRecord.recordID.recordName
         
-        // add new value to exhibited list
-        var worksExhibited = exhibitedList
-        worksExhibited.append(todayWorkID)
-        
-        defaults.set(worksExhibited, forKey: "worksExhibited")
+        var updatedWorksExhibited = exhibitedList
+        updatedWorksExhibited.append(todayWorkID)
+        defaults.set(updatedWorksExhibited, forKey: "worksExhibited")
         defaults.set(today, forKey: "lastDateExhibited")
         
         todayWork = try await workService.convertRecordToWork(todayWorkRecord)
+        print("Today's work ID: \(todayWorkID)")
     }
     
+    // Returns true if there's a 1 day or more difference between last date exhibited
     private func compareDates(_ date1: Date, _ date2: Date) -> Bool {
         let calendar = Calendar.current
         let startOfDay1 = calendar.startOfDay(for: date1)
@@ -120,7 +80,6 @@ class RecommendationService: ObservableObject {
         
         let components = calendar.dateComponents([.day], from: startOfDay1, to: startOfDay2)
         
-        // Returns true if the difference in days is 1 or more
         if let dayDifference = components.day {
             return abs(dayDifference) >= 1
         }
@@ -141,6 +100,48 @@ class RecommendationService: ObservableObject {
     private func findWork(by uuidString: String, in works: [Work]) -> Work? {
         return works.first { $0.id == uuidString }
     }
-
     
+    private func addIDToExhibitedList(_ id: String) {
+        var worksExhibited = defaults.value(forKey: "worksExhibited") as? [String] ?? []
+        worksExhibited.append(id)
+        defaults.set(worksExhibited, forKey: "worksExhibited")
+    }
+    
+    func setupRecommendation() async throws {
+        let lastDate = defaults.value(forKey: "lastDateExhibited") as? Date
+        let worksExhibited = defaults.value(forKey: "worksExhibited") as? [String] ?? []
+        
+        if let lastDate = lastDate, let lastWork = worksExhibited.last, compareDates(lastDate, today) {
+            todayWork = try await workService.fetchWorkFromRecordName(from: lastWork)
+            return
+        }
+        
+        // Usage in an async context:
+        if let fetchedRecord = await fetchSingleNonExhibitedWork(excluding: worksExhibited) {
+            print("Funcionou, fetched record: \(fetchedRecord)")
+            todayWork = try await workService.fetchWorkFromRecordName(from: fetchedRecord.recordID.recordName)
+        } else {
+            print("No record found or error fetching")
+        }
+    }
+    
+    private func fetchSingleNonExhibitedWork(excluding excludedWorks: [String]) async -> CKRecord? {
+        await withCheckedContinuation { continuation in
+            service.fetchSingleWorkExcluding(recordNamesToExclude: excludedWorks) { [weak self] record in
+                guard let self = self, let record = record else {
+                    print("No record found or error fetching")
+                    continuation.resume(returning: nil)
+                    return
+                }
+
+                // Update the exhibited works and last date
+                var worksExhibited = excludedWorks
+                worksExhibited.append(record.recordID.recordName)
+                self.defaults.set(worksExhibited, forKey: "worksExhibited")
+                self.defaults.set(self.today, forKey: "lastDateExhibited")
+
+                continuation.resume(returning: record)
+            }
+        }
+    }
 }
