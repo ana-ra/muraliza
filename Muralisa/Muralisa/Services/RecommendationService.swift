@@ -27,7 +27,8 @@ class RecommendationService: ObservableObject {
                               location: CLLocation(latitude: 0, longitude: 0),
                               tag: [""],
                               artist: nil,
-                              creationDate: Date())
+                              creationDate: Date(),
+                              status: 1)
     }
     
     func setupDailyRecommendation() async throws {

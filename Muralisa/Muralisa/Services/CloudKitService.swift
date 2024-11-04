@@ -36,6 +36,32 @@ class CloudKitService {
         return try await databasePublic.record(for: recordID)
     }
     
+    func updateRecordField(recordName: String, newValue: Any, forKey key: String) {
+        let recordID = CKRecord.ID(recordName: recordName)
+        
+        // Fetch the existing record
+        databasePublic.fetch(withRecordID: recordID) { record, error in
+            if let error = error {
+                print("Error fetching record: \(error.localizedDescription)")
+                return
+            }
+            
+            if let record = record {
+                // Update the field
+                record.setValue(newValue, forKey: key)
+                
+                // Save the modified record
+                self.databasePublic.save(record) { savedRecord, saveError in
+                    if let saveError = saveError {
+                        print("Error saving record: \(saveError.localizedDescription)")
+                    } else {
+                        print("Record updated successfully")
+                    }
+                }
+            }
+        }
+    }
+    
     func fetchRecordFromRecordName(from recordName: String) async throws -> CKRecord {
         let recordID = CKRecord.ID(recordName: recordName)
         return try await databasePublic.record(for: recordID)
