@@ -11,7 +11,17 @@ import SwiftUI
 struct MuralisaApp: App {
     var body: some Scene {
         WindowGroup {
-            SuggestionView()
+            TabView {
+                SuggestionView()
+                    .tabItem {
+                        Label("Sugestão", systemImage: "wand.and.rays.inverse")
+                    }
+                
+                ColaborationView()
+                    .tabItem {
+                        Label("Colaborar", systemImage: "square.and.arrow.up")
+                    }
+            }
         }
     }
 }
