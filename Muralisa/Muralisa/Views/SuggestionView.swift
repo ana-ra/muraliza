@@ -41,7 +41,7 @@ struct SuggestionView: View {
                         VStack(spacing: 24) {
 //                            ForYouSubview(works: recommendationService.works)
 //                            NextToYouSubview(works: recommendationService.works)
-                            GridSubview(workRecords: recommendationService.works)
+                            GridSubview(workRecords: recommendationService.similarTagsWorks)
                         }
                     }
                     .animation(.easeInOut, value: isCompressed)

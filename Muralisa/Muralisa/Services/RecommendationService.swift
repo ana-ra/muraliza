@@ -18,6 +18,7 @@ class RecommendationService: ObservableObject {
     
     let today = Date()
     var todayWork: Work
+    var similarTagsWorks: [Work]
     
     init() {
         self.todayWork = Work(id: UUID().uuidString,
@@ -29,8 +30,21 @@ class RecommendationService: ObservableObject {
                               artist: nil,
                               creationDate: Date(),
                               status: 1)
+        self.similarTagsWorks = [Work(id: UUID().uuidString,
+                                                     title: "",
+                                                     workDescription: "",
+                                                     image: UIImage(systemName: "photo.badge.exclamationmark")!,
+                                                     location: CLLocation(latitude: 0, longitude: 0),
+                                                     tag: [""],
+                                                     artist: nil,
+                                                     creationDate: Date(),
+                                                                status: 1)]
     }
     
+    func setupRecommendationByTags() async throws {
+            let worksByTagsRecords = try await service.fetchRecordByTags(todayWork.tag)
+            similarTagsWorks = try await workService.convertRecordsToWorks(worksByTagsRecords)
+        }
 
     private func addNewRandomWorkToExhibitedList(chooseRandomWorkFrom: [CKRecord], exhibitedList: [String]) async throws {
         let todayWorkRecord = chooseRandomWorkFrom.first!
