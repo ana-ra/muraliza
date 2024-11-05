@@ -7,16 +7,30 @@
 
 import SwiftUI
 import CoreLocation
+import PhotosUI
 
 struct NewWorkView: View {
     
-    var image: UIImage?
-    var location: CLLocation?
+    @Environment(\.presentationMode) var isPresented
+    
+    @StateObject var vm = ColaborationViewModel()
+    
+    @State var artists: [String] = []
+    
+    @State var image: UIImage?
+    @State var location: CLLocation?
     
     @State private var artist: String = ""
     
     @State private var title: String = ""
     @State private var description: String = ""
+    
+    @State private var showingOptions: Bool = false
+    
+    @State private var pickerItem: PhotosPickerItem?
+    
+    @State private var showImagePicker: Bool = false
+    @State private var showCamera: Bool = false
     
     @State private var navigate: Bool = false
     
@@ -27,7 +41,7 @@ struct NewWorkView: View {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFill()
-                        .frame(maxHeight: getHeight()/2.5)
+                        .frame(maxHeight: getHeight()/3)
                         .frame(width: getWidth() - 16)
                         .padding(.horizontal, -16)
                         .cornerRadius(20)
@@ -98,14 +112,67 @@ struct NewWorkView: View {
                     Spacer()
                     Text("Tirar outra foto")
                         .foregroundStyle(.accent)
+                        .onTapGesture {
+                            showingOptions = true
+                        }
                     Spacer()
                 }
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
+                .confirmationDialog("Adicionar foto à curadoria", isPresented: $showingOptions, titleVisibility: .visible) {
+                    Button("Camera")  {
+                        showCamera = true
+                    }
+                    Button("Galeria de fotos") {
+                        showImagePicker = true
+                    }
+                }
+                .photosPicker(isPresented: $showImagePicker, selection: $pickerItem, matching: .images, photoLibrary: .shared())
+                .onChange(of: pickerItem) {
+                    Task {
+                        if let data = try? await pickerItem?.loadTransferable(type: Data.self) {
+                            image = UIImage(data: data)
+                            
+                            if let image = CIImage(data: data) {
+                                
+                                let properties = image.properties
+                                
+                                if let gps = properties[kCGImagePropertyGPSDictionary as String] as? [String: Any] {
+                                    let lat = gps[kCGImagePropertyGPSLatitude as String] as! Double
+                                    let lon = gps[kCGImagePropertyGPSLongitude as String] as! Double
+                                    
+                                    location = CLLocation(latitude: lat, longitude: lon)
+                                    
+                                }
+                            }
+                            return
+                        }
+                    }
+                }
+                .fullScreenCover(isPresented: $showCamera) {
+                    AccessCameraView(selectedImage: self.$image, navigate: .constant(true))
+                        .background(.black)
+                }
             }
         }
         .listSectionSpacing(16)
         .navigationTitle("Editar")
+        .navigationBarTitleDisplayMode(.inline)
+        .navigationBarBackButtonHidden(true)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Button("Cancelar") {
+                    isPresented.wrappedValue.dismiss()
+                }
+            }
+        }
+        .task {
+            do {
+                try await vm.fetchArtists()
+            } catch {
+                print("deu erro \(error.localizedDescription)")
+            }
+        }
     }
 }
 
