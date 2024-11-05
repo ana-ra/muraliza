@@ -7,6 +7,8 @@
 import Foundation
 import CloudKit
 import UIKit
+import CoreLocation
+import SwiftUICore
 
 enum FetchError: Error {
     case invalidReference
@@ -66,7 +68,7 @@ class CloudKitService {
         let results = try await databasePublic.records(matching: query)
         return results.matchResults.compactMap { try? $0.1.get() }
     }
-
+    
     func fetchRecordFromReference(from reference: CKRecord.Reference?) async throws -> CKRecord {
         guard let recordID = reference?.recordID else {
             throw FetchError.invalidReference
@@ -128,4 +130,43 @@ class CloudKitService {
         
         databasePublic.add(queryOperation)
     }
+    
+    func fetchRecordsByDistance(ofType recordType: String, userPosition: CLLocation?, radius: CGFloat) async throws -> [CKRecord] {
+        var resultArray: [CKRecord] = []
+        
+        guard let location = userPosition else { return resultArray }
+        
+        let predicate = NSPredicate(format: "distanceToLocation:fromLocation:(Location, %@) < %f", location, radius)
+        let query = CKQuery(recordType: recordType, predicate: predicate)
+        let queryOperation = CKQueryOperation(query: query)
+        queryOperation.resultsLimit = 6
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            queryOperation.recordMatchedBlock = { (id,record) in
+                switch record {
+                case .success(let result):
+                    resultArray.append(result)
+                case .failure(let error):
+                    print("error fetching records by distance: \(error)")
+                }
+                
+            }
+            
+            queryOperation.queryResultBlock = { result in
+                switch result {
+                case .success:
+                    continuation.resume(returning: resultArray)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+            
+            databasePublic.add(queryOperation)
+        }
+    }
+    
+    
+    
+    
+    
 }
