@@ -93,18 +93,13 @@ class CloudKitService {
         databasePublic.add(queryOperation)
     }
     
-    func fetchRecordsByDistance(userPosition: CLLocation?, completion: @escaping (CKRecord?) -> Void) {
-        
-    }
-    
-    
-    func fetchRecordsByDistance(userPosition: CLLocation?) async throws -> [CKRecord] {
+    func fetchRecordsByDistance(ofType recordType: String, userPosition: CLLocation?, radius: CGFloat) async throws -> [CKRecord] {
         var resultArray: [CKRecord] = []
         
-        guard let location = userPosition else {return resultArray}
+        guard let location = userPosition else { return resultArray }
         
-        let predicate = NSPredicate(format: "distanceToLocation:fromLocation:(Location, %@) < %f", location, Constants().distanceToCloseArtworks)
-        let query = CKQuery(recordType: Work.recordType, predicate: predicate)
+        let predicate = NSPredicate(format: "distanceToLocation:fromLocation:(Location, %@) < %f", location, radius)
+        let query = CKQuery(recordType: recordType, predicate: predicate)
         let queryOperation = CKQueryOperation(query: query)
         queryOperation.resultsLimit = 6
         
@@ -112,7 +107,6 @@ class CloudKitService {
             queryOperation.recordMatchedBlock = { (id,record) in
                 switch record {
                 case .success(let result):
-                    print("record: \(record)")
                     resultArray.append(result)
                 case .failure(let error):
                     print("error fetching records by distance: \(error)")

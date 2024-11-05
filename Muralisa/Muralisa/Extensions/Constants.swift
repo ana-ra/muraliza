@@ -7,5 +7,5 @@
 import Foundation
 
 struct Constants {
-    let distanceToCloseArtworks: CGFloat = 1000000 //km
+    let distanceToCloseArtworks: CGFloat = 10000 // in meters
 }

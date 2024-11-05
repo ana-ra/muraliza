@@ -60,7 +60,7 @@ struct SuggestionView: View {
         .refreshable {
             Task {
                 do {
-                    try await recommendationService.setupRecommendation()
+                    try await recommendationService.setupDailyRecommendation()
                     try await manager.load(from: recommendationService.todayWork.artist)
                     try await recommendationService.setupRecommendationByDistance(userPosition: locationManager.location)
                     withAnimation {
@@ -75,7 +75,7 @@ struct SuggestionView: View {
         }
         .task {
             do {
-                try await recommendationService.setupRecommendation()
+                try await recommendationService.setupDailyRecommendation()
                 try await manager.load(from: recommendationService.todayWork.artist)
                 try await recommendationService.setupRecommendationByDistance(userPosition: locationManager.location)
                 withAnimation {
