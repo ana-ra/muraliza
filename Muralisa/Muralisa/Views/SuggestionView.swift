@@ -31,7 +31,7 @@ struct SuggestionView: View {
                         ArtistSubview(locationService: locationService,
                                       locationManager: locationManager,
                                       manager: manager,
-                                      work: $recommendationService.todayWork,
+                                      workLocation: recommendationService.todayWork.location,
                                       address: $address,
                                       distance: $distance,
                                       date: distanceDate(from: recommendationService.todayWork.creationDate),
@@ -39,8 +39,8 @@ struct SuggestionView: View {
                         TagsSubView(work: recommendationService.todayWork)
                         
                         VStack(spacing: 24) {
-                            if let artists = recommendationService.todayWork.artist {
-                                MoreFromSubview(works: recommendationService.worksByTodaysArtist)
+                            if !recommendationService.worksByTodaysArtist.isEmpty {
+                                MoreFromSubview(works: $recommendationService.worksByTodaysArtist)
                             }
                             
                             if !recommendationService.nearbyWorks.isEmpty {

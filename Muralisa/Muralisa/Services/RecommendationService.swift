@@ -47,10 +47,14 @@ class RecommendationService: ObservableObject {
     }
     
     func fetchWorksByArtist() async throws {
-        guard let artists = todayWork.artist else { return }
+        guard let artists = todayWork.artist else {
+            worksByTodaysArtist = []
+            return
+        }
         
-        let resultRecords = try await service.fetchRecordsByArtist(artistsReference: artists)
+        let resultRecords = try await service.fetchRecordsByArtistExceptOne(artistsReference: artists, except: todayWork.id)
         worksByTodaysArtist = try await workService.convertRecordsToWorks(resultRecords)
+        print(worksByTodaysArtist)
     }
     
     private func addNewRandomWorkToExhibitedList(chooseRandomWorkFrom: [CKRecord], exhibitedList: [String]) async throws {

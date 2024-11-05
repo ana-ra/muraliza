@@ -69,10 +69,11 @@ class CloudKitService {
         return try await databasePublic.record(for: recordID)
     }
     
-    func fetchRecordsByArtist(artistsReference: [CKRecord.Reference]) async throws -> [CKRecord] {
+    func fetchRecordsByArtistExceptOne(artistsReference: [CKRecord.Reference], except expectionRecordName: String) async throws -> [CKRecord] {
         var resultArray: [CKRecord] = []
-
-        let predicate = NSPredicate(format: "ANY Artist in %@", artistsReference)
+        
+        let exceptionRecordID = CKRecord.ID(recordName: expectionRecordName)
+        let predicate = NSPredicate(format: "ANY Artist in %@ AND recordID != %@", artistsReference, exceptionRecordID)
         let query = CKQuery(recordType: Work.recordType, predicate: predicate)
         let queryOperation = CKQueryOperation(query: query)
         queryOperation.resultsLimit = 6

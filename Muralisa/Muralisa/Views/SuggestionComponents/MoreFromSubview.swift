@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MoreFromSubview: View {
-    @State var works: [Work]
+    @Binding var works: [Work]
     
     var body: some View {
         VStack(alignment:.leading){

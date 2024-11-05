@@ -10,6 +10,9 @@ class ArtistService {
     }
     
     func fetchArtistFromReference(_ reference: CKRecord.Reference?) async throws -> Artist {
+        guard let reference else {
+            throw NSError()
+        }
         let record = try await ckService.fetchRecordFromReference(from: reference)
         return convertRecordToArtist(record)
     }

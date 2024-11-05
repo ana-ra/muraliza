@@ -17,7 +17,7 @@ struct ArtistSubview: View {
     @State var isFetched: Bool = false
     @State private var dialogDetail: (URL?, URL?)
     @State private var hasRoute: Bool = false
-    @Binding var work: Work
+    @State var workLocation: CLLocation
     @Binding var address: String
     @Binding var distance: Double // Distance in meters
     @State var date: String
@@ -117,8 +117,7 @@ struct ArtistSubview: View {
                     
                     Button {
                         if let location = locationManager.location {
-                            dialogDetail = locationService.getMapsLink(from: location, to: work.location)
-                            print(work.location, address)
+                            dialogDetail = locationService.getMapsLink(from: location, to: workLocation)
                             hasRoute = true
                         }
                     } label: {
@@ -153,20 +152,18 @@ struct ArtistSubview: View {
             address = ""
             distance = -1
             
-            locationService.getAddress(from: work.location) { result in
+            locationService.getAddress(from: workLocation) { result in
                 switch result {
                 case .success(let address):
                     self.address = address
-                    print(address)
-                case .failure(let _):
+                case .failure:
                     self.address = "Couldn't resolve address :("
                 }
             }
             
             if let myLocation = locationManager.location {
-                print("entrou")
                 withAnimation {
-                    self.distance = locationService.calculateDistance(from: myLocation, to: work.location)
+                    self.distance = locationService.calculateDistance(from: myLocation, to: workLocation)
                 }
             }
         }
