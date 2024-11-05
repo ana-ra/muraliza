@@ -33,7 +33,7 @@ class RecommendationService: ObservableObject {
     }
     
     func setupRecommendationByDistance(userPosition: CLLocation?) async throws {
-        let resultRecords = service.fetchRecordsByDistance(userPosition: userPosition)
+        let resultRecords = try await service.fetchRecordsByDistance(userPosition: userPosition)
         var resultWorks: [Work] = []
         
         for record in resultRecords {
