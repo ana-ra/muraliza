@@ -45,7 +45,7 @@ struct SuggestionView: View {
                                 NextToYouSubview(works: recommendationService.nearbyWorks)
                             }
                             
-//                            GridSubview(workRecords: recommendationService.works)
+                            GridSubview(workRecords: recommendationService.similarTagsWorks)
                         }
                     }
                     .animation(.easeInOut, value: isCompressed)
