@@ -7,13 +7,13 @@
 
 import SwiftUI
 
-struct ForYouSubview: View {
+struct MoreFromSubview: View {
     @State var works: [Work]
     
     var body: some View {
         VStack(alignment:.leading){
             HStack {
-                Text("Para Você")
+                Text("Mais de")
                     .font(.title2)
                     .fontWeight(.bold)
                     .padding(.leading)

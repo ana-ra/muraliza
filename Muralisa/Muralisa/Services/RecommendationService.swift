@@ -19,6 +19,7 @@ class RecommendationService: ObservableObject {
     let today = Date()
     var todayWork: Work
     var nearbyWorks: [Work] = []
+    var worksByTodaysArtist: [Work] = []
     
     init() {
         self.todayWork = Work(id: UUID().uuidString,
@@ -43,6 +44,13 @@ class RecommendationService: ObservableObject {
         }
         
         self.nearbyWorks = resultWorks
+    }
+    
+    func fetchWorksByArtist() async throws {
+        guard let artists = todayWork.artist else { return }
+        
+        let resultRecords = try await service.fetchRecordsByArtist(artistsReference: artists)
+        worksByTodaysArtist = try await workService.convertRecordsToWorks(resultRecords)
     }
     
     private func addNewRandomWorkToExhibitedList(chooseRandomWorkFrom: [CKRecord], exhibitedList: [String]) async throws {

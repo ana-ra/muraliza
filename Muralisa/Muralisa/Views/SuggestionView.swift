@@ -39,7 +39,9 @@ struct SuggestionView: View {
                         TagsSubView(work: recommendationService.todayWork)
                         
                         VStack(spacing: 24) {
-//                            ForYouSubview(works: recommendationService.works)
+                            if let artists = recommendationService.todayWork.artist {
+                                MoreFromSubview(works: recommendationService.worksByTodaysArtist)
+                            }
                             
                             if !recommendationService.nearbyWorks.isEmpty {
                                 NextToYouSubview(works: recommendationService.nearbyWorks)

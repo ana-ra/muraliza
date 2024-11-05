@@ -39,6 +39,7 @@ extension SuggestionView {
             try await manager.load(from: recommendationService.todayWork.artist)
             try await recommendationService.setupRecommendationByDistance(userPosition: locationManager.location)
             setupLocation(for: recommendationService.todayWork)
+            try await recommendationService.fetchWorksByArtist()
             withAnimation { isFetched = true }
         } catch {
             print("deu erro \(error.localizedDescription)")

@@ -69,6 +69,40 @@ class CloudKitService {
         return try await databasePublic.record(for: recordID)
     }
     
+    func fetchRecordsByArtist(artistsReference: [CKRecord.Reference]) async throws -> [CKRecord] {
+        var resultArray: [CKRecord] = []
+
+        let predicate = NSPredicate(format: "ANY Artist in %@", artistsReference)
+        let query = CKQuery(recordType: Work.recordType, predicate: predicate)
+        let queryOperation = CKQueryOperation(query: query)
+        queryOperation.resultsLimit = 6
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            queryOperation.recordMatchedBlock = { (id,record) in
+                switch record {
+                case .success(let result):
+                    print("result \(result)")
+                    resultArray.append(result)
+                case .failure(let error):
+                    print("error fetching records by distance: \(error)")
+                }
+                
+            }
+            
+            queryOperation.queryResultBlock = { result in
+                switch result {
+                case .success:
+                    continuation.resume(returning: resultArray)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+            
+            // Execute the query operation
+            databasePublic.add(queryOperation)
+        }
+    }
+    
     func fetchSingleWorkExcluding(recordNamesToExclude: [String], completion: @escaping (CKRecord?) -> Void) {
         // Converts all record names to recordIDs
         let recordIDs = recordNamesToExclude.map { CKRecord.ID(recordName: $0) }
@@ -126,9 +160,4 @@ class CloudKitService {
             databasePublic.add(queryOperation)
         }
     }
-    
-    
-    
-    
-    
 }
