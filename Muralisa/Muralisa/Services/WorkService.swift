@@ -73,30 +73,14 @@ class WorkService: ObservableObject {
     }
     
     func convertRecordsToWorks(_ records: [CKRecord]) async throws -> [Work] {
-        await withTaskGroup(of: Work?.self) { group in
-            var works: [Work] = []
-            
-            for record in records {
-                group.addTask {
-                    do {
-                        return try await self.convertRecordToWork(record)
-                    } catch {
-                        print("Error converting record \(record.recordID.recordName): \(error)")
-                        return nil
-                    }
-                }
-            }
-            
-            for await work in group {
-                if let work = work {
-                    works.append(work)
-                }
-            }
-            
-            return works
+        var works: [Work] = []
+        for record in records {
+            let work = try await self.convertRecordToWork(record)
+            works.append(work)
         }
+        return works
     }
-
+    
     func convertRecordToWork(_ record: CKRecord) async throws -> Work {
         let id = String(record.recordID.recordName)
         let title = record["Title"] as? String ?? "Unknown Title"
@@ -117,12 +101,12 @@ class WorkService: ObservableObject {
         }
 //        
         let location = record["Location"] as? CLLocation ?? CLLocation(latitude: 0, longitude: 0)
-
+        
         // Fetch artist record, if it exists
         let artistReference = record["Artist"] as? [CKRecord.Reference]
         print("data de criação da função \(creationDate)")
         print("data de agora \(Date())")
-
+        
         return Work(
             id: id,
             title: title,

@@ -18,6 +18,7 @@ class RecommendationService: ObservableObject {
     
     let today = Date()
     var todayWork: Work
+    var nearbyWorks: [Work] = []
     
     init() {
         self.todayWork = Work(id: UUID().uuidString,
@@ -31,7 +32,19 @@ class RecommendationService: ObservableObject {
                               status: 1)
     }
     
-
+    func setupRecommendationByDistance(userPosition: CLLocation?) async throws {
+        let resultRecords = try await service.fetchRecordsByDistance(ofType: Work.recordType, userPosition: userPosition, radius: Constants().distanceToCloseArtworks)
+        var resultWorks: [Work] = []
+        
+        // TODO: Check if work is already in cache
+        for record in resultRecords {
+            let work = try await workService.convertRecordToWork(record)
+            resultWorks.append(work)
+        }
+        
+        self.nearbyWorks = resultWorks
+    }
+    
     private func addNewRandomWorkToExhibitedList(chooseRandomWorkFrom: [CKRecord], exhibitedList: [String]) async throws {
         let todayWorkRecord = chooseRandomWorkFrom.first!
         let todayWorkID = todayWorkRecord.recordID.recordName
@@ -80,7 +93,7 @@ class RecommendationService: ObservableObject {
         defaults.set(worksExhibited, forKey: "worksExhibited")
     }
     
-    func setupRecommendation() async throws {
+    func setupDailyRecommendation() async throws {
         let lastDate = defaults.value(forKey: "lastDateExhibited") as? Date
         let worksExhibited = defaults.value(forKey: "worksExhibited") as? [String] ?? []
         

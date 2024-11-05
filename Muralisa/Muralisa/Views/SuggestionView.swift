@@ -40,8 +40,12 @@ struct SuggestionView: View {
                         
                         VStack(spacing: 24) {
 //                            ForYouSubview(works: recommendationService.works)
-//                            NextToYouSubview(works: recommendationService.works)
-                            GridSubview(workRecords: recommendationService.works)
+                            
+                            if !recommendationService.nearbyWorks.isEmpty {
+                                NextToYouSubview(works: recommendationService.nearbyWorks)
+                            }
+                            
+//                            GridSubview(workRecords: recommendationService.works)
                         }
                     }
                     .animation(.easeInOut, value: isCompressed)
@@ -65,6 +69,7 @@ struct SuggestionView: View {
         }
         .task {
             await fetchData()
+            print("refreshed")
         }
     }
 }

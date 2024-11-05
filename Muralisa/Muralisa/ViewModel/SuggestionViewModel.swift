@@ -35,8 +35,9 @@ extension SuggestionView {
     
     func fetchData() async {
         do {
-            try await recommendationService.setupRecommendation()
+            try await recommendationService.setupDailyRecommendation()
             try await manager.load(from: recommendationService.todayWork.artist)
+            try await recommendationService.setupRecommendationByDistance(userPosition: locationManager.location)
             setupLocation(for: recommendationService.todayWork)
             withAnimation { isFetched = true }
         } catch {
