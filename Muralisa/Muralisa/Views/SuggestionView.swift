@@ -34,9 +34,11 @@ struct SuggestionView: View {
                         
                         VStack(spacing: 24) {
 //                            ForYouSubview(works: recommendationService.works)
-                            if recommendationService.nearbyWorks != nil && !recommendationService.nearbyWorks!.isEmpty {
-                                NextToYouSubview(works: recommendationService.nearbyWorks!)
+                            
+                            if !recommendationService.nearbyWorks.isEmpty {
+                                NextToYouSubview(works: recommendationService.nearbyWorks)
                             }
+                            
 //                            GridSubview(workRecords: recommendationService.works)
                         }
                     }
@@ -58,7 +60,7 @@ struct SuggestionView: View {
         .refreshable {
             Task {
                 do {
-                    try await recommendationService.setupRecommendation2()
+                    try await recommendationService.setupRecommendation()
                     try await manager.load(from: recommendationService.todayWork.artist)
                     try await recommendationService.setupRecommendationByDistance(userPosition: locationManager.location)
                     withAnimation {
@@ -73,7 +75,7 @@ struct SuggestionView: View {
         }
         .task {
             do {
-                try await recommendationService.setupRecommendation2()
+                try await recommendationService.setupRecommendation()
                 try await manager.load(from: recommendationService.todayWork.artist)
                 try await recommendationService.setupRecommendationByDistance(userPosition: locationManager.location)
                 withAnimation {
