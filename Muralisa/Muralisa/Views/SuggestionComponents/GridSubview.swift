@@ -9,7 +9,7 @@ import SwiftUI
 import CloudKit
 
 struct GridSubview: View {
-    @State var workRecords: [Work]
+    @Binding var workRecords: [Work]
     
     var fixedColumn = [
         GridItem(.flexible(),spacing: 0),
