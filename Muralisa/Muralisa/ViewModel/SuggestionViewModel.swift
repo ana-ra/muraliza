@@ -7,8 +7,7 @@
 import SwiftUI
 import Foundation
 
-class SuggestionViewModel: ObservableObject {
-    
+extension SuggestionView {
     func distanceDate(from data: Date) -> String {
         let today = Date()
         let calendar = Calendar.current
@@ -31,6 +30,43 @@ class SuggestionViewModel: ObservableObject {
             return "Há \(diferenceDays) dia"
         } else {
             return "Há menos de 1 dia"
+        }
+    }
+    
+    func fetchData() async {
+        do {
+            try await recommendationService.setupDailyRecommendation()
+            try await manager.load(from: recommendationService.todayWork.artist)
+            try await recommendationService.setupRecommendationByDistance(userPosition: locationManager.location)
+            setupLocation(for: recommendationService.todayWork)
+            withAnimation { isFetched = true }
+        } catch {
+            print("deu erro \(error.localizedDescription)")
+        }
+    }
+    
+    func setupLocation(for work: Work) {
+        // Just to indicate it's loading
+        address = ""
+        distance = -1
+        
+        locationService.getAddress(from: work.location) { result in
+            switch result {
+            case .success(let address):
+                withAnimation {
+                    self.address = address
+                }
+                print(address)
+            case .failure(let error):
+                self.address = "Couldn't resolve address :("
+            }
+        }
+        
+        if let myLocation = locationManager.location {
+            print("entrou")
+            withAnimation {
+                self.distance = locationService.calculateDistance(from: myLocation, to: work.location)
+            }
         }
     }
 }

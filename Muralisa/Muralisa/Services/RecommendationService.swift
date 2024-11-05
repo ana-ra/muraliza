@@ -44,7 +44,7 @@ class RecommendationService: ObservableObject {
         
         self.nearbyWorks = resultWorks
     }
-
+    
     private func addNewRandomWorkToExhibitedList(chooseRandomWorkFrom: [CKRecord], exhibitedList: [String]) async throws {
         let todayWorkRecord = chooseRandomWorkFrom.first!
         let todayWorkID = todayWorkRecord.recordID.recordName
