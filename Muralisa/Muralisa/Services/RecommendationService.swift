@@ -21,6 +21,11 @@ class RecommendationService: ObservableObject {
     var nearbyWorks: [Work] = []
     var worksByTodaysArtist: [Work] = []
     var similarTagsWorks: [Work] = []
+    #if DEBUG
+    let maxWorkCount = 38
+    #else
+    let maxWorkCount = 10
+    #endif
     
     init() {
         self.todayWork = Work(id: UUID().uuidString,
@@ -123,11 +128,16 @@ class RecommendationService: ObservableObject {
     
     func setupDailyRecommendation() async throws {
         let lastDate = defaults.value(forKey: "lastDateExhibited") as? Date
-        let worksExhibited = defaults.value(forKey: "worksExhibited") as? [String] ?? []
+        var worksExhibited = defaults.value(forKey: "worksExhibited") as? [String] ?? []
         
         if let lastDate = lastDate, let lastWork = worksExhibited.last, compareDates(lastDate, today) {
             todayWork = try await workService.fetchWorkFromRecordName(from: lastWork)
             return
+        }
+        
+        if worksExhibited.count >= maxWorkCount {
+            worksExhibited = []
+            defaults.set(worksExhibited, forKey: "worksExhibited")
         }
         
         // Usage in an async context:
