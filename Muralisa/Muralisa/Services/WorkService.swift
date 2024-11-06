@@ -104,8 +104,6 @@ class WorkService: ObservableObject {
         
         // Fetch artist record, if it exists
         let artistReference = record["Artist"] as? [CKRecord.Reference]
-        print("data de criação da função \(creationDate)")
-        print("data de agora \(Date())")
         
         return Work(
             id: id,

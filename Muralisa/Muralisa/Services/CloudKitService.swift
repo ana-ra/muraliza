@@ -119,7 +119,6 @@ class CloudKitService {
             queryOperation.recordMatchedBlock = { (id,record) in
                 switch record {
                 case .success(let result):
-                    print("result \(result)")
                     resultArray.append(result)
                 case .failure(let error):
                     print("error fetching records by distance: \(error)")

@@ -58,14 +58,12 @@ extension SuggestionView {
                 withAnimation {
                     self.address = address
                 }
-                print(address)
             case .failure(let error):
                 self.address = "Couldn't resolve address :("
             }
         }
         
         if let myLocation = locationManager.location {
-            print("entrou")
             withAnimation {
                 self.distance = locationService.calculateDistance(from: myLocation, to: work.location)
             }
