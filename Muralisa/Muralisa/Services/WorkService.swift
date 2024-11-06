@@ -151,6 +151,8 @@ class WorkService {
             } catch {
                 print("Error writing image to cache: \(error.localizedDescription)")
             }
+        } else {
+            print("Error: invalid image")
         }
     }
 }
