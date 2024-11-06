@@ -24,6 +24,43 @@ class CloudKitService {
         self.databasePublic = container.publicCloudDatabase
     }
     
+    func fetchRecordByTags(_ tags: [String], except exceptionRecordName: String) async throws -> [CKRecord] {
+        let exceptionRecordID = CKRecord.ID(recordName: exceptionRecordName)
+        let predicate = NSPredicate(format: "ANY Tag IN %@ AND recordID != %@", tags, exceptionRecordID)
+        
+        let query = CKQuery(recordType: "Artwork", predicate: predicate)
+        let queryOperation = CKQueryOperation(query: query)
+        queryOperation.resultsLimit = 9
+        
+        
+        var fetchedRecords: [CKRecord] = []
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            // Substituto para recordFetchedBlock - processa cada registro individualmente
+            queryOperation.recordMatchedBlock = { recordID, recordResult in
+                switch recordResult {
+                case .success(let record):
+                    fetchedRecords.append(record)
+                case .failure(let error):
+                    print("Erro ao buscar registro \(recordID): \(error.localizedDescription)")
+                }
+            }
+            
+            // Substituto para queryCompletionBlock - lida com o término da consulta
+            queryOperation.queryResultBlock = { result in
+                switch result {
+                case .success:
+                    continuation.resume(returning: fetchedRecords)  // Retorna registros recuperados
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+            
+            // Adiciona a operação ao banco de dados público
+            databasePublic.add(queryOperation)
+        }
+    }
+    
     
     func fetchRecordsByType(_ recordType: String, predicate: NSPredicate = NSPredicate(value: true)) async throws -> [CKRecord] {
         let query = CKQuery(recordType: recordType, predicate: predicate)

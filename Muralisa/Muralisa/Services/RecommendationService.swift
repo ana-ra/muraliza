@@ -20,6 +20,7 @@ class RecommendationService: ObservableObject {
     var todayWork: Work
     var nearbyWorks: [Work] = []
     var worksByTodaysArtist: [Work] = []
+    var similarTagsWorks: [Work] = []
     
     init() {
         self.todayWork = Work(id: UUID().uuidString,
@@ -31,6 +32,21 @@ class RecommendationService: ObservableObject {
                               artist: nil,
                               creationDate: Date(),
                               status: 1)
+        self.similarTagsWorks = [Work(id: UUID().uuidString,
+                                                     title: "",
+                                                     workDescription: "",
+                                                     image: UIImage(systemName: "photo.badge.exclamationmark")!,
+                                                     location: CLLocation(latitude: 0, longitude: 0),
+                                                     tag: [""],
+                                                     artist: nil,
+                                                     creationDate: Date(),
+                                                                status: 1)]
+    }
+    
+    func setupRecommendationByTags() async throws {
+        similarTagsWorks = []
+        let worksByTagsRecords = try await service.fetchRecordByTags(todayWork.tag, except: todayWork.id)
+        similarTagsWorks = try await workService.convertRecordsToWorks(worksByTagsRecords)
     }
     
     func setupRecommendationByDistance(userPosition: CLLocation?) async throws {

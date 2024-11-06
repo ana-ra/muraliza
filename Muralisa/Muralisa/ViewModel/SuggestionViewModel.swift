@@ -37,6 +37,7 @@ extension SuggestionView {
         do {
             try await recommendationService.setupDailyRecommendation()
             try await manager.load(from: recommendationService.todayWork.artist)
+            try await recommendationService.setupRecommendationByTags()
             try await recommendationService.setupRecommendationByDistance(userPosition: locationManager.location)
             setupLocation(for: recommendationService.todayWork)
             try await recommendationService.fetchWorksByArtist()
