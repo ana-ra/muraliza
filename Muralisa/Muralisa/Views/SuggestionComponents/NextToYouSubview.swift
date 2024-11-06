@@ -9,6 +9,7 @@ import SwiftUI
 
 struct NextToYouSubview: View {
     @State var works: [Work]
+    
     var body: some View {
         VStack(alignment:.leading){
             HStack{

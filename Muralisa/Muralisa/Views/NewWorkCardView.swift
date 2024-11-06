@@ -36,14 +36,11 @@ struct NewWorkCardView: View {
                         .padding(.top, 24)
                         .padding(.bottom, 24)
                         .clipped()
-                        
-
-                       
                 }
                 
                 HStack {
                     Text("Artista:")
-                    Text(artist)
+                    Text(artist == "" ? "Desconhecido" : artist)
                         .bold()
                     
                     Spacer()
@@ -79,9 +76,9 @@ struct NewWorkCardView: View {
                 WrappingHStack(alignment: .leading) {
                     
                     Text("Descrição:")
-                    Text(descripition)
+                    Text(descripition == "" ? "Sem descrição" : descripition)
                         .bold()
-                        .lineLimit(2)
+                        .lineLimit(1)
                 }
                 .padding(.horizontal, 24)
                 .padding(.bottom, tags.isEmpty ? 24 : 0)
@@ -96,17 +93,17 @@ struct NewWorkCardView: View {
                             .overlay(Color.black)
                     }
                     .frame(width: getWidth() - 80)
-                    .padding(.bottom, 24)
+                    .padding(.bottom, 18)
                     
                     HStack(spacing: 24) {
                         
                         ForEach(tags, id: \.self) { tag in
                             
-                            Text("# \(tag)")
-                                .font(.caption)
+                            Text("\(tag)")
+                                .font(.subheadline)
                                 .foregroundStyle(Color.accentColor)
                                 .frame(width: (getWidth() - (32 + 48 + 48)) / 3)
-                                .padding(.vertical, 4)
+                                .padding(.vertical, 8)
                                 .background(
                                     RoundedRectangle(cornerRadius: 40)
                                         .foregroundStyle(Color.accentColor)
@@ -169,7 +166,7 @@ struct NewWorkCardView: View {
             HStack {
                 Spacer()
                 Button {
-                    
+                    // Adicionar no banco
                 } label: {
                     Label("Enviar", systemImage: "paperplane.fill")
                         .foregroundStyle(.white)
@@ -194,6 +191,6 @@ struct NewWorkCardView: View {
 
 #Preview {
     NavigationStack {
-        NewWorkCardView(artist: "Bens",title: "Tropical gang", descripition: "Benson tropical gang caricatura", image: UIImage(named: "ima"))
+        NewWorkCardView(artist: "",title: "Tropical gang", descripition: "", image: UIImage(named: "ima"))
     }
 }

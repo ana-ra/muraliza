@@ -13,14 +13,16 @@ struct NewWorkView: View {
     
     @Environment(\.presentationMode) var isPresented
     
-    @StateObject var vm = ColaborationViewModel()
-    
-    @State var artists: [String] = []
+    @StateObject var colaborationViewModel = ColaborationViewModel()
     
     @State var image: UIImage?
     @State var location: CLLocation?
     
     @State private var artist: String = ""
+    
+    private var artistSearchResults: [String] {
+        artist.isEmpty ? [] : colaborationViewModel.artists.filter { $0.contains(artist)}
+    }
     
     @State private var title: String = ""
     @State private var description: String = ""
@@ -59,6 +61,23 @@ struct NewWorkView: View {
                     
                     TextField("Desconhecido", text: $artist)
                 }
+            }
+            
+            if !artistSearchResults.isEmpty {
+                Section {
+                    ForEach(artistSearchResults, id: \.self) { result in
+                        HStack {
+                            Text(result)
+                            Spacer()
+                        }
+                        .onTapGesture {
+                            artist = result
+                        }
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.automatic)
+                    }
+                }
+                .listSectionSpacing(0)
             }
             
             Section {
@@ -168,7 +187,7 @@ struct NewWorkView: View {
         }
         .task {
             do {
-                try await vm.fetchArtists()
+                try await colaborationViewModel.fetchArtists()
             } catch {
                 print("deu erro \(error.localizedDescription)")
             }
