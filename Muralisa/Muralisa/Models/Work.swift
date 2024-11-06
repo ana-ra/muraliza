@@ -24,8 +24,9 @@ class Work: NSObject {
     let tag: [String]
     let artist: [CKRecord.Reference]?
     let creationDate: Date
+    var status: Int
     
-    init(id: String, title: String?, workDescription: String?, image: UIImage, location: CLLocation, tag: [String], artist: [CKRecord.Reference]?, creationDate: Date) {
+    init(id: String, title: String?, workDescription: String?, image: UIImage, location: CLLocation, tag: [String], artist: [CKRecord.Reference]?, creationDate: Date, status: Int) {
         self.id = id
         self.title = title
         self.workDescription = workDescription
@@ -34,5 +35,6 @@ class Work: NSObject {
         self.tag = tag
         self.artist = artist
         self.creationDate = creationDate
+        self.status = status
     }
 }

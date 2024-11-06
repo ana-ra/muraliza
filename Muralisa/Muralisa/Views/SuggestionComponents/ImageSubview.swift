@@ -10,24 +10,28 @@ import CoreLocation
 
 struct ImageSubview: View {
     
+    @SceneStorage("isZooming") var isZooming: Bool = false
+    
     var work: Work
     @State var isLiked = false
     @State private var isVisible = true
     
-    // Animation
+    @State private var scale: CGFloat = 1.0
+    
     @Binding var isCompressed: Bool
-//    @Binding var showMore: Bool
 
     var body: some View {
         VStack(alignment:.leading) {
             ZStack(alignment:.bottomTrailing){
                 
+                
                 Image(uiImage: work.image)
                     .resizable()
                     .aspectRatio(contentMode: isCompressed ? .fill : .fit)
                     .frame(height: isCompressed ? getHeight()/2.5 : nil)
-                    .frame(maxWidth: isCompressed ? nil : .infinity)
+                    .frame(maxWidth: isCompressed ? getWidth() - 32 : .infinity)
                     .cornerRadius(25)
+                    .addPinchZoom()
                 
                 Button {
                     isLiked.toggle()
@@ -54,35 +58,14 @@ struct ImageSubview: View {
                 } label: {
                     Label(isCompressed ? "Mostrar Mais" : "Mostrar Menos", systemImage: isCompressed ? "arrow.down.left.and.arrow.up.right" : "arrow.up.right.and.arrow.down.left")
                         .opacity(isVisible ? 1.0 : 0.0) // Apply opacity based on state
+                        .opacity(isZooming ? 0.0 : 1.0)
                         .animation(.easeInOut(duration: 0), value: isVisible)
                 }
                 Spacer()
             }
-            
-            if let title = work.title {
-                Text(title)
-                    .padding(.top)
-                    .font(Font.title)
-                    .fontWeight(.bold)
-                
-                if let description = work.workDescription {
-                    Text(description)
-                        .multilineTextAlignment(.leading)
-                }
-            }
-            else {
-                if let description = work.workDescription {
-                    Text("Sem Título")
-                        .padding(.top)
-                        .font(Font.title)
-                        .fontWeight(.bold)
-                    
-                    Text(description)
-                        .multilineTextAlignment(.leading)
-                }
-            }
         }
-        .padding()
+        .padding(.horizontal)
+        .padding(.top)
     }
     
     // Toggle opacity on and off with a delay
@@ -95,3 +78,4 @@ struct ImageSubview: View {
         }
     }
 }
+

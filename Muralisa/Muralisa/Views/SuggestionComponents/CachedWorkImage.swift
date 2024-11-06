@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct CachedWork<Content: View>: View {
+struct CachedWorkImage<Content: View>: View {
     @StateObject private var manager = CachedWorkManager()
     let workRecordName: String
     let animation: Animation?
@@ -52,7 +52,6 @@ struct CachedWork<Content: View>: View {
             } catch {
                 print("error loading work: \(error.localizedDescription)")
             }
-            
         }
     }
 }

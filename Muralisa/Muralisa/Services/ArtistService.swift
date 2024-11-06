@@ -10,6 +10,9 @@ class ArtistService {
     }
     
     func fetchArtistFromReference(_ reference: CKRecord.Reference?) async throws -> Artist {
+        guard let reference else {
+            throw NSError()
+        }
         let record = try await ckService.fetchRecordFromReference(from: reference)
         return convertRecordToArtist(record)
     }
@@ -30,6 +33,7 @@ class ArtistService {
                 photo = UIImage(data: photoData)
             }
         }
+        let instagram: String? = record["Instagram"] as? String
         
         // Primeiro, obter a lista de referências de obras
         var worksReferences: [CKRecord.Reference] = []
@@ -39,6 +43,6 @@ class ArtistService {
         
         // Depois, converter essas referências para strings (normalmente o recordID)
         let worksReferencesStrings = worksReferences.map { $0.recordID.recordName }
-        return Artist(id: id, name: name, image: photo, biography: biography, works: worksReferencesStrings)
+        return Artist(id: id, name: name, image: photo, biography: biography, works: worksReferencesStrings, instagram: instagram)
     }
 }

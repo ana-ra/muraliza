@@ -8,12 +8,17 @@
 import SwiftUI
 
 struct SuggestionView: View {
+    @SceneStorage("isZooming") var isZooming: Bool = false
+    @StateObject var locationManager = LocationManager()
     @StateObject var recommendationService = RecommendationService()
     @StateObject var manager = CachedArtistManager()
-    @StateObject var imageService = ImageService()
-    @StateObject var viewModel = SuggestionViewModel()
     @State var isCompressed: Bool = true
     @State var isFetched: Bool = false
+    @State var showArtistSheet: Bool = false
+    @State var selectedArtist: Artist?
+    @State var address: String = ""
+    @State var distance: Double = -1
+    let locationService = LocationService()
     
     var body: some View {
         NavigationStack {
@@ -21,50 +26,54 @@ struct SuggestionView: View {
                 ScrollView {
                     VStack {
                         ImageSubview(work: recommendationService.todayWork, isCompressed: $isCompressed)
-                        
-                        
-                        ArtistSubview(manager: manager, work: recommendationService.todayWork, address: "Rua Albertina de Jesus Martins, 35", distance: 5000, date: viewModel.distanceDate(from: recommendationService.todayWork.creationDate))
+                            .zIndex(isZooming ? 1000 : 0)
+                        DescriptionSubview(work: recommendationService.todayWork)
+                        ArtistSubview(locationService: locationService,
+                                      locationManager: locationManager,
+                                      manager: manager,
+                                      workLocation: recommendationService.todayWork.location,
+                                      address: $address,
+                                      distance: $distance,
+                                      date: distanceDate(from: recommendationService.todayWork.creationDate),
+                                      showArtistSheet: $showArtistSheet, selectedArtist: $selectedArtist)
                         TagsSubView(work: recommendationService.todayWork)
                         
                         VStack(spacing: 24) {
-//                            ForYouSubview(works: recommendationService.works)
-//                            NextToYouSubview(works: recommendationService.works)
-                            GridSubview(workRecords: recommendationService.works)
+                            if !recommendationService.worksByTodaysArtist.isEmpty {
+                                MoreFromSubview(works: $recommendationService.worksByTodaysArtist)
+                            }
+                            
+                            if !recommendationService.nearbyWorks.isEmpty {
+                                NextToYouSubview(works: recommendationService.nearbyWorks)
+                            }
+                            
+                            if !recommendationService.similarTagsWorks.isEmpty {
+                                GridSubview(workRecords: $recommendationService.similarTagsWorks)
+                            }
                         }
                     }
                     .animation(.easeInOut, value: isCompressed)
                 }
                 .navigationTitle("Sugestão")
+                .toolbarBackgroundVisibility(isZooming ? .visible : .automatic, for: .navigationBar)
             } else {
                 // TODO: Design Empty state view or fetching message
-                Text("Fetching your daily works")
+                ProgressView("Fetching your daily works")
+            }
+        }
+        .sheet(isPresented: $showArtistSheet) {
+            if let selectedArtist = selectedArtist {
+                ArtistSheet(artist: selectedArtist)
+                    .presentationDetents([.medium, .large])
             }
         }
         .refreshable {
-            Task {
-                do {
-                    try await recommendationService.setupRecommendation2()
-                    try await manager.load(from: recommendationService.todayWork.artist)
-                    withAnimation {
-                        isFetched.toggle()
-                        isFetched.toggle()
-                    }
-                } catch {
-                    print("deu erro \(error.localizedDescription)")
-                }
-            }
+            await fetchData()
             print("refreshed")
         }
         .task {
-            do {
-                try await recommendationService.setupRecommendation2()
-                try await manager.load(from: recommendationService.todayWork.artist)
-                withAnimation {
-                    isFetched = true
-                }
-            } catch {
-                print("deu erro \(error.localizedDescription)")
-            }
+            await fetchData()
+            print("refreshed")
         }
     }
 }
