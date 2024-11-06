@@ -11,8 +11,10 @@ import CoreLocation
 
 struct ColaborationView: View {
     
+    @StateObject var locationManager = LocationManager()
+    
     // Substituir por dados salvos no userDefaults/coreData das obras colaboradas, o status deve vir da variável de controle no banco de dados.
-    var works: [(String, Int, UUID)] = [("Bomb rua 2", 1, UUID()), ("Untitled", 0, UUID()), ("Grafite colorido", 2, UUID()), ("Wild hardcore", 0, UUID()), ("Bomb rua ", 2, UUID())]
+    var works: [(String, Int, UUID)] = []
     
     @State private var showingOptions = false
     
@@ -82,10 +84,10 @@ struct ColaborationView: View {
                                             let properties = image.properties
                                             
                                             if let gps = properties[kCGImagePropertyGPSDictionary as String] as? [String: Any] {
-                                                let lat = gps[kCGImagePropertyGPSLatitude as String] as! Double
-                                                let lon = gps[kCGImagePropertyGPSLongitude as String] as! Double
+                                                let latitude = gps[kCGImagePropertyGPSLatitude as String] as! Double
+                                                let longitude = gps[kCGImagePropertyGPSLongitude as String] as! Double
                                                 
-                                                location = CLLocation(latitude: lat, longitude: lon)
+                                                location = CLLocation(latitude: latitude, longitude: longitude)
                                                 
                                             }
                                         }
@@ -129,6 +131,9 @@ struct ColaborationView: View {
             .navigationTitle("Colaborar")
             .navigationDestination(isPresented: $navigateToNewWork) {
                 NewWorkView(image: selectedImage, location: location)
+            }
+            .onAppear {
+                location = locationManager.location
             }
         }
     }

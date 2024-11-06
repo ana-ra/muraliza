@@ -57,7 +57,7 @@ struct NewWorkView: View {
                     }
                     .frame(width: 100)
                     
-                    TextField("Untitled", text: $artist)
+                    TextField("Desconhecido", text: $artist)
                 }
             }
             
@@ -69,7 +69,7 @@ struct NewWorkView: View {
                     }
                     .frame(width: 100)
                     
-                    TextField("Opcional", text: $title)
+                    TextField("Sem título", text: $title)
                 }
                 
                 HStack {
@@ -79,7 +79,7 @@ struct NewWorkView: View {
                     }
                     .frame(width: 100)
                     
-                    TextField("Unknown", text: $description)
+                    TextField("Opcional", text: $description)
                 }
             } header: {
                 Text("Sobre a obra")
@@ -172,6 +172,9 @@ struct NewWorkView: View {
             } catch {
                 print("deu erro \(error.localizedDescription)")
             }
+        }
+        .navigationDestination(isPresented: $navigate) {
+            NewWorkCardView(artist: artist, title: title, descripition: description, image: image, location: location)
         }
     }
 }

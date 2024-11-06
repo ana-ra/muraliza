@@ -80,6 +80,6 @@ struct SuggestionView: View {
     }
 }
 
-//#Preview {
-//    SuggestionView()
-//}
+#Preview {
+    SuggestionView()
+}
