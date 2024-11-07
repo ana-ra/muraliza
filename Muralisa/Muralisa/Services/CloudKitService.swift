@@ -106,6 +106,15 @@ class CloudKitService {
         return try await databasePublic.record(for: recordID)
     }
     
+    func saveRecord(_ record: CKRecord) {
+        databasePublic.save(record) { [weak self] returnedRecord, returnedError in
+            print("Record: \(returnedRecord)")
+            if let returnedError {
+                print("Error: \(returnedError)")
+            }
+        }
+    }
+    
     func fetchRecordsByArtistExceptOne(artistsReference: [CKRecord.Reference], except expectionRecordName: String) async throws -> [CKRecord] {
         var resultArray: [CKRecord] = []
         

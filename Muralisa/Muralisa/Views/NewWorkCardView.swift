@@ -8,10 +8,17 @@
 import SwiftUI
 import WrappingHStack
 import CoreLocation
+import CloudKit
 
 struct NewWorkCardView: View {
     
+    var colaborationViewModel: ColaborationViewModel
+    
+    let workService = WorkService()
+    
     var artist: String
+    
+    @State private var artistId: [CKRecord.Reference] = []
     var title: String
     var descripition: String
     
@@ -166,7 +173,13 @@ struct NewWorkCardView: View {
             HStack {
                 Spacer()
                 Button {
-                    // Adicionar no banco
+                    colaborationViewModel.getArtistID(artistName: [artist])
+                    
+                    do {
+                        try workService.saveWork(title: title, workDescription: descripition, tag: tags, image: image, location: location!, artistReference: colaborationViewModel.artistsID)
+                    } catch {
+                        print("error: \(error.localizedDescription)")
+                    }
                 } label: {
                     Label("Enviar", systemImage: "paperplane.fill")
                         .foregroundStyle(.white)
@@ -191,6 +204,6 @@ struct NewWorkCardView: View {
 
 #Preview {
     NavigationStack {
-        NewWorkCardView(artist: "",title: "Tropical gang", descripition: "", image: UIImage(named: "ima"))
+        NewWorkCardView(colaborationViewModel: ColaborationViewModel(), artist: "",title: "Tropical gang", descripition: "", image: UIImage(named: "ima"))
     }
 }

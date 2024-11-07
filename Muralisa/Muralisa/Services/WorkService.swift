@@ -118,4 +118,37 @@ class WorkService: ObservableObject {
             
         )
     }
+    
+    // Function to post a new Work type to CloudKit
+    func saveWork(
+        title: String,
+        workDescription: String,
+        tag: [String],
+        image: UIImage?,
+        location: CLLocation,
+        artistReference: [CKRecord.Reference]?
+    ) throws {
+        // Create a new CKRecord for Work
+        let workRecord = CKRecord(recordType: Work.recordType)
+        workRecord["Title"] = title
+        workRecord["Description"] = workDescription
+        workRecord["Tag"] = tag
+        workRecord["Location"] = location
+        workRecord["Artist"] = artistReference
+        workRecord["Status"] = 2
+      
+        // Handle optional image
+        if let image = image, let tempURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first?.appendingPathComponent("imagePlaceholder.png"), let data = image.pngData() {
+            do {
+                try data.write(to: tempURL)
+                let asset = CKAsset(fileURL: tempURL)
+                workRecord["Image"] = asset
+                ckService.saveRecord(workRecord)
+            } catch {
+                print("Error writing image to cache: \(error.localizedDescription)")
+            }
+        } else {
+            print("Error: invalid image")
+        }
+    }
 }

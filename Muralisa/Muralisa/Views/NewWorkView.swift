@@ -19,9 +19,11 @@ struct NewWorkView: View {
     @State var location: CLLocation?
     
     @State private var artist: String = ""
+    @State private var clearSearchList: Bool = true
+    @State private var isEditing: Bool = false
     
     private var artistSearchResults: [String] {
-        artist.isEmpty ? [] : colaborationViewModel.artists.filter { $0.contains(artist)}
+        artist.isEmpty || clearSearchList ? [] : colaborationViewModel.artists.filter { $0.contains(artist)}
     }
     
     @State private var title: String = ""
@@ -59,7 +61,29 @@ struct NewWorkView: View {
                     }
                     .frame(width: 100)
                     
-                    TextField("Desconhecido", text: $artist)
+                    TextField("Desconhecido", text: $artist, onEditingChanged: { changed in
+                        if changed {
+                            clearSearchList = false
+                            isEditing = true
+                        } else {
+                            clearSearchList = true
+                            isEditing = false
+                        }
+                    })
+                    .onChange(of: artist) {
+                        if !colaborationViewModel.artists.contains(artist) {
+                            clearSearchList = false
+                        }
+                    }
+                    
+                    if !artist.isEmpty && isEditing {
+                        
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundStyle(.secondary)
+                            .onTapGesture {
+                                artist = ""
+                            }
+                    }
                 }
             }
             
@@ -72,6 +96,7 @@ struct NewWorkView: View {
                         }
                         .onTapGesture {
                             artist = result
+                            clearSearchList = true
                         }
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.automatic)
@@ -193,7 +218,7 @@ struct NewWorkView: View {
             }
         }
         .navigationDestination(isPresented: $navigate) {
-            NewWorkCardView(artist: artist, title: title, descripition: description, image: image, location: location)
+            NewWorkCardView(colaborationViewModel: colaborationViewModel, artist: artist, title: title, descripition: description, image: image, location: location)
         }
     }
 }
