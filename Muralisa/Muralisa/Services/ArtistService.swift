@@ -23,7 +23,7 @@ class ArtistService {
     }
     
     func convertRecordToArtist(_ record: CKRecord) -> Artist {
-        let id = record["Name"] as? String ?? UUID().uuidString
+        let id = record.recordID.recordName
         let name = record["Nickname"] as? String ?? "Unknown Artist"
         let biography = record["Biography"] as? String
         var photo: UIImage? = nil
