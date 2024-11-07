@@ -15,14 +15,12 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     var location: CLLocation?
     var authorizationStatus: CLAuthorizationStatus
     
-    // When the class is instantiated, we ask the user for location permission
     override init() {
         self.authorizationStatus = locationManager.authorizationStatus
         super.init()
         
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
-        locationManager.requestWhenInUseAuthorization() // Request permission
     }
     
     // If the user has enabled location
@@ -42,5 +40,9 @@ class LocationManager: NSObject, ObservableObject, CLLocationManagerDelegate {
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("Error updating location: \(error.localizedDescription)")
+    }
+    
+    func askPermission() {
+        locationManager.requestWhenInUseAuthorization()
     }
 }
