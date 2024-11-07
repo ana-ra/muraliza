@@ -10,8 +10,7 @@ import PhotosUI
 import CoreLocation
 
 struct ColaborationView: View {
-    
-    var locationManager = LocationManager()
+    @State var locationManager = LocationManager()
     
     // Substituir por dados salvos no userDefaults/coreData das obras colaboradas, o status deve vir da variável de controle no banco de dados.
     var works: [(String, Int, UUID)] = []
@@ -29,7 +28,14 @@ struct ColaborationView: View {
     @State private var navigateToNewWork: Bool = false
     
     var body: some View {
-            List {
+        List {
+            if works.isEmpty {
+                Spacer()
+                    .listRowBackground(Color.clear)
+            }
+            
+            Section {
+                
                 if works.isEmpty {
                     Spacer()
                         .listRowBackground(Color.clear)
@@ -40,7 +46,9 @@ struct ColaborationView: View {
                     if works.isEmpty {
                         Text("Você ainda não possui obras adicionadas à nossa curadoria de imagens.")
                             .listRowBackground(Color.clear)
+                            .multilineTextAlignment(.center)
                             .padding(.horizontal, -16)
+                            .foregroundStyle(.secondary)
                     }
                     
                     
@@ -51,7 +59,7 @@ struct ColaborationView: View {
                         .padding(.horizontal, -16)
                         .foregroundStyle(Color.gray)
                         .opacity(0.5)
-                
+                    
                     
                     HStack {
                         Spacer()
@@ -132,9 +140,10 @@ struct ColaborationView: View {
             .onAppear {
                 location = locationManager.location
             }
+        }
     }
 }
-//
-//#Preview {
-//    ColaborationView()
-//}
+    //
+    //#Preview {
+    //    ColaborationView()
+    //}

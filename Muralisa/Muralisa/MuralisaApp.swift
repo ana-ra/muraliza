@@ -9,16 +9,41 @@ import SwiftUI
 
 @main
 struct MuralisaApp: App {
+    @State var networkMonitor = NetworkMonitor()
+    @State var locationManager = LocationManager()
+    
     var body: some Scene {
         WindowGroup {
             TabView {
                 Tab("Sugestão", systemImage: "wand.and.rays.inverse") {
-                    SuggestionView()
+                    NavigationStack {
+                        if networkMonitor.isConnected {
+                            if locationManager.authorizationStatus == .authorizedWhenInUse {
+                                SuggestionView()
+                            } else {
+                                DisabledLocationView(locationManager: locationManager)
+                                    .navigationTitle("Sugestão")
+                            }
+                        } else {
+                            NoConnectionView()
+                                .navigationTitle("Sugestão")
+                        }
+                    }
                 }
                 
                 Tab("Colaborar", systemImage: "photo.badge.plus.fill") {
                     NavigationStack {
-                        ColaborationView()
+                        if networkMonitor.isConnected {
+                            if locationManager.authorizationStatus == .authorizedWhenInUse {
+                                ColaborationView()
+                            } else {
+                                DisabledLocationView(locationManager: locationManager)
+                                    .navigationTitle("Colaborar")
+                            }
+                        } else {
+                            NoConnectionView()
+                                .navigationTitle("Colaborar")
+                        }
                     }
                 }
                 

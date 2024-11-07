@@ -31,10 +31,7 @@ struct DisabledLocationView: View {
             }
             
             // Illustration will be here in the future
-            Image(systemName: "location.slash")
-                .resizable()
-                .frame(width: 100, height: 100)
-                .foregroundStyle(.secondary)
+            Image("location_empty_state")
         }
     }
     
