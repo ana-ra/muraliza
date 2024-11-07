@@ -14,6 +14,7 @@ class ColaborationViewModel: ObservableObject {
     var artistServivce = ArtistService()
     
     var artistList: [Artist] = []
+    
     var artistsID: [CKRecord.Reference] = []
     var artists: [String] = []
     
@@ -33,6 +34,7 @@ class ColaborationViewModel: ObservableObject {
     }
     
     func getArtistID(artistName: [String]) {
+        artistsID.removeAll()
         for artist in artistList {
             if artistName.contains(artist.name) {
                 
