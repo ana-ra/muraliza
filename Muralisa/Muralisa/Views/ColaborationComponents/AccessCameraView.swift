@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct AccessCameraView: UIViewControllerRepresentable {
-    
     @Binding var selectedImage: UIImage?
     @Binding var navigate: Bool
     @Environment(\.presentationMode) var isPresented

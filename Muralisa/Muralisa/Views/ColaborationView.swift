@@ -29,9 +29,7 @@ struct ColaborationView: View {
     @State private var navigateToNewWork: Bool = false
     
     var body: some View {
-        NavigationStack {
             List {
-                
                 if works.isEmpty {
                     Spacer()
                         .listRowBackground(Color.clear)
@@ -63,7 +61,6 @@ struct ColaborationView: View {
                             .font(.largeTitle)
                             .onTapGesture {
                                 showingOptions = true
-                                
                             }
                             .confirmationDialog("Adicionar foto à curadoria", isPresented: $showingOptions, titleVisibility: .visible) {
                                 Button("Camera")  {
@@ -135,10 +132,9 @@ struct ColaborationView: View {
             .onAppear {
                 location = locationManager.location
             }
-        }
     }
 }
-
-#Preview {
-    ColaborationView()
-}
+//
+//#Preview {
+//    ColaborationView()
+//}

@@ -224,6 +224,6 @@ struct NewWorkView: View {
 }
 
 
-#Preview {
-    NewWorkView(image: UIImage(named: "ima"), location: CLLocation(latitude: -24, longitude: 48))
-}
+//#Preview {
+//    NewWorkView(image: UIImage(named: "ima"), location: CLLocation(latitude: -24, longitude: 48))
+//}

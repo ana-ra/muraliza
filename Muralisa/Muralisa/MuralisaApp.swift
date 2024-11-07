@@ -17,7 +17,9 @@ struct MuralisaApp: App {
                 }
                 
                 Tab("Colaborar", systemImage: "photo.badge.plus.fill") {
-                    ColaborationView()
+                    NavigationStack {
+                        ColaborationView()
+                    }
                 }
                 
                 Tab("Curadoria", systemImage: "rectangle.and.text.magnifyingglass") {

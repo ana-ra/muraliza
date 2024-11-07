@@ -106,11 +106,16 @@ class CloudKitService {
         return try await databasePublic.record(for: recordID)
     }
     
-    func saveRecord(_ record: CKRecord) {
-        databasePublic.save(record) { [weak self] returnedRecord, returnedError in
-            print("Record: \(returnedRecord)")
-            if let returnedError {
-                print("Error: \(returnedError)")
+    func saveRecord(_ record: CKRecord) async throws -> CKRecord {
+        try await withCheckedThrowingContinuation { continuation in
+            databasePublic.save(record) { returnedRecord, returnedError in
+                if let returnedError = returnedError {
+                    continuation.resume(throwing: returnedError) // Resume with an error if there was one
+                } else if let returnedRecord = returnedRecord {
+                    continuation.resume(returning: returnedRecord) // Resume with the saved record
+                } else {
+                    continuation.resume(throwing: CKError(.unknownItem)) // Handle unexpected nil response gracefully
+                }
             }
         }
     }
@@ -204,6 +209,55 @@ class CloudKitService {
             }
             
             databasePublic.add(queryOperation)
+        }
+    }
+    
+    // Helper function to fetch records
+    func fetchRecordsByIDsAndDesiredKeys(by recordIDs: [CKRecord.ID], desiredKeys: [String]) async throws -> [CKRecord] {
+        return try await withCheckedThrowingContinuation { continuation in
+            var fetchedRecords: [CKRecord] = []
+            
+            let operation = CKFetchRecordsOperation(recordIDs: recordIDs)
+            operation.desiredKeys = desiredKeys
+            operation.perRecordResultBlock = { recordID, result in
+                switch result {
+                case .success(let record):
+                    fetchedRecords.append(record)
+                case .failure(let error):
+                    print("Failed to fetch record \(recordID): \(error)")
+                }
+            }
+            
+            operation.fetchRecordsResultBlock = { result in
+                switch result {
+                case .success:
+                    continuation.resume(returning: fetchedRecords)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+            
+            // Execute the operation
+            databasePublic.add(operation)
+        }
+    }
+    
+    // Helper function to save records
+    func modifyRecords(_ records: [CKRecord]) async throws {
+        return try await withCheckedThrowingContinuation { continuation in
+            let modifyOperation = CKModifyRecordsOperation(recordsToSave: records, recordIDsToDelete: nil)
+            
+            modifyOperation.modifyRecordsResultBlock = { result in
+                switch result {
+                case .success:
+                    continuation.resume(returning: ())
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+            
+            // Execute the operation
+            databasePublic.add(modifyOperation)
         }
     }
 }

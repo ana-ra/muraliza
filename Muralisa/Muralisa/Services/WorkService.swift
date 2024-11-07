@@ -127,7 +127,7 @@ class WorkService: ObservableObject {
         image: UIImage?,
         location: CLLocation,
         artistReference: [CKRecord.Reference]?
-    ) throws {
+    ) async throws -> CKRecord? {
         // Create a new CKRecord for Work
         let workRecord = CKRecord(recordType: Work.recordType)
         workRecord["Title"] = title
@@ -143,12 +143,13 @@ class WorkService: ObservableObject {
                 try data.write(to: tempURL)
                 let asset = CKAsset(fileURL: tempURL)
                 workRecord["Image"] = asset
-                ckService.saveRecord(workRecord)
+                return try await ckService.saveRecord(workRecord)
             } catch {
                 print("Error writing image to cache: \(error.localizedDescription)")
             }
         } else {
             print("Error: invalid image")
         }
+        return nil
     }
 }

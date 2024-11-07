@@ -15,6 +15,7 @@ struct NewWorkCardView: View {
     var colaborationViewModel: ColaborationViewModel
     
     let workService = WorkService()
+    let artistService = ArtistService()
     
     var artist: String
     
@@ -31,7 +32,6 @@ struct NewWorkCardView: View {
     
     var body: some View {
         VStack {
-            
             VStack {
                 if let image = image {
                     Image(uiImage: image)
@@ -89,8 +89,6 @@ struct NewWorkCardView: View {
                 }
                 .padding(.horizontal, 24)
                 .padding(.bottom, tags.isEmpty ? 24 : 0)
-                
-                
                 
                 if !tags.isEmpty {
                     
@@ -175,10 +173,16 @@ struct NewWorkCardView: View {
                 Button {
                     colaborationViewModel.getArtistID(artistName: [artist])
                     
-                    do {
-                        try workService.saveWork(title: title, workDescription: descripition, tag: tags, image: image, location: location!, artistReference: colaborationViewModel.artistsID)
-                    } catch {
-                        print("error: \(error.localizedDescription)")
+                    Task {
+                        do {
+                            let workRecord = try await workService.saveWork(title: title, workDescription: descripition, tag: tags, image: image, location: location!, artistReference: colaborationViewModel.artistsID)
+                            
+                            if let workRecord {
+                                try await artistService.addWorkReferenceToArtists(colaborationViewModel.artistsID, workRecord: workRecord)
+                            }
+                        } catch {
+                            print("error: \(error.localizedDescription)")
+                        }
                     }
                 } label: {
                     Label("Enviar", systemImage: "paperplane.fill")
@@ -202,8 +206,8 @@ struct NewWorkCardView: View {
 }
 
 
-#Preview {
-    NavigationStack {
-        NewWorkCardView(colaborationViewModel: ColaborationViewModel(), artist: "",title: "Tropical gang", descripition: "", image: UIImage(named: "ima"))
-    }
-}
+//#Preview {
+//    NavigationStack {
+//        NewWorkCardView(colaborationViewModel: ColaborationViewModel(), artist: "",title: "Tropical gang", descripition: "", image: UIImage(named: "ima"))
+//    }
+//}
