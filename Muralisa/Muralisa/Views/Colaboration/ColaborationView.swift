@@ -13,6 +13,7 @@ import CoreLocation
 enum ColaborationNavigationDestinations: String, CaseIterable, Hashable {
     case newWork
     case reviewNewWork
+    case newWorkLoadingView
 }
 
 @Observable
@@ -169,6 +170,9 @@ struct ColaborationView: View {
                     .environment(router)
             case .reviewNewWork:
                 ReviewNewWorkView(colaborationViewModel: colaborationViewModel)
+                    .environment(router)
+            case .newWorkLoadingView:
+                NewWorkLoadingView(colaborationViewModel: colaborationViewModel)
                     .environment(router)
             }
         })

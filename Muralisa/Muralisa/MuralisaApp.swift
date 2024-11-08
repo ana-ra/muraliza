@@ -13,6 +13,10 @@ struct MuralisaApp: App {
     @State var locationManager = LocationManager()
 
     @State var colaborationRouter = ColaborationRouter()
+    init(){
+      // override alerts tintColor bug
+        UIView.appearance(whenContainedInInstancesOf: [UIAlertController.self]).tintColor = UIColor(.accent)
+    }
     
     var body: some Scene {
         WindowGroup {

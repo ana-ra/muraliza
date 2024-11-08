@@ -181,7 +181,7 @@ struct ReviewNewWorkView: View {
                         }
                     }
                     
-                    showAlert = true
+                    router.navigateTo(route: .newWorkLoadingView)
                 } label: {
                     Label("Enviar", systemImage: "paperplane.fill")
                         .foregroundStyle(.white)
@@ -200,13 +200,6 @@ struct ReviewNewWorkView: View {
         }
         .navigationTitle("Revisar")
         .navigationBarTitleDisplayMode(.inline)
-        .alert("Muito obrigado por contribuir!", isPresented: $showAlert) {
-            Button("Continuar") {
-                router.navigateToRoot()
-            }
-        } message: {
-             Text("Nosso time de curadoria está avaliando sua colaboração")
-        }
     }
 }
 
