@@ -9,8 +9,37 @@ import SwiftUI
 import PhotosUI
 import CoreLocation
 
+
+enum ColaborationNavigationDestinations: String, CaseIterable, Hashable {
+    case newWork
+    case reviewNewWork
+}
+
+@Observable
+class ColaborationRouter {
+    var navigationPath = NavigationPath()
+    
+    func navigateTo(route: ColaborationNavigationDestinations) {
+        navigationPath.append(route)
+    }
+    
+    func navigateBack() {
+        navigationPath.removeLast()
+    }
+    
+    func navigateToRoot() {
+        navigationPath = NavigationPath()
+    }
+}
+
 struct ColaborationView: View {
+    
+    @Environment(ColaborationRouter.self) var router
+    
+    @StateObject var colaborationViewModel = ColaborationViewModel()
     @State var locationManager = LocationManager()
+    
+    let screens = ColaborationNavigationDestinations.allCases
     
     // Substituir por dados salvos no userDefaults/coreData das obras colaboradas, o status deve vir da variável de controle no banco de dados.
     var works: [(String, Int, UUID)] = []
@@ -22,17 +51,10 @@ struct ColaborationView: View {
     
     @State private var pickerItem: PhotosPickerItem?
     
-    @State private var location: CLLocation?
-    @State private var selectedImage: UIImage?
-    
-    @State private var navigateToNewWork: Bool = false
+    @State private var navigateFromCamera: Bool = false
     
     var body: some View {
         List {
-            if works.isEmpty {
-                Spacer()
-                    .listRowBackground(Color.clear)
-            }
             
             Section {
                 
@@ -73,6 +95,7 @@ struct ColaborationView: View {
                             .confirmationDialog("Adicionar foto à curadoria", isPresented: $showingOptions, titleVisibility: .visible) {
                                 Button("Camera")  {
                                     showCamera = true
+                                    colaborationViewModel.location = locationManager.location
                                 }
                                 Button("Galeria de fotos") {
                                     showImagePicker = true
@@ -82,7 +105,8 @@ struct ColaborationView: View {
                             .onChange(of: pickerItem) {
                                 Task {
                                     if let data = try? await pickerItem?.loadTransferable(type: Data.self) {
-                                        selectedImage = UIImage(data: data)
+                                        colaborationViewModel.image = UIImage(data: data)
+                                      //  selectedImage = UIImage(data: data)
                                         
                                         if let image = CIImage(data: data) {
                                             
@@ -92,18 +116,23 @@ struct ColaborationView: View {
                                                 let latitude = gps[kCGImagePropertyGPSLatitude as String] as! Double
                                                 let longitude = gps[kCGImagePropertyGPSLongitude as String] as! Double
                                                 
-                                                location = CLLocation(latitude: latitude, longitude: longitude)
-                                                
+                                                colaborationViewModel.location = CLLocation(latitude: latitude, longitude: longitude)
                                             }
                                         }
-                                        self.navigateToNewWork = true
+                                        router.navigateTo(route: .newWork)
                                         return
                                     }
                                 }
                             }
                             .fullScreenCover(isPresented: $showCamera) {
-                                AccessCameraView(selectedImage: self.$selectedImage, navigate: self.$navigateToNewWork)
+                                AccessCameraView(colaborationViewModel: colaborationViewModel, navigate: $navigateFromCamera)
                                     .background(.black)
+                            }
+                            .onChange(of: navigateFromCamera) {
+                                if navigateFromCamera == true {
+                                    router.navigateTo(route: .newWork)
+                                    navigateFromCamera = false
+                                }
                             }
                         
                         Spacer()
@@ -129,21 +158,26 @@ struct ColaborationView: View {
                     Spacer()
                         .listRowBackground(Color.clear)
                 }
-                
-                
             }
-            .listStyle(.insetGrouped)
-            .navigationTitle("Colaborar")
-            .navigationDestination(isPresented: $navigateToNewWork) {
-                NewWorkView(image: selectedImage, location: location)
+        }
+        .listStyle(.insetGrouped)
+        .navigationTitle("Colaborar")
+        .navigationDestination(for: ColaborationNavigationDestinations.self, destination: { screen in
+            switch screen {
+            case .newWork:
+                NewWorkView(colaborationViewModel: colaborationViewModel)
+                    .environment(router)
+            case .reviewNewWork:
+                ReviewNewWorkView(colaborationViewModel: colaborationViewModel)
+                    .environment(router)
             }
-            .onAppear {
-                location = locationManager.location
-            }
+        })
+        .onAppear {
+            colaborationViewModel.location = locationManager.location
         }
     }
 }
-    //
-    //#Preview {
-    //    ColaborationView()
-    //}
+//
+//#Preview {
+//    ColaborationView()
+//}

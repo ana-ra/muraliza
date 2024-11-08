@@ -11,12 +11,12 @@ import PhotosUI
 
 struct NewWorkView: View {
     
-    @Environment(\.presentationMode) var isPresented
+//    @Environment(\.presentationMode) var isPresented
+    @Environment(ColaborationRouter.self) var router
     
-    @StateObject var colaborationViewModel = ColaborationViewModel()
+    var colaborationViewModel: ColaborationViewModel
     
-    @State var image: UIImage?
-    @State var location: CLLocation?
+    @State var locationManager = LocationManager()
     
     @State private var artist: String = ""
     @State private var clearSearchList: Bool = true
@@ -36,12 +36,12 @@ struct NewWorkView: View {
     @State private var showImagePicker: Bool = false
     @State private var showCamera: Bool = false
     
-    @State private var navigate: Bool = false
+//     @State private var navigate: Bool = false
     
     var body: some View {
         List {
             Section {
-                if let image = image {
+                if let image = colaborationViewModel.image {
                     Image(uiImage: image)
                         .resizable()
                         .scaledToFill()
@@ -144,7 +144,12 @@ struct NewWorkView: View {
                         )
                         .onTapGesture {
                             if !title.isEmpty {
-                                navigate = true
+                                colaborationViewModel.title = title
+                                colaborationViewModel.description = description
+                                colaborationViewModel.artist = artist
+                                
+                                router.navigateTo(route: .reviewNewWork)
+ //                               navigate = true
                             }
                         }
                     Spacer()
@@ -165,6 +170,7 @@ struct NewWorkView: View {
                 .listRowSeparator(.hidden)
                 .confirmationDialog("Adicionar foto à curadoria", isPresented: $showingOptions, titleVisibility: .visible) {
                     Button("Camera")  {
+                        colaborationViewModel.location = locationManager.location
                         showCamera = true
                     }
                     Button("Galeria de fotos") {
@@ -175,7 +181,7 @@ struct NewWorkView: View {
                 .onChange(of: pickerItem) {
                     Task {
                         if let data = try? await pickerItem?.loadTransferable(type: Data.self) {
-                            image = UIImage(data: data)
+                            colaborationViewModel.image = UIImage(data: data)
                             
                             if let image = CIImage(data: data) {
                                 
@@ -185,7 +191,7 @@ struct NewWorkView: View {
                                     let lat = gps[kCGImagePropertyGPSLatitude as String] as! Double
                                     let lon = gps[kCGImagePropertyGPSLongitude as String] as! Double
                                     
-                                    location = CLLocation(latitude: lat, longitude: lon)
+                                    colaborationViewModel.location = CLLocation(latitude: lat, longitude: lon)
                                     
                                 }
                             }
@@ -194,7 +200,7 @@ struct NewWorkView: View {
                     }
                 }
                 .fullScreenCover(isPresented: $showCamera) {
-                    AccessCameraView(selectedImage: self.$image, navigate: .constant(true))
+                    AccessCameraView(colaborationViewModel: colaborationViewModel, navigate: .constant(true))
                         .background(.black)
                 }
             }
@@ -206,7 +212,7 @@ struct NewWorkView: View {
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Button("Cancelar") {
-                    isPresented.wrappedValue.dismiss()
+                    router.navigateBack()
                 }
             }
         }
@@ -216,9 +222,6 @@ struct NewWorkView: View {
             } catch {
                 print("deu erro \(error.localizedDescription)")
             }
-        }
-        .navigationDestination(isPresented: $navigate) {
-            NewWorkCardView(colaborationViewModel: colaborationViewModel, artist: artist, title: title, descripition: description, image: image, location: location)
         }
     }
 }

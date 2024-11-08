@@ -11,6 +11,8 @@ import SwiftUI
 struct MuralisaApp: App {
     @State var networkMonitor = NetworkMonitor()
     @State var locationManager = LocationManager()
+
+    @State var colaborationRouter = ColaborationRouter()
     
     var body: some Scene {
         WindowGroup {
@@ -32,10 +34,11 @@ struct MuralisaApp: App {
                 }
                 
                 Tab("Colaborar", systemImage: "photo.badge.plus.fill") {
-                    NavigationStack {
+                    NavigationStack(path: $colaborationRouter.navigationPath) {
                         if networkMonitor.isConnected {
                             if locationManager.authorizationStatus == .authorizedWhenInUse {
                                 ColaborationView()
+                                    .environment(colaborationRouter)
                             } else {
                                 DisabledLocationView(locationManager: locationManager)
                                     .navigationTitle("Colaborar")

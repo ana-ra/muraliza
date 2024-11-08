@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct AccessCameraView: UIViewControllerRepresentable {
-    @Binding var selectedImage: UIImage?
+    var colaborationViewModel: ColaborationViewModel
+//    @Binding var selectedImage: UIImage?
     @Binding var navigate: Bool
     @Environment(\.presentationMode) var isPresented
     
@@ -38,7 +39,8 @@ class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerContro
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         guard let selectedImage = info[.originalImage] as? UIImage else { return }
-        self.picker.selectedImage = selectedImage
+        //self.picker.selectedImage = selectedImage
+        self.picker.colaborationViewModel.image = selectedImage
         self.picker.isPresented.wrappedValue.dismiss()
         self.picker.navigate = true
     }

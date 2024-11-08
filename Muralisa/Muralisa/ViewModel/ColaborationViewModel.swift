@@ -8,15 +8,23 @@
 import Foundation
 import SwiftUI
 import CloudKit
+import CoreLocation
 
 @Observable
 class ColaborationViewModel: ObservableObject {
     var artistServivce = ArtistService()
     
     var artistList: [Artist] = []
-    
-    var artistsID: [CKRecord.Reference] = []
     var artists: [String] = []
+
+    var location: CLLocation?
+    var image: UIImage?
+    
+    var artist: String = ""
+    var title: String = ""
+    var description: String = ""
+
+    var artistsID: [CKRecord.Reference] = []
     
     func fetchArtists() async throws {
         

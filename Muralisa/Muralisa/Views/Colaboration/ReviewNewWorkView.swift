@@ -10,30 +10,26 @@ import WrappingHStack
 import CoreLocation
 import CloudKit
 
-struct NewWorkCardView: View {
+struct ReviewNewWorkView: View {
+    
+    @Environment(ColaborationRouter.self) var router
     
     var colaborationViewModel: ColaborationViewModel
     
     let workService = WorkService()
     let artistService = ArtistService()
     
-    var artist: String
-    
-    @State private var artistId: [CKRecord.Reference] = []
-    var title: String
-    var descripition: String
-    
-    var image: UIImage?
-    var location: CLLocation?
     
     @State private var tags: [String] = []
     
     @State private var showTagsModal: Bool = false
+    @State private var showAlert: Bool = false
+    
     
     var body: some View {
         VStack {
             VStack {
-                if let image = image {
+                if let image = colaborationViewModel.image {
                     Image(uiImage: image)
                         .resizable()
                         .aspectRatio(contentMode: .fill)
@@ -47,7 +43,7 @@ struct NewWorkCardView: View {
                 
                 HStack {
                     Text("Artista:")
-                    Text(artist == "" ? "Desconhecido" : artist)
+                    Text(colaborationViewModel.artist == "" ? "Desconhecido" : colaborationViewModel.artist)
                         .bold()
                     
                     Spacer()
@@ -65,7 +61,7 @@ struct NewWorkCardView: View {
                 HStack {
                     
                     Text("Título:")
-                    Text(title)
+                    Text(colaborationViewModel.title)
                         .bold()
                     Spacer()
                 }
@@ -83,7 +79,7 @@ struct NewWorkCardView: View {
                 WrappingHStack(alignment: .leading) {
                     
                     Text("Descrição:")
-                    Text(descripition == "" ? "Sem descrição" : descripition)
+                    Text(colaborationViewModel.description == "" ? "Sem descrição" : colaborationViewModel.description)
                         .bold()
                         .lineLimit(1)
                 }
@@ -133,7 +129,7 @@ struct NewWorkCardView: View {
                 }
             )
             .padding(.vertical, 24)
-        
+            
             
             HStack {
                 Spacer()
@@ -171,11 +167,11 @@ struct NewWorkCardView: View {
             HStack {
                 Spacer()
                 Button {
-                    colaborationViewModel.getArtistID(artistName: [artist])
+                    colaborationViewModel.getArtistID(artistName: [colaborationViewModel.artist])
                     
                     Task {
                         do {
-                            let workRecord = try await workService.saveWork(title: title, workDescription: descripition, tag: tags, image: image, location: location!, artistReference: colaborationViewModel.artistsID)
+                            let workRecord = try await workService.saveWork(title: colaborationViewModel.title, workDescription: colaborationViewModel.description, tag: tags, image: colaborationViewModel.image, location: colaborationViewModel.location!, artistReference: colaborationViewModel.artistsID)
                             
                             if let workRecord {
                                 try await artistService.addWorkReferenceToArtists(colaborationViewModel.artistsID, workRecord: workRecord)
@@ -184,6 +180,8 @@ struct NewWorkCardView: View {
                             print("error: \(error.localizedDescription)")
                         }
                     }
+                    
+                    showAlert = true
                 } label: {
                     Label("Enviar", systemImage: "paperplane.fill")
                         .foregroundStyle(.white)
@@ -202,6 +200,13 @@ struct NewWorkCardView: View {
         }
         .navigationTitle("Revisar")
         .navigationBarTitleDisplayMode(.inline)
+        .alert("Muito obrigado por contribuir!", isPresented: $showAlert) {
+            Button("Continuar") {
+                router.navigateToRoot()
+            }
+        } message: {
+             Text("Nosso time de curadoria está avaliando sua colaboração")
+        }
     }
 }
 
