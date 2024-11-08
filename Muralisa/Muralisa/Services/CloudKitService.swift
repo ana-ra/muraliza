@@ -26,7 +26,7 @@ class CloudKitService {
     
     func fetchRecordByTags(_ tags: [String], except exceptionRecordName: String) async throws -> [CKRecord] {
         let exceptionRecordID = CKRecord.ID(recordName: exceptionRecordName)
-        let predicate = NSPredicate(format: "ANY Tag IN %@ AND recordID != %@", tags, exceptionRecordID)
+        let predicate = NSPredicate(format: "ANY Tag IN %@ AND recordID != %@ AND Status == 1", tags, exceptionRecordID)
         
         let query = CKQuery(recordType: "Artwork", predicate: predicate)
         let queryOperation = CKQueryOperation(query: query)
@@ -124,7 +124,7 @@ class CloudKitService {
         var resultArray: [CKRecord] = []
         
         let exceptionRecordID = CKRecord.ID(recordName: expectionRecordName)
-        let predicate = NSPredicate(format: "ANY Artist in %@ AND recordID != %@", artistsReference, exceptionRecordID)
+        let predicate = NSPredicate(format: "ANY Artist in %@ AND recordID != %@ AND Status == 1", artistsReference, exceptionRecordID)
         let query = CKQuery(recordType: Work.recordType, predicate: predicate)
         let queryOperation = CKQueryOperation(query: query)
         queryOperation.resultsLimit = 6
@@ -158,7 +158,7 @@ class CloudKitService {
         // Converts all record names to recordIDs
         let recordIDs = recordNamesToExclude.map { CKRecord.ID(recordName: $0) }
         // Predicate logic searches for all records that are not in the recordIDs list
-        let predicate = NSPredicate(format: "NOT (recordID IN %@)", recordIDs)
+        let predicate = NSPredicate(format: "NOT (recordID IN %@) AND Status == 1", recordIDs)
         let query = CKQuery(recordType: Work.recordType, predicate: predicate)
         
         let queryOperation = CKQueryOperation(query: query)
@@ -183,7 +183,7 @@ class CloudKitService {
         
         guard let location = userPosition else { return resultArray }
         
-        let predicate = NSPredicate(format: "distanceToLocation:fromLocation:(Location, %@) < %f", location, radius)
+        let predicate = NSPredicate(format: "distanceToLocation:fromLocation:(Location, %@) < %f AND Status == 1", location, radius)
         let query = CKQuery(recordType: recordType, predicate: predicate)
         let queryOperation = CKQueryOperation(query: query)
         queryOperation.resultsLimit = 6
