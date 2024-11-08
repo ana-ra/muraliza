@@ -38,7 +38,7 @@ class WorkService: ObservableObject {
     
     func fetchPendingWorkRecords() async throws {
         let predicate = NSPredicate(format: "Status == 2")
-        let fetchedRecords = try await ckService.fetchRecordsByType(Work.recordType)
+        let fetchedRecords = try await ckService.fetchRecordsByType(Work.recordType, predicate: predicate)
         pendingWorkRecords = fetchedRecords
     }
     
@@ -73,30 +73,14 @@ class WorkService: ObservableObject {
     }
     
     func convertRecordsToWorks(_ records: [CKRecord]) async throws -> [Work] {
-        await withTaskGroup(of: Work?.self) { group in
-            var works: [Work] = []
-            
-            for record in records {
-                group.addTask {
-                    do {
-                        return try await self.convertRecordToWork(record)
-                    } catch {
-                        print("Error converting record \(record.recordID.recordName): \(error)")
-                        return nil
-                    }
-                }
-            }
-            
-            for await work in group {
-                if let work = work {
-                    works.append(work)
-                }
-            }
-            
-            return works
+        var works: [Work] = []
+        for record in records {
+            let work = try await self.convertRecordToWork(record)
+            works.append(work)
         }
+        return works
     }
-
+    
     func convertRecordToWork(_ record: CKRecord) async throws -> Work {
         let id = String(record.recordID.recordName)
         let title = record["Title"] as? String ?? "Unknown Title"
@@ -117,12 +101,10 @@ class WorkService: ObservableObject {
         }
 //        
         let location = record["Location"] as? CLLocation ?? CLLocation(latitude: 0, longitude: 0)
-
+        
         // Fetch artist record, if it exists
         let artistReference = record["Artist"] as? [CKRecord.Reference]
-        print("data de criação da função \(creationDate)")
-        print("data de agora \(Date())")
-
+        
         return Work(
             id: id,
             title: title,
@@ -135,5 +117,39 @@ class WorkService: ObservableObject {
             status: status
             
         )
+    }
+    
+    // Function to post a new Work type to CloudKit
+    func saveWork(
+        title: String,
+        workDescription: String,
+        tag: [String],
+        image: UIImage?,
+        location: CLLocation,
+        artistReference: [CKRecord.Reference]?
+    ) async throws -> CKRecord? {
+        // Create a new CKRecord for Work
+        let workRecord = CKRecord(recordType: Work.recordType)
+        workRecord["Title"] = title
+        workRecord["Description"] = workDescription
+        workRecord["Tag"] = tag
+        workRecord["Location"] = location
+        workRecord["Artist"] = artistReference
+        workRecord["Status"] = 2
+      
+        // Handle optional image
+        if let image = image, let tempURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first?.appendingPathComponent("imagePlaceholder.png"), let data = image.pngData() {
+            do {
+                try data.write(to: tempURL)
+                let asset = CKAsset(fileURL: tempURL)
+                workRecord["Image"] = asset
+                return try await ckService.saveRecord(workRecord)
+            } catch {
+                print("Error writing image to cache: \(error.localizedDescription)")
+            }
+        } else {
+            print("Error: invalid image")
+        }
+        return nil
     }
 }

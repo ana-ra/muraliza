@@ -18,6 +18,14 @@ class RecommendationService: ObservableObject {
     
     let today = Date()
     var todayWork: Work
+    var nearbyWorks: [Work] = []
+    var worksByTodaysArtist: [Work] = []
+    var similarTagsWorks: [Work] = []
+    #if DEBUG
+    let maxWorkCount = 38
+    #else
+    let maxWorkCount = 10
+    #endif
     
     init() {
         self.todayWork = Work(id: UUID().uuidString,
@@ -29,36 +37,47 @@ class RecommendationService: ObservableObject {
                               artist: nil,
                               creationDate: Date(),
                               status: 1)
+        self.similarTagsWorks = [Work(id: UUID().uuidString,
+                                                     title: "",
+                                                     workDescription: "",
+                                                     image: UIImage(systemName: "photo.badge.exclamationmark")!,
+                                                     location: CLLocation(latitude: 0, longitude: 0),
+                                                     tag: [""],
+                                                     artist: nil,
+                                                     creationDate: Date(),
+                                                                status: 1)]
     }
     
-//    func setupDailyRecommendation() async throws {
-//        let lastDate = defaults.value(forKey: "lastDateExhibited") as? Date
-//        let worksExhibited = defaults.value(forKey: "worksExhibited") as? [String] ?? []
-//        
-//        if let lastDate = lastDate, let lastWork = worksExhibited.last, compareDates(lastDate, today) {
-//            print("Fetching today's work from UserDefaults")
-//            todayWork = try await workService.fetchWorkFromRecordName(from: lastWork)
-//            return
-//        }
-//        
-//        print("Fetching all works from CloudKit...")
-//        let workResults = try await service.fetchRecordsByType(Work.recordType)
-//        print("Total works fetched from CloudKit: \(workResults.count)")
-//        
-//        let newWorks = workResults.filter { !worksExhibited.contains($0.recordID.recordName) }
-//        print("Total new works after filtering: \(newWorks.count)")
-//        
-//        guard !newWorks.isEmpty else {
-//            print("No new works available")
-//            throw NSError(domain: "No new works available", code: 1, userInfo: nil)
-//        }
-//        
-//        print("Choosing a new work to exhibit...")
-//        try await addNewRandomWorkToExhibitedList(chooseRandomWorkFrom: newWorks, exhibitedList: worksExhibited)
-//        works = newWorks
-//        print("Work successfully added for today's recommendation")
-//    }
-//    
+    func setupRecommendationByTags() async throws {
+        similarTagsWorks = []
+        let worksByTagsRecords = try await service.fetchRecordByTags(todayWork.tag, except: todayWork.id)
+        similarTagsWorks = try await workService.convertRecordsToWorks(worksByTagsRecords)
+    }
+    
+    func setupRecommendationByDistance(userPosition: CLLocation?) async throws {
+        let resultRecords = try await service.fetchRecordsByDistance(ofType: Work.recordType, userPosition: userPosition, radius: Constants().distanceToCloseArtworks)
+        var resultWorks: [Work] = []
+        
+        // TODO: Check if work is already in cache
+        for record in resultRecords {
+            let work = try await workService.convertRecordToWork(record)
+            resultWorks.append(work)
+        }
+        
+        self.nearbyWorks = resultWorks
+    }
+    
+    func fetchWorksByArtist() async throws {
+        guard let artists = todayWork.artist else {
+            worksByTodaysArtist = []
+            return
+        }
+        
+        let resultRecords = try await service.fetchRecordsByArtistExceptOne(artistsReference: artists, except: todayWork.id)
+        worksByTodaysArtist = try await workService.convertRecordsToWorks(resultRecords)
+        print(worksByTodaysArtist)
+    }
+    
     private func addNewRandomWorkToExhibitedList(chooseRandomWorkFrom: [CKRecord], exhibitedList: [String]) async throws {
         let todayWorkRecord = chooseRandomWorkFrom.first!
         let todayWorkID = todayWorkRecord.recordID.recordName
@@ -107,13 +126,18 @@ class RecommendationService: ObservableObject {
         defaults.set(worksExhibited, forKey: "worksExhibited")
     }
     
-    func setupRecommendation() async throws {
+    func setupDailyRecommendation() async throws {
         let lastDate = defaults.value(forKey: "lastDateExhibited") as? Date
-        let worksExhibited = defaults.value(forKey: "worksExhibited") as? [String] ?? []
+        var worksExhibited = defaults.value(forKey: "worksExhibited") as? [String] ?? []
         
         if let lastDate = lastDate, let lastWork = worksExhibited.last, compareDates(lastDate, today) {
             todayWork = try await workService.fetchWorkFromRecordName(from: lastWork)
             return
+        }
+        
+        if worksExhibited.count >= maxWorkCount {
+            worksExhibited = []
+            defaults.set(worksExhibited, forKey: "worksExhibited")
         }
         
         // Usage in an async context:

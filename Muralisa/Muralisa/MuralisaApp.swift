@@ -9,11 +9,49 @@ import SwiftUI
 
 @main
 struct MuralisaApp: App {
+    @State var networkMonitor = NetworkMonitor()
+    @State var locationManager = LocationManager()
+
+    @State var colaborationRouter = ColaborationRouter()
+    init(){
+      // override alerts tintColor bug
+        UIView.appearance(whenContainedInInstancesOf: [UIAlertController.self]).tintColor = UIColor(.accent)
+    }
+    
     var body: some Scene {
         WindowGroup {
             TabView {
                 Tab("Sugestão", systemImage: "wand.and.rays.inverse") {
-                    SuggestionView()
+                    NavigationStack {
+                        if networkMonitor.isConnected {
+                            if locationManager.authorizationStatus == .authorizedWhenInUse {
+                                SuggestionView()
+                            } else {
+                                DisabledLocationView(locationManager: locationManager)
+                                    .navigationTitle("Sugestão")
+                            }
+                        } else {
+                            NoConnectionView()
+                                .navigationTitle("Sugestão")
+                        }
+                    }
+                }
+                
+                Tab("Colaborar", systemImage: "photo.badge.plus.fill") {
+                    NavigationStack(path: $colaborationRouter.navigationPath) {
+                        if networkMonitor.isConnected {
+                            if locationManager.authorizationStatus == .authorizedWhenInUse {
+                                ColaborationView()
+                                    .environment(colaborationRouter)
+                            } else {
+                                DisabledLocationView(locationManager: locationManager)
+                                    .navigationTitle("Colaborar")
+                            }
+                        } else {
+                            NoConnectionView()
+                                .navigationTitle("Colaborar")
+                        }
+                    }
                 }
                 
                 Tab("Curadoria", systemImage: "rectangle.and.text.magnifyingglass") {
