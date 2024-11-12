@@ -54,9 +54,9 @@ struct MuralisaApp: App {
                     }
                 }
                 
-                Tab("Curadoria", systemImage: "rectangle.and.text.magnifyingglass") {
-                    CurationView()
-                }
+//                Tab("Curadoria", systemImage: "rectangle.and.text.magnifyingglass") {
+//                    CurationView()
+//                }
             }
             .onDisappear {
                 deleteFilesInAssets()
