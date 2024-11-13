@@ -172,7 +172,7 @@ struct ColaborationView: View {
                 ReviewNewWorkView(colaborationViewModel: colaborationViewModel)
                     .environment(router)
             case .newWorkLoadingView:
-                NewWorkLoadingView(colaborationViewModel: colaborationViewModel)
+                NewWorkLoadingView()
                     .environment(router)
             }
         })
