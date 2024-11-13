@@ -1,8 +1,8 @@
 //
-//  NewWorkCardView.swift
+//  CardView.swift
 //  Muralisa
 //
-//  Created by Rafael Antonio Chinelatto on 05/11/24.
+//  Created by Bruno Dias on 13/11/24.
 //
 
 import SwiftUI
@@ -10,17 +10,13 @@ import WrappingHStack
 import CoreLocation
 import CloudKit
 
-struct ReviewNewWorkView: View {
-    
-    @Environment(ColaborationRouter.self) var router
-    
+
+struct CardView: View {
     var colaborationViewModel: ColaborationViewModel
-    
-    let workService = WorkService()
-    let artistService = ArtistService()
+
     
     
-    @State private var tags: [String] = []
+    @State private var tags: [String] = ["sdasd"]
     
     @State private var showTagsModal: Bool = false
     @State private var showAlert: Bool = false
@@ -28,7 +24,18 @@ struct ReviewNewWorkView: View {
     
     var body: some View {
         VStack {
+            
             VStack {
+                
+                HStack{
+                    Spacer()
+                    
+                    Image(systemName: "x.circle.fill")
+                        .foregroundStyle(.thinMaterial)
+                        .padding()
+                }.padding(.top, 24)
+                
+                
                 if let image = colaborationViewModel.image {
                     Image(uiImage: image)
                         .resizable()
@@ -112,81 +119,20 @@ struct ReviewNewWorkView: View {
             .padding(.vertical, 24)
             
             
-            HStack {
-                Spacer()
-                Text("Adicione uma tag para enviar")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-                Spacer()
-            }
             
-            HStack {
-                Spacer()
-                Button {
-                    showTagsModal = true
-                } label: {
-                    Text("Adicionar Tag")
-                        .font(.subheadline)
-                        .foregroundStyle(.accent)
-                        .padding(.horizontal, 14)
-                        .padding(.vertical, 8)
-                        .background(
-                            RoundedRectangle(cornerRadius: 40)
-                                .foregroundStyle(.gray)
-                                .opacity(0.15)
-                        )
-                }
-                .sheet(isPresented: $showTagsModal) {
-                    AddTagsSheet(selectedTags: $tags)
-                }
-                
-                Spacer()
-            }
-            .padding(.bottom, 12)
-            
-            
-            HStack {
-                Spacer()
-                Button {
-                    colaborationViewModel.getArtistID(artistName: [colaborationViewModel.artist])
-                    
-                    Task {
-                        do {
-                            let workRecord = try await workService.saveWork(title: colaborationViewModel.title, workDescription: colaborationViewModel.description, tag: tags, image: colaborationViewModel.image, location: colaborationViewModel.location!, artistReference: colaborationViewModel.artistsID)
-                            
-                            if let workRecord {
-                                try await artistService.addWorkReferenceToArtists(colaborationViewModel.artistsID, workRecord: workRecord)
-                            }
-                        } catch {
-                            print("error: \(error.localizedDescription)")
-                        }
-                    }
-                    
-                    router.navigateTo(route: .newWorkLoadingView)
-                } label: {
-                    Label("Enviar", systemImage: "paperplane.fill")
-                        .foregroundStyle(.white)
-                        .padding()
-                        .background(
-                            RoundedRectangle(cornerRadius: 12)
-                                .foregroundStyle(Color.accentColor)
-                        )
-                }
-                .disabled(tags.isEmpty)
-                Spacer()
-            }
             
             Spacer()
             
         }
-        .navigationTitle("Revisar")
-        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
-
-//#Preview {
-//    NavigationStack {
-//        NewWorkCardView(colaborationViewModel: ColaborationViewModel(), artist: "",title: "Tropical gang", descripition: "", image: UIImage(named: "ima"))
-//    }
-//}
+#Preview {
+    let colaborationViewModel = ColaborationViewModel()
+    CardView(colaborationViewModel: colaborationViewModel)
+        .onAppear {
+            colaborationViewModel.image = UIImage(named: "ima")
+            colaborationViewModel.title = "Crepusculo Nobre"
+            
+        }
+}
