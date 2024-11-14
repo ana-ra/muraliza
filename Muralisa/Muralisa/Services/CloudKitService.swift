@@ -62,11 +62,45 @@ class CloudKitService {
     }
     
     
-    func fetchRecordsByType(_ recordType: String, predicate: NSPredicate = NSPredicate(value: true)) async throws -> [CKRecord] {
+//    func fetchRecordsByType(_ recordType: String, predicate: NSPredicate = NSPredicate(value: true)) async throws -> [CKRecord] {
+//        let query = CKQuery(recordType: recordType, predicate: predicate)
+//        let results = try await databasePublic.records(matching: query)
+//        return results.matchResults.compactMap { try? $0.1.get() }
+//    }
+//    
+    func fetchRecordsByType(_ recordType: String, predicate: NSPredicate = NSPredicate(value: true), desiredKeys: [String]? = nil) async throws -> [CKRecord] {
         let query = CKQuery(recordType: recordType, predicate: predicate)
-        let results = try await databasePublic.records(matching: query)
-        return results.matchResults.compactMap { try? $0.1.get() }
+        let queryOperation = CKQueryOperation(query: query)
+        
+        if let keys = desiredKeys {
+            queryOperation.desiredKeys = keys
+        }
+        
+        var fetchedRecords: [CKRecord] = []
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            queryOperation.recordMatchedBlock = { recordID, recordResult in
+                switch recordResult {
+                case .success(let record):
+                    fetchedRecords.append(record)
+                case .failure(let error):
+                    print("Erro ao buscar registro \(recordID): \(error.localizedDescription)")
+                }
+            }
+            
+            queryOperation.queryResultBlock = { result in
+                switch result {
+                case .success:
+                    continuation.resume(returning: fetchedRecords)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+            
+            databasePublic.add(queryOperation)
+        }
     }
+
     
     func fetchRecordFromReference(from reference: CKRecord.Reference?) async throws -> CKRecord {
         guard let recordID = reference?.recordID else {

@@ -98,4 +98,5 @@ struct NewWorkLoadingView: View {
 
 #Preview {
     NewWorkLoadingView(colaborationViewModel: ColaborationViewModel())
+        .environment(ColaborationRouter())
 }

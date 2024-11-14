@@ -14,7 +14,7 @@ import CoreLocation
 class ColaborationViewModel: ObservableObject {
     var artistServivce = ArtistService()
     
-    var artistList: [Artist] = []
+    var artistList: [(id: String, name: String)] = []
     var artists: [String] = []
 
     var location: CLLocation?
@@ -29,16 +29,14 @@ class ColaborationViewModel: ObservableObject {
     func fetchArtists() async throws {
         
         var artistsNameList: [String] = []
-      //  var artistsIDList: [String] = []
-        artistList = try await artistServivce.fetchArtists()
+        artistList = try await artistServivce.fetchArtistNamesAndIDs()
         
         for artist in artistList {
             artistsNameList.append(artist.name)
-         //   artistsIDList.append(artist.id)
         }
         
         self.artists = artistsNameList
-      //  self.artistsID = artistsIDList
+        print(artistList)
     }
     
     func getArtistID(artistName: [String]) {
@@ -54,4 +52,6 @@ class ColaborationViewModel: ObservableObject {
             }
         }
     }
+    
+    
 }

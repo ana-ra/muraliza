@@ -181,7 +181,8 @@ struct ColaborationView: View {
         }
     }
 }
-//
-//#Preview {
-//    ColaborationView()
-//}
+
+#Preview {
+    ColaborationView()
+        .environment(ColaborationRouter())
+}
