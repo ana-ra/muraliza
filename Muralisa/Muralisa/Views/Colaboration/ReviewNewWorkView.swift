@@ -34,8 +34,7 @@ struct ReviewNewWorkView: View {
                         .resizable()
                         .aspectRatio(contentMode: .fill)
                         .frame(maxWidth: getWidth() - 80)
-                        .frame(maxHeight: tags.isEmpty ? getHeight()/3.2 : getHeight()/4.2)
-                        .cornerRadius(20)
+                        .cornerRadius(12)
                         .padding(.top, 24)
                         .padding(.bottom, 24)
                         .clipped()
@@ -100,16 +99,16 @@ struct ReviewNewWorkView: View {
                 
             }.foregroundStyle(.white)
             .frame(width: getWidth() - 32)
-            .frame(maxHeight: getHeight()/1.8)
+            .frame(maxHeight: getHeight()*4/7)
             .background(
                 ZStack {
                     
                     Image("cardBackground")
                         .resizable()
-                        .cornerRadius(20)
+                        .cornerRadius(32)
                 }
             )
-            .padding(.vertical, 24)
+//            .padding(.vertical, 8)
             
             
             HStack {
@@ -118,7 +117,7 @@ struct ReviewNewWorkView: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 Spacer()
-            }
+            }.padding(.top, 16)
             
             HStack {
                 Spacer()
@@ -179,6 +178,7 @@ struct ReviewNewWorkView: View {
             Spacer()
             
         }
+        .padding(.top, 8)
         .navigationTitle("Revisar")
         .navigationBarTitleDisplayMode(.inline)
     }
