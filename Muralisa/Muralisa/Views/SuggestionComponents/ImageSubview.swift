@@ -25,13 +25,24 @@ struct ImageSubview: View {
             ZStack(alignment:.bottomTrailing){
                 
                 
-                Image(uiImage: work.image)
-                    .resizable()
-                    .aspectRatio(contentMode: isCompressed ? .fill : .fit)
-                    .frame(height: isCompressed ? getHeight()/2.5 : nil)
-                    .frame(maxWidth: isCompressed ? getWidth() - 32 : .infinity)
-                    .cornerRadius(25)
-                    .addPinchZoom()
+                if let image = work.image {
+                    Image(uiImage: image)
+                        .resizable()
+                        .aspectRatio(contentMode: isCompressed ? .fill : .fit)
+                        .frame(height: isCompressed ? getHeight()/2.5 : nil)
+                        .frame(maxWidth: isCompressed ? getWidth() - 32 : .infinity)
+                        .cornerRadius(25)
+                        .addPinchZoom()
+                } else {
+                    Image(uiImage: work.imageThumb)
+                        .resizable()
+                        .aspectRatio(contentMode: isCompressed ? .fill : .fit)
+                        .frame(height: isCompressed ? getHeight()/2.5 : nil)
+                        .frame(maxWidth: isCompressed ? getWidth() - 32 : .infinity)
+                        .cornerRadius(25)
+                        .addPinchZoom()
+                }
+
                 
                 Button {
                     isLiked.toggle()

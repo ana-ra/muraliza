@@ -99,7 +99,18 @@ class WorkService: ObservableObject {
             
             image = UIImage(data: imageData)
         }
-//        
+        
+        // Handle image loading asynchronously
+        var imageThumb: UIImage? = nil
+        if let imageAsset = record["Image_thumbnail"] as? CKAsset,
+           let url = imageAsset.fileURL {
+            let imageData = try await Task.detached {
+                return try Data(contentsOf: url)
+            }.value
+            
+            imageThumb = UIImage(data: imageData)
+        }
+//
         let location = record["Location"] as? CLLocation ?? CLLocation(latitude: 0, longitude: 0)
         
         // Fetch artist record, if it exists
@@ -110,6 +121,7 @@ class WorkService: ObservableObject {
             title: title,
             workDescription: description,
             image: image ?? UIImage(systemName: "photo.badge.exclamationmark")!,
+            imageThumb: imageThumb ?? UIImage(systemName: "photo.badge.exclamationmark")!,
             location: location,
             tag: tag,
             artist: artistReference,
@@ -119,12 +131,56 @@ class WorkService: ObservableObject {
         )
     }
     
+    // Function to update all Artwork records with an Image_thumbnail field
+    func updateArtworkRecordsWithThumbnail() async throws {
+        // Fetch all Artwork records
+        let artworkRecords = try await ckService.fetchRecordsByType(Work.recordType)
+        var updatedRecords: [CKRecord] = []
+        
+        for record in artworkRecords {
+            // Check if the Image field exists
+            guard let asset = record["Image"] as? CKAsset,
+                  let fileURL = asset.fileURL,
+                  let imageData = try? Data(contentsOf: fileURL),
+                  let image = UIImage(data: imageData) else {
+                print("No valid Image field for record: \(record.recordID.recordName)")
+                continue
+            }
+            
+            // Compress the image to create a thumbnail
+            let resizedImage = image.aspectFittedToHeight(200)
+            resizedImage.jpegData(compressionQuality: 0.2) // Add this line
+            let thumbnail = resizedImage
+            
+            guard let thumbnailData = thumbnail.pngData(),
+                  let tempURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first?.appendingPathComponent("thumbnail_\(record.recordID.recordName).png") else {
+                print("Failed to create thumbnail for record: \(record.recordID.recordName)")
+                continue
+            }
+            
+            // Write the thumbnail data to a temporary file
+            do {
+                try thumbnailData.write(to: tempURL)
+                let thumbnailAsset = CKAsset(fileURL: tempURL)
+                record["Image_thumbnail"] = thumbnailAsset
+                updatedRecords.append(record)
+            } catch {
+                print("Error writing thumbnail to file for record: \(record.recordID.recordName), \(error.localizedDescription)")
+            }
+        }
+        
+        // Save all updated records back to CloudKit
+        try await ckService.modifyRecords(updatedRecords)
+        print("Successfully updated \(updatedRecords.count) records with Image_thumbnail.")
+    }
+
     // Function to post a new Work type to CloudKit
     func saveWork(
         title: String,
         workDescription: String,
         tag: [String],
         image: UIImage?,
+        imageThumb: UIImage?,
         location: CLLocation,
         artistReference: [CKRecord.Reference]?
     ) async throws -> CKRecord? {
@@ -138,18 +194,36 @@ class WorkService: ObservableObject {
         workRecord["Status"] = 2
       
         // Handle optional image
-        if let image = image, let tempURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first?.appendingPathComponent("imagePlaceholder.png"), let data = image.pngData() {
+        if let image = image,
+           let tempURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first?.appendingPathComponent("imagePlaceholder.png"),
+           let data = image.pngData() {
             do {
                 try data.write(to: tempURL)
                 let asset = CKAsset(fileURL: tempURL)
                 workRecord["Image"] = asset
-                return try await ckService.saveRecord(workRecord)
             } catch {
                 print("Error writing image to cache: \(error.localizedDescription)")
             }
         } else {
             print("Error: invalid image")
         }
-        return nil
+
+        // Handle optional imageThumb
+        if let imageThumb = imageThumb,
+           let tempThumbURL = FileManager.default.urls(for: .cachesDirectory, in: .userDomainMask).first?.appendingPathComponent("imageThumbPlaceholder.png"),
+           let thumbData = imageThumb.pngData() {
+            do {
+                try thumbData.write(to: tempThumbURL)
+                let thumbAsset = CKAsset(fileURL: tempThumbURL)
+                workRecord["Image_thumbnail"] = thumbAsset
+            } catch {
+                print("Error writing imageThumb to cache: \(error.localizedDescription)")
+            }
+        } else {
+            print("Error: invalid imageThumb")
+        }
+
+        // Save the record to CloudKit
+        return try await ckService.saveRecord(workRecord)
     }
 }
