@@ -265,6 +265,8 @@
 				DEVELOPMENT_TEAM = 4G6HA9J6S5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "O aplicativo precisa acessar a camera para utilizar na função de colaborar.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "O aplicativo precisa acessar a localização para adicionar novas obras ao acervo.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -295,6 +297,8 @@
 				DEVELOPMENT_TEAM = 4G6HA9J6S5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "O aplicativo precisa acessar a camera para utilizar na função de colaborar.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "O aplicativo precisa acessar a localização para adicionar novas obras ao acervo.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

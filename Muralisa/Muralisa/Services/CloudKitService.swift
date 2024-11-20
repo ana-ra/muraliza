@@ -31,6 +31,7 @@ class CloudKitService {
         let query = CKQuery(recordType: "Artwork", predicate: predicate)
         let queryOperation = CKQueryOperation(query: query)
         queryOperation.resultsLimit = 9
+        queryOperation.desiredKeys = ["Image_thumbnail"]
         
         
         var fetchedRecords: [CKRecord] = []
@@ -72,22 +73,22 @@ class CloudKitService {
         let query = CKQuery(recordType: recordType, predicate: predicate)
         let queryOperation = CKQueryOperation(query: query)
         
-        if let keys = desiredKeys {
-            queryOperation.desiredKeys = keys
+        if recordType == Work.recordType {
+            queryOperation.desiredKeys = ["Image_thumbnail"] // Fetch only the thumbnail field
         }
-        
+
         var fetchedRecords: [CKRecord] = []
-        
+
         return try await withCheckedThrowingContinuation { continuation in
             queryOperation.recordMatchedBlock = { recordID, recordResult in
                 switch recordResult {
                 case .success(let record):
                     fetchedRecords.append(record)
                 case .failure(let error):
-                    print("Erro ao buscar registro \(recordID): \(error.localizedDescription)")
+                    print("Error fetching record \(recordID): \(error.localizedDescription)")
                 }
             }
-            
+
             queryOperation.queryResultBlock = { result in
                 switch result {
                 case .success:
@@ -96,7 +97,6 @@ class CloudKitService {
                     continuation.resume(throwing: error)
                 }
             }
-            
             databasePublic.add(queryOperation)
         }
     }
@@ -162,6 +162,7 @@ class CloudKitService {
         let query = CKQuery(recordType: Work.recordType, predicate: predicate)
         let queryOperation = CKQueryOperation(query: query)
         queryOperation.resultsLimit = 6
+        queryOperation.desiredKeys = ["Image_thumbnail"]
         
         return try await withCheckedThrowingContinuation { continuation in
             queryOperation.recordMatchedBlock = { (id,record) in
@@ -221,6 +222,7 @@ class CloudKitService {
         let query = CKQuery(recordType: recordType, predicate: predicate)
         let queryOperation = CKQueryOperation(query: query)
         queryOperation.resultsLimit = 6
+        queryOperation.desiredKeys = ["Image_thumbnail"]
         
         return try await withCheckedThrowingContinuation { continuation in
             queryOperation.recordMatchedBlock = { (id,record) in

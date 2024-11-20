@@ -29,7 +29,7 @@ struct CachedWorkListItemView: View {
                 if work.status == 2 {
                     NavigationLink(destination: WorkDetailView(workService: workService, work: work)) {
                         HStack {
-                            Image(uiImage: work.image)
+                            Image(uiImage: work.imageThumb)
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
                                 .frame(width: 72, height: 72)

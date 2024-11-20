@@ -19,18 +19,20 @@ class Work: NSObject {
     let id: String
     let title: String?
     let workDescription: String?
-    let image: UIImage
+    let image: UIImage?
+    let imageThumb: UIImage
     let location: CLLocation
     let tag: [String]
     let artist: [CKRecord.Reference]?
     let creationDate: Date
     var status: Int
     
-    init(id: String, title: String?, workDescription: String?, image: UIImage, location: CLLocation, tag: [String], artist: [CKRecord.Reference]?, creationDate: Date, status: Int) {
+    init(id: String, title: String?, workDescription: String?, image: UIImage?, imageThumb: UIImage, location: CLLocation, tag: [String], artist: [CKRecord.Reference]?, creationDate: Date, status: Int) {
         self.id = id
         self.title = title
         self.workDescription = workDescription
         self.image = image
+        self.imageThumb = imageThumb
         self.location = location
         self.tag = tag
         self.artist = artist

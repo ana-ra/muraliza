@@ -33,7 +33,7 @@ struct GridSubview: View {
                         Button {
                             print("id: \(work.id)")
                         } label: {
-                            Image(uiImage: work.image)
+                            Image(uiImage: work.imageThumb)
                                 .resizable()
                                 .frame(width: getWidth()/3, height: getHeight()/6)
                         }

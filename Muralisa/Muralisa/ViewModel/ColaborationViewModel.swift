@@ -16,14 +16,16 @@ class ColaborationViewModel: ObservableObject {
     
     var artistList: [(id: String, name: String)] = []
     var artists: [String] = []
-
+    
     var location: CLLocation?
     var image: UIImage?
+    var imageThumb: UIImage?
+    var compressedImageData: Data?
     
     var artist: String = ""
     var title: String = ""
     var description: String = ""
-
+    
     var artistsID: [CKRecord.Reference] = []
     
     func fetchArtists() async throws {
@@ -53,5 +55,13 @@ class ColaborationViewModel: ObservableObject {
         }
     }
     
-    
+    func compressImage() {
+        if let image {
+            let resizedImage = image.aspectFittedToHeight(200)
+            resizedImage.jpegData(compressionQuality: 0.2) // Add this line
+            self.imageThumb = resizedImage
+        } else {
+            print("image is nil")
+        }
+    }
 }
