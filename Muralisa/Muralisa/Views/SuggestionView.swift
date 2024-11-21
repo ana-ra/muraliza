@@ -54,7 +54,7 @@ struct SuggestionView: View {
                             }
                             
                             if !recommendationService.similarTagsWorks.isEmpty {
-                                GridSubview(workRecords: $recommendationService.similarTagsWorks, title: "Similares a Gustavo")
+                                GridSubview(workRecords: $recommendationService.similarTagsWorks, title: "Similares")
                             }
                         }
                     }
