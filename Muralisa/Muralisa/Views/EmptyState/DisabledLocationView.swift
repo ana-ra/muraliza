@@ -12,6 +12,21 @@ struct DisabledLocationView: View {
     
     var body: some View {
         VStack(alignment: .center, spacing: 24) {
+            
+            // Illustration will be here in the future
+            Image(.locStencil)
+                .resizable()
+                .renderingMode(.template)
+                .scaledToFit()
+                .foregroundStyle(Color.brandingSecondary)
+                .opacity(0.4)
+            
+            Text("Sua localização está desabilitada")
+                .font(.body)
+                .foregroundStyle(.secondary)
+                .bold()
+                .padding(.bottom, -16)
+            
             Text("Sua localização está desabilitada. Para adicionar uma imagem, habilite-a em Configurações.")
                 .font(.body)
                 .foregroundStyle(.secondary)
@@ -29,9 +44,6 @@ struct DisabledLocationView: View {
                     Text("Configurações")
                 }
             }
-            
-            // Illustration will be here in the future
-            Image("location_empty_state")
         }
     }
     

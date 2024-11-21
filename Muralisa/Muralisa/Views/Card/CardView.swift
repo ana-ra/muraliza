@@ -10,6 +10,11 @@ import WrappingHStack
 import CoreLocation
 import CloudKit
 
+enum BottomElement {
+    case status
+    case route
+    case none
+}
 
 struct CardView: View {
     var colaborationViewModel: ColaborationViewModel
@@ -19,7 +24,11 @@ struct CardView: View {
     @State private var showTagsModal: Bool = false
     @State private var showAlert: Bool = false
     @State var showCloseButton: Bool
-    @State var showSeeRoutes: Bool
+    //    @State var showSeeRoutes: Bool
+    var showBottomElement: BottomElement
+    
+    @Binding var showCard: Bool
+    
     
     var body: some View {
         
@@ -29,7 +38,7 @@ struct CardView: View {
                 Spacer()
                 if showCloseButton {
                     Button {
-                        
+                        showCard.toggle()
                     }label: {
                         Image(systemName: "x.circle.fill")
                             .foregroundStyle(.thinMaterial)
@@ -107,38 +116,50 @@ struct CardView: View {
                 .padding(.bottom, 24)
             }
             
-            if showSeeRoutes {
-                Button {
-                    print("Teste")
-                } label: {
-                    Text("Ver rotas")
-                }.padding(.bottom, 24)
-            }
-            
-        }.foregroundStyle(.white)
-            .frame(width: getWidth() - 32)
-            .frame(maxHeight: getHeight()*577/873)
-            .background(
-                ZStack {
-                    Rectangle()
-                        .frame(width: getWidth(), height: getHeight())
-                        .foregroundStyle(Color.accentColor)
-                    Image("cardBackground")
-                        .resizable()
+            //if showBottomElement == .none {
+                //
+                
+                switch showBottomElement {
+                case .status:
+                    StatusComponent(status: 1)
+                        .padding(.bottom, 24)
+                case .route:
+                    Button {
+                        print("Teste")
+                    } label: {
+                        Text("Ver rotas")
+                    }
+                    .padding(.bottom, 24)
+                case .none:
+                    EmptyView()
                 }
-            )
-        
-    }
-}
-
-
-#Preview {
-    let colaborationViewModel = ColaborationViewModel()
-    CardView(colaborationViewModel: colaborationViewModel, showCloseButton: true, showSeeRoutes: true)
-        .onAppear {
-            colaborationViewModel.image = UIImage(named: "ima")
-            colaborationViewModel.title = "Crepusculo Nobre"
-            colaborationViewModel.description = "shau hs auh ush uash uahs uash uahs ua"
+                
+            }.foregroundStyle(.white)
+                .frame(width: getWidth() - 32)
+                .frame(maxHeight: getHeight()*577/873)
+                .background(
+                    ZStack {
+                        Rectangle()
+                        //                        .frame(width: getWidth(), height: getHeight())
+                            .foregroundStyle(.brandingSecondary)
+                        Image("cardBackground")
+                            .resizable()
+                            .renderingMode(.template)
+                            .foregroundStyle(.accent)
+                    }.cornerRadius(32)
+                )
             
         }
-}
+    }
+    
+    
+    #Preview {
+        let colaborationViewModel = ColaborationViewModel()
+        CardView(colaborationViewModel: colaborationViewModel, showCloseButton: true, showBottomElement: .status, showCard: .constant(false))
+            .onAppear {
+                colaborationViewModel.image = UIImage(named: "ima")
+                colaborationViewModel.title = "Crepusculo Nobre"
+                colaborationViewModel.description = "shau hs auh ush uash uahs uash uahs ua"
+                
+            }
+    }
