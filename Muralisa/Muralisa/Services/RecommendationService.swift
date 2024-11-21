@@ -133,7 +133,7 @@ class RecommendationService: ObservableObject {
         let lastDate = defaults.value(forKey: "lastDateExhibited") as? Date
         var worksExhibited = defaults.value(forKey: "worksExhibited") as? [String] ?? []
         
-        if let lastDate = lastDate, let lastWork = worksExhibited.last, compareDates(lastDate, today) {
+        if let lastDate = lastDate, let lastWork = worksExhibited.last, !compareDates(lastDate, today) {
             todayWork = try await workService.fetchWorkFromRecordName(from: lastWork)
             return
         }
