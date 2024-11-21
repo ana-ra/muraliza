@@ -39,33 +39,31 @@ struct CardView: View {
     @State private var hasRoute: Bool = false
     
     var body: some View {
-        
         VStack {
-            
             HStack{
                 Spacer()
                 if showCloseButton {
                     Button {
                         showCard.toggle()
-                    }label: {
+                    } label: {
                         Image(systemName: "x.circle.fill")
                             .foregroundStyle(.thinMaterial)
                     }
                 }
-            }.padding(.vertical, 24)
-                .padding(.horizontal, 16)
-            
+            }
+            .padding(.vertical, 24)
+            .padding(.horizontal, 16)
             
             if let image = image {
-                Image(uiImage: image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(maxWidth: getWidth() - 80)
-                    .frame(maxHeight: getHeight() / 3.5)
-                    .cornerRadius(12)
-                //                    .padding(.top, 16)
-                    .padding(.bottom, 24)
-                //                    .clipped()
+                HStack {
+                    Image(uiImage: image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(maxWidth: getWidth() - 80)
+                        .frame(height: getHeight() / 3.8)
+                        .cornerRadius(12)
+                        .padding(.bottom, 24)
+                }
             }
             
             HStack {
@@ -80,7 +78,6 @@ struct CardView: View {
             
             
             HStack {
-                
                 Text("Título:")
                 Text(title)
                     .bold()
@@ -89,11 +86,7 @@ struct CardView: View {
             .padding(.horizontal, 24)
             .padding(.bottom, 16)
             
-            
-            
-            
             WrappingHStack(alignment: .leading) {
-                
                 Text("Descrição:")
                 Text(description == "" ? "Sem descrição" : description)
                     .bold()
@@ -103,17 +96,12 @@ struct CardView: View {
             .padding(.bottom, tags.isEmpty ? 24 : 16)
             
             if !tags.isEmpty {
-                
-                
                 HStack(spacing: 24) {
-                    
                     ForEach(tags, id: \.self) { tag in
-                        
                         Text("\(tag)")
                             .font(.subheadline)
                             .foregroundStyle(Color.white)
-                            .frame(width: (getWidth() - (32 + 48 + 48)) / 3)
-                            .padding(.vertical, 8)
+                            .padding(8)
                             .background(
                                 RoundedRectangle(cornerRadius: 40)
                                     .foregroundStyle(Color.white)
@@ -124,9 +112,6 @@ struct CardView: View {
                 .padding(.horizontal, 24)
                 .padding(.bottom, 24)
             }
-            
-            //if showBottomElement == .none {
-            //
             
             switch showBottomElement {
             case .status:
@@ -165,20 +150,21 @@ struct CardView: View {
                 EmptyView()
             }
             
-        }.foregroundStyle(.white)
-            .frame(width: getWidth() - 32)
-            .frame(maxHeight: getHeight()*577/873)
-            .background(
-                ZStack {
-                    Rectangle()
-                    //                        .frame(width: getWidth(), height: getHeight())
-                        .foregroundStyle(.brandingSecondary)
-                    Image("cardBackground")
-                        .resizable()
-                        .renderingMode(.template)
-                        .foregroundStyle(.stripesCard)
-                }.cornerRadius(32)
-            )
+        }
+        .foregroundStyle(.white)
+        .frame(width: getWidth() - 32)
+        .frame(maxHeight: getHeight()*577/873)
+        .background(
+            ZStack {
+                Rectangle()
+                    .foregroundStyle(.brandingSecondary)
+                Image("cardBackground")
+                    .resizable()
+                    .renderingMode(.template)
+                    .foregroundStyle(.stripesCard)
+            }
+            .cornerRadius(32)
+        )
     }
 }
 
