@@ -24,9 +24,11 @@ struct TagView: View {
     var body: some View {
         if isLoading {
             VStack {
-                ProgressView()
-                Text("Buscando por obras com a tag: \(tag)")
-                    .foregroundStyle(Color.secondary)
+                Spacer()
+                GifView(gifName: "fetchInicial")
+                    .aspectRatio(contentMode: .fit)
+                    .frame(height: getHeight()/5)
+                Spacer()
             }
             .task {
                 do {
