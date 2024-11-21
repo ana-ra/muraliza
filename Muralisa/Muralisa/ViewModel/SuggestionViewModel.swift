@@ -69,4 +69,29 @@ extension SuggestionView {
             }
         }
     }
+    
+    func getCardWorkById(cardWorkId: String) async {
+        do {
+        let work = try await workService.fetchWorkFromRecordName(from: cardWorkId)
+            if let artists = work.artist {
+                for index in 0..<artists.count {
+                    let artist = try await artistService.fetchArtistFromReference(artists[index])
+                    if index == 0 {
+                        self.artistList = artist.name
+                    } else {
+                        self.artistList += ", \(artist.name)"
+                    }
+                }
+            } else {
+                self.artistList = ""
+            }
+            
+            self.cardWork = work
+            
+            
+        } catch {
+            print("Error fetching cardWork: \(error.localizedDescription)")
+            showCard = false
+        }
+    }
 }

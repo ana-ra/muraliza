@@ -17,18 +17,26 @@ enum BottomElement {
 }
 
 struct CardView: View {
-    var colaborationViewModel: ColaborationViewModel
+    //var colaborationViewModel: ColaborationViewModel
+    @StateObject var locationManager = LocationManager()
+    let locationService = LocationService()
     
-    @State private var tags: [String] = ["tapirus", "vapo", "tanguen"]
+    var image: UIImage?
     
-    @State private var showTagsModal: Bool = false
-    @State private var showAlert: Bool = false
+    var artist: String
+    var title: String
+    var description: String
+    var location: CLLocation?
+    
+    @Binding var tags: [String]
     @State var showCloseButton: Bool
     //    @State var showSeeRoutes: Bool
     var showBottomElement: BottomElement
     
     @Binding var showCard: Bool
     
+    @State private var dialogDetail: (URL?, URL?)
+    @State private var hasRoute: Bool = false
     
     var body: some View {
         
@@ -48,7 +56,7 @@ struct CardView: View {
                 .padding(.horizontal, 16)
             
             
-            if let image = colaborationViewModel.image {
+            if let image = image {
                 Image(uiImage: image)
                     .resizable()
                 //                    .aspectRatio(contentMode: .fill)
@@ -61,7 +69,7 @@ struct CardView: View {
             
             HStack {
                 Text("Artista:")
-                Text(colaborationViewModel.artist == "" ? "Desconhecido" : colaborationViewModel.artist)
+                Text(artist == "" ? "Desconhecido" : artist)
                     .bold()
                 
                 Spacer()
@@ -73,7 +81,7 @@ struct CardView: View {
             HStack {
                 
                 Text("Título:")
-                Text(colaborationViewModel.title)
+                Text(title)
                     .bold()
                 Spacer()
             }
@@ -86,7 +94,7 @@ struct CardView: View {
             WrappingHStack(alignment: .leading) {
                 
                 Text("Descrição:")
-                Text(colaborationViewModel.description == "" ? "Sem descrição" : colaborationViewModel.description)
+                Text(description == "" ? "Sem descrição" : description)
                     .bold()
                     .lineLimit(1)
             }
@@ -125,11 +133,33 @@ struct CardView: View {
                         .padding(.bottom, 24)
                 case .route:
                     Button {
-                        print("Teste")
+                        if let location = locationManager.location, let workLocation = self.location {
+                            dialogDetail = locationService.getMapsLink(from: location, to: workLocation)
+                            hasRoute = true
+                        }
                     } label: {
                         Text("Ver rotas")
                     }
                     .padding(.bottom, 24)
+                    .confirmationDialog("Abrir no Maps", isPresented: $hasRoute, titleVisibility: .visible, presenting: dialogDetail) { links in
+                        if let appleMapsLink = links.0 {
+                            Button {
+                                UIApplication.shared.open(appleMapsLink)
+                            } label: {
+                                Text("Maps")
+                            }
+                        }
+                        
+                        if let googleMapsLink = links.1 {
+                            Button {
+                                UIApplication.shared.open(googleMapsLink)
+                            } label: {
+                                Text("Google Maps")
+                            }
+                        }
+                    } message: { _ in
+                        Text("Qual app você gostaria de utilizar?")
+                    }
                 case .none:
                     EmptyView()
                 }
@@ -145,7 +175,7 @@ struct CardView: View {
                         Image("cardBackground")
                             .resizable()
                             .renderingMode(.template)
-                            .foregroundStyle(.accent)
+                            .foregroundStyle(.stripesCard)
                     }.cornerRadius(32)
                 )
             
@@ -154,12 +184,6 @@ struct CardView: View {
     
     
     #Preview {
-        let colaborationViewModel = ColaborationViewModel()
-        CardView(colaborationViewModel: colaborationViewModel, showCloseButton: true, showBottomElement: .status, showCard: .constant(false))
-            .onAppear {
-                colaborationViewModel.image = UIImage(named: "ima")
-                colaborationViewModel.title = "Crepusculo Nobre"
-                colaborationViewModel.description = "shau hs auh ush uash uahs uash uahs ua"
-                
-            }
+        CardView(image: UIImage(named: "ima"), artist: "", title: "Crepusculo Nobre", description: "asdfh asdhf ashdf asdfh", tags: .constant(["Teste 1", "Teste 2"]), showCloseButton: true, showBottomElement: .status, showCard: .constant(false))
+            
     }

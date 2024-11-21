@@ -11,6 +11,7 @@ import CloudKit
 
 @Observable
 class RecommendationService: ObservableObject {
+    var initialFetchDone: Bool = false
     var works: [CKRecord] = []
     var workService = WorkService()
     var service = CloudKitService()
