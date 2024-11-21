@@ -10,21 +10,24 @@ import CoreLocation
 
 struct NewWorkLoadingView: View {
     @Environment(ColaborationRouter.self) var router
-    
-    var colaborationViewModel: ColaborationViewModel
-    
+        
     @State var currentStep: Int = 0
     @State private var timer: Timer?
     @State var showAlert: Bool = false
     
     var body: some View {
         VStack(alignment: .center, spacing: 24) {
-            Image(uiImage: colaborationViewModel.image ?? UIImage())
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .frame(height: getHeight() / 3)
+            
+            GifView(gifName: "loadingColaboration")
                 .frame(maxWidth: .infinity)
-                .cornerRadius(25)
+                .frame(height: getHeight() / 3)
+            
+//            Image(uiImage: colaborationViewModel.image ?? UIImage())
+//                .resizable()
+//                .aspectRatio(contentMode: .fill)
+//                .frame(height: getHeight() / 3)
+//                .frame(maxWidth: .infinity)
+//                .cornerRadius(25)
             
             VStack(alignment: .leading, spacing: 24) {
                 HStack {
@@ -78,12 +81,14 @@ struct NewWorkLoadingView: View {
         } message: {
             Text("Nosso time de curadoria está avaliando sua colaboração")
         }
+        .toolbarVisibility(.hidden, for: .tabBar)
+        .toolbarVisibility(.hidden, for: .navigationBar)
     }
     
     // Repeats three times and then stops
     private func startProgression() {
         currentStep = 0
-        timer = Timer.scheduledTimer(withTimeInterval: 2.0, repeats: true) { timer in
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { timer in
             withAnimation {
                 currentStep += 1
                 if currentStep > 3 {
@@ -97,6 +102,6 @@ struct NewWorkLoadingView: View {
 }
 
 #Preview {
-    NewWorkLoadingView(colaborationViewModel: ColaborationViewModel())
+    NewWorkLoadingView()
         .environment(ColaborationRouter())
 }

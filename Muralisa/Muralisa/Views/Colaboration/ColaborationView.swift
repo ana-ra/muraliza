@@ -43,7 +43,7 @@ struct ColaborationView: View {
     let screens = ColaborationNavigationDestinations.allCases
     
     // Substituir por dados salvos no userDefaults/coreData das obras colaboradas, o status deve vir da variável de controle no banco de dados.
-    var works: [(String, Int, UUID)] = []
+    var works: [(String, Int, UUID)] = [("Teste", 1, UUID())]
     
     @State private var showingOptions = false
     
@@ -55,113 +55,112 @@ struct ColaborationView: View {
     @State private var navigateFromCamera: Bool = false
     
     var body: some View {
-        List {
+        
+        Group {
             
-            Section {
-                
-                if works.isEmpty {
+            if works.isEmpty {
+                VStack(alignment: .center, spacing: 24) {
                     Spacer()
-                        .listRowBackground(Color.clear)
+                    Image(.cameraLock)
+                        .resizable()
+                        .renderingMode(.template)
+                        .scaledToFit()
+                        .foregroundStyle(Color.brandingSecondary)
+                        .opacity(0.4)
+                    
+                    Text("Você ainda não possui obras adicionadas")
+                        .font(.body)
+                        .foregroundStyle(.secondary)
+                        .bold()
+                        .padding(.bottom, -16)
+                    
+                    Text("Clique em **\(Image(systemName: "plus"))** para adicionar novas obras à nossa coleção de artes urbanas!")
+                        .font(.body)
+                        .multilineTextAlignment(.center)
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    Spacer()
                 }
-                
-                Section {
+                .padding(.horizontal, 4)
+            } else {
+                List {
                     
-                    if works.isEmpty {
-                        Text("Você ainda não possui obras adicionadas à nossa curadoria de imagens.")
+                    if works.count < 4 {
+                        Section {
+                            Spacer()
+                                .listRowBackground(Color.clear)
+                        }
+                        .listSectionSpacing(works.count == 3 ? 0 : 12)
+                            
+                    }
+                    
+                    Section {
+                        Image(.lookLogGirl)
+                            .resizable()
+                            .renderingMode(.template)
+                            .scaledToFit()
+                            .foregroundStyle(Color.brandingSecondary)
                             .listRowBackground(Color.clear)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal, -16)
-                            .foregroundStyle(.secondary)
                     }
                     
-                    
-                    // Placeholder for ilustration
-                    RoundedRectangle(cornerRadius: 20)
-                        .frame(height: getHeight() / 3.5)
-                        .listRowBackground(Color.clear)
-                        .padding(.horizontal, -16)
-                        .foregroundStyle(Color.gray)
-                        .opacity(0.5)
-                    
-                    
-                    HStack {
-                        Spacer()
-                        
-                        Image(systemName: "photo.badge.plus")
-                            .foregroundStyle(Color.accentColor)
-                            .font(.largeTitle)
-                            .onTapGesture {
-                                showingOptions = true
-                            }
-                            .confirmationDialog("Adicionar foto à curadoria", isPresented: $showingOptions, titleVisibility: .visible) {
-                                Button("Camera")  {
-                                    showCamera = true
-                                    colaborationViewModel.location = locationManager.location
-                                }
-                                Button("Galeria de fotos") {
-                                    showImagePicker = true
-                                }
-                            }
-                            .photosPicker(isPresented: $showImagePicker, selection: $pickerItem, matching: .images, photoLibrary: .shared())
-                            .onChange(of: pickerItem) {
-                                Task {
-                                    if let data = try? await pickerItem?.loadTransferable(type: Data.self) {
-                                        colaborationViewModel.image = UIImage(data: data)
-                                      //  selectedImage = UIImage(data: data)
-                                        
-                                        if let image = CIImage(data: data) {
-                                            
-                                            let properties = image.properties
-                                            
-                                            if let gps = properties[kCGImagePropertyGPSDictionary as String] as? [String: Any] {
-                                                let latitude = gps[kCGImagePropertyGPSLatitude as String] as! Double
-                                                let longitude = gps[kCGImagePropertyGPSLongitude as String] as! Double
-                                                
-                                                colaborationViewModel.location = CLLocation(latitude: latitude, longitude: longitude)
-                                            }
-                                        }
-                                        router.navigateTo(route: .newWork)
-                                        return
-                                    }
-                                }
-                            }
-                            .fullScreenCover(isPresented: $showCamera) {
-                                AccessCameraView(colaborationViewModel: colaborationViewModel, navigate: $navigateFromCamera)
-                                    .background(.black)
-                            }
-                            .onChange(of: navigateFromCamera) {
-                                if navigateFromCamera == true {
-                                    router.navigateTo(route: .newWork)
-                                    navigateFromCamera = false
-                                }
-                            }
-                        
-                        Spacer()
-                    }
-                    .listRowBackground(Color.clear)
-                    
-                    
-                    HStack {
-                        Text("Clique para colaborar com uma obra para a nossa curadoria de imagens")
-                            .font(.body)
-                            .foregroundStyle(Color.secondary)
-                            .multilineTextAlignment(.center)
-                    }
-                    .listRowBackground(Color.clear)
+                    RecentlyAddedSection(works: works)
+                        .listSectionSeparator(.hidden)
                     
                 }
                 .listRowSeparator(.hidden)
-                
-                if !works.isEmpty {
-                    RecentlyAddedSection(works: works)
-                        .listSectionSeparator(.hidden)
-                } else {
-                    Spacer()
-                        .listRowBackground(Color.clear)
+            }
+        }
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    showingOptions = true
+                } label: {
+                    Image(systemName: "plus")
                 }
             }
         }
-        .listStyle(.insetGrouped)
+        .confirmationDialog("Adicionar foto à curadoria", isPresented: $showingOptions, titleVisibility: .visible) {
+            Button("Camera")  {
+                showCamera = true
+                colaborationViewModel.location = locationManager.location
+            }
+            Button("Galeria de fotos") {
+                showImagePicker = true
+            }
+        }
+        .photosPicker(isPresented: $showImagePicker, selection: $pickerItem, matching: .images, photoLibrary: .shared())
+        .onChange(of: pickerItem) {
+            Task {
+                if let data = try? await pickerItem?.loadTransferable(type: Data.self) {
+                    colaborationViewModel.image = UIImage(data: data)
+                    //  selectedImage = UIImage(data: data)
+                    
+                    if let image = CIImage(data: data) {
+                        
+                        let properties = image.properties
+                        
+                        if let gps = properties[kCGImagePropertyGPSDictionary as String] as? [String: Any] {
+                            let latitude = gps[kCGImagePropertyGPSLatitude as String] as! Double
+                            let longitude = gps[kCGImagePropertyGPSLongitude as String] as! Double
+                            
+                            colaborationViewModel.location = CLLocation(latitude: latitude, longitude: longitude)
+                        }
+                    }
+                    router.navigateTo(route: .newWork)
+                    return
+                }
+            }
+        }
+        .fullScreenCover(isPresented: $showCamera) {
+            AccessCameraView(colaborationViewModel: colaborationViewModel, navigate: $navigateFromCamera)
+                .background(.black)
+        }
+        .onChange(of: navigateFromCamera) {
+            if navigateFromCamera == true {
+                router.navigateTo(route: .newWork)
+                navigateFromCamera = false
+            }
+        }
         .navigationTitle("Colaborar")
         .navigationDestination(for: ColaborationNavigationDestinations.self, destination: { screen in
             switch screen {
@@ -172,7 +171,7 @@ struct ColaborationView: View {
                 ReviewNewWorkView(colaborationViewModel: colaborationViewModel)
                     .environment(router)
             case .newWorkLoadingView:
-                NewWorkLoadingView(colaborationViewModel: colaborationViewModel)
+                NewWorkLoadingView()
                     .environment(router)
             }
         })
@@ -183,6 +182,8 @@ struct ColaborationView: View {
 }
 
 #Preview {
-    ColaborationView()
-        .environment(ColaborationRouter())
+    NavigationStack {
+        ColaborationView()
+            .environment(ColaborationRouter())
+    }
 }
