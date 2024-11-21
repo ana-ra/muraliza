@@ -67,15 +67,6 @@ struct ArtistSheet: View {
                 }
                 
                 Spacer()
-                
-                Button {
-                    // Seguir
-                } label: {
-                    Text("Seguir")
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 32)
-                }
-                .buttonStyle(BorderedProminentButtonStyle())
             }
         }
         .padding(16)

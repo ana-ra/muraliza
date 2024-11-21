@@ -59,8 +59,9 @@ struct CardView: View {
             if let image = image {
                 Image(uiImage: image)
                     .resizable()
-                //                    .aspectRatio(contentMode: .fill)
+                    .aspectRatio(contentMode: .fill)
                     .frame(maxWidth: getWidth() - 80)
+                    .frame(maxHeight: getHeight() / 3.5)
                     .cornerRadius(12)
                 //                    .padding(.top, 16)
                     .padding(.bottom, 24)
@@ -125,65 +126,64 @@ struct CardView: View {
             }
             
             //if showBottomElement == .none {
-                //
-                
-                switch showBottomElement {
-                case .status:
-                    StatusComponent(status: 1)
-                        .padding(.bottom, 24)
-                case .route:
-                    Button {
-                        if let location = locationManager.location, let workLocation = self.location {
-                            dialogDetail = locationService.getMapsLink(from: location, to: workLocation)
-                            hasRoute = true
-                        }
-                    } label: {
-                        Text("Ver rotas")
-                    }
+            //
+            
+            switch showBottomElement {
+            case .status:
+                StatusComponent(status: 1)
                     .padding(.bottom, 24)
-                    .confirmationDialog("Abrir no Maps", isPresented: $hasRoute, titleVisibility: .visible, presenting: dialogDetail) { links in
-                        if let appleMapsLink = links.0 {
-                            Button {
-                                UIApplication.shared.open(appleMapsLink)
-                            } label: {
-                                Text("Maps")
-                            }
-                        }
-                        
-                        if let googleMapsLink = links.1 {
-                            Button {
-                                UIApplication.shared.open(googleMapsLink)
-                            } label: {
-                                Text("Google Maps")
-                            }
-                        }
-                    } message: { _ in
-                        Text("Qual app você gostaria de utilizar?")
+            case .route:
+                Button {
+                    if let location = locationManager.location, let workLocation = self.location {
+                        dialogDetail = locationService.getMapsLink(from: location, to: workLocation)
+                        hasRoute = true
                     }
-                case .none:
-                    EmptyView()
+                } label: {
+                    Text("Ver rotas")
                 }
-                
-            }.foregroundStyle(.white)
-                .frame(width: getWidth() - 32)
-                .frame(maxHeight: getHeight()*577/873)
-                .background(
-                    ZStack {
-                        Rectangle()
-                        //                        .frame(width: getWidth(), height: getHeight())
-                            .foregroundStyle(.brandingSecondary)
-                        Image("cardBackground")
-                            .resizable()
-                            .renderingMode(.template)
-                            .foregroundStyle(.stripesCard)
-                    }.cornerRadius(32)
-                )
+                .padding(.bottom, 24)
+                .confirmationDialog("Abrir no Maps", isPresented: $hasRoute, titleVisibility: .visible, presenting: dialogDetail) { links in
+                    if let appleMapsLink = links.0 {
+                        Button {
+                            UIApplication.shared.open(appleMapsLink)
+                        } label: {
+                            Text("Maps")
+                        }
+                    }
+                    
+                    if let googleMapsLink = links.1 {
+                        Button {
+                            UIApplication.shared.open(googleMapsLink)
+                        } label: {
+                            Text("Google Maps")
+                        }
+                    }
+                } message: { _ in
+                    Text("Qual app você gostaria de utilizar?")
+                }
+            case .none:
+                EmptyView()
+            }
             
-        }
+        }.foregroundStyle(.white)
+            .frame(width: getWidth() - 32)
+            .frame(maxHeight: getHeight()*577/873)
+            .background(
+                ZStack {
+                    Rectangle()
+                    //                        .frame(width: getWidth(), height: getHeight())
+                        .foregroundStyle(.brandingSecondary)
+                    Image("cardBackground")
+                        .resizable()
+                        .renderingMode(.template)
+                        .foregroundStyle(.stripesCard)
+                }.cornerRadius(32)
+            )
     }
+}
+
+
+#Preview {
+    CardView(image: UIImage(named: "ima"), artist: "", title: "Crepusculo Nobre", description: "asdfh asdhf ashdf asdfh", tags: .constant(["Teste 1", "Teste 2"]), showCloseButton: true, showBottomElement: .status, showCard: .constant(false))
     
-    
-    #Preview {
-        CardView(image: UIImage(named: "ima"), artist: "", title: "Crepusculo Nobre", description: "asdfh asdhf ashdf asdfh", tags: .constant(["Teste 1", "Teste 2"]), showCloseButton: true, showBottomElement: .status, showCard: .constant(false))
-            
-    }
+}

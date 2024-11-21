@@ -42,22 +42,21 @@ struct ImageSubview: View {
                         .cornerRadius(25)
                         .addPinchZoom()
                 }
-
                 
-                Button {
-                    isLiked.toggle()
-                } label: {
-                    ZStack{
-                        Circle()
-                            .frame(width: 50)
-                            .foregroundStyle( isLiked ? Color.accentColor : Color.gray.opacity(0.20) )
-                        Image(systemName: isLiked ? "heart.fill" : "heart.fill")
-                            .resizable()
-                            .foregroundStyle(Color.white)
-                            .frame(width: 16,height: 16,alignment: .trailing)
-                        
-                    }.padding()
-                }
+//                Button {
+//                    isLiked.toggle()
+//                } label: {
+//                    ZStack{
+//                        Circle()
+//                            .frame(width: 50)
+//                            .foregroundStyle( isLiked ? Color.accentColor : Color.gray.opacity(0.20) )
+//                        Image(systemName: isLiked ? "heart.fill" : "heart.fill")
+//                            .resizable()
+//                            .foregroundStyle(Color.white)
+//                            .frame(width: 16,height: 16,alignment: .trailing)
+//                        
+//                    }.padding()
+//                }
                 
             }
             HStack {

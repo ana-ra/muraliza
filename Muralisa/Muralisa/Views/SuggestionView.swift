@@ -96,7 +96,9 @@ struct SuggestionView: View {
                         .onAppear {
                             Task {
                                 await getCardWorkById(cardWorkId: cardWorkId)
-                                loadingCardView = false
+                                withAnimation {
+                                    loadingCardView = false
+                                }
                             }
                         }
                         
@@ -120,10 +122,10 @@ struct SuggestionView: View {
                     .presentationDetents([.medium, .large])
             }
         }
-        .refreshable {
-            await fetchData()
-            print("refreshed")
-        }
+//        .refreshable {
+//            await fetchData()
+//            print("refreshed")
+//        }
         .task {
             if recommendationService.initialFetchDone == false {
                 await fetchData()
