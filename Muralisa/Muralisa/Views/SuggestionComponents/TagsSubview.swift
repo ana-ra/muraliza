@@ -10,8 +10,10 @@ import CoreLocation
 import WrappingHStack
 
 struct TagsSubView: View {
-    let work: Work
     
+    let work: Work
+    @Binding var navigateToTagView: Bool
+    @Binding var selectedTag: String
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -26,7 +28,8 @@ struct TagsSubView: View {
                 ForEach(work.tag, id: \.self) { tag in
                     
                     Button {
-                        // Navigate to tag
+                        navigateToTagView = true
+                        selectedTag = tag
                     } label: {
                         Text(tag)
                             .font(.subheadline)

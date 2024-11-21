@@ -10,6 +10,7 @@ import CloudKit
 
 struct GridSubview: View {
     @Binding var workRecords: [Work]
+    var title: String?
     
     var fixedColumn = [
         GridItem(.flexible(),spacing: 0),
@@ -19,12 +20,14 @@ struct GridSubview: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            HStack {
-                Text("Similares a Gustavo")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .padding(.leading)
-                Spacer()
+            if let title = title {
+                HStack {
+                    Text(title)
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .padding(.leading)
+                    Spacer()
+                }
             }
             
             ScrollView {
