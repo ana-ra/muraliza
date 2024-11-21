@@ -14,13 +14,12 @@ import CloudKit
 struct CardView: View {
     var colaborationViewModel: ColaborationViewModel
     
-    
-    
-    @State private var tags: [String] = ["tapirus"]
+    @State private var tags: [String] = ["tapirus", "vapo", "tanguen"]
     
     @State private var showTagsModal: Bool = false
     @State private var showAlert: Bool = false
-    
+    @State var showCloseButton: Bool
+    @State var showSeeRoutes: Bool
     
     var body: some View {
         
@@ -28,8 +27,14 @@ struct CardView: View {
             
             HStack{
                 Spacer()
-                Image(systemName: "x.circle.fill")
-                    .foregroundStyle(.thinMaterial)
+                if showCloseButton {
+                    Button {
+                        
+                    }label: {
+                        Image(systemName: "x.circle.fill")
+                            .foregroundStyle(.thinMaterial)
+                    }
+                }
             }.padding(.vertical, 24)
                 .padding(.horizontal, 16)
             
@@ -37,12 +42,12 @@ struct CardView: View {
             if let image = colaborationViewModel.image {
                 Image(uiImage: image)
                     .resizable()
-//                    .aspectRatio(contentMode: .fill)
+                //                    .aspectRatio(contentMode: .fill)
                     .frame(maxWidth: getWidth() - 80)
                     .cornerRadius(12)
                 //                    .padding(.top, 16)
                     .padding(.bottom, 24)
-//                    .clipped()
+                //                    .clipped()
             }
             
             HStack {
@@ -102,23 +107,24 @@ struct CardView: View {
                 .padding(.bottom, 24)
             }
             
-            Button {
-                print("Teste")
-            } label: {
-                Text("Ver rotas")
-            }.padding(.bottom, 24)
-            
-            
+            if showSeeRoutes {
+                Button {
+                    print("Teste")
+                } label: {
+                    Text("Ver rotas")
+                }.padding(.bottom, 24)
+            }
             
         }.foregroundStyle(.white)
             .frame(width: getWidth() - 32)
             .frame(maxHeight: getHeight()*577/873)
             .background(
                 ZStack {
-                    
+                    Rectangle()
+                        .frame(width: getWidth(), height: getHeight())
+                        .foregroundStyle(Color.accentColor)
                     Image("cardBackground")
                         .resizable()
-                        .cornerRadius(32)
                 }
             )
         
@@ -128,7 +134,7 @@ struct CardView: View {
 
 #Preview {
     let colaborationViewModel = ColaborationViewModel()
-    CardView(colaborationViewModel: colaborationViewModel)
+    CardView(colaborationViewModel: colaborationViewModel, showCloseButton: true, showSeeRoutes: true)
         .onAppear {
             colaborationViewModel.image = UIImage(named: "ima")
             colaborationViewModel.title = "Crepusculo Nobre"
