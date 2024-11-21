@@ -46,6 +46,19 @@ class ArtistService {
         return Artist(id: id, name: name, image: photo, biography: biography, works: worksReferencesStrings, instagram: instagram)
     }
     
+    func fetchArtistNamesAndIDs() async throws -> [(id: String, name: String)] {
+        let records: [CKRecord] = try await ckService.fetchRecordsByType(Artist.recordType, desiredKeys: ["Nickname"])
+        return records.compactMap { record in
+            if let name = record["Nickname"] as? String {
+                let id = record.recordID.recordName
+                return (id: id, name: name)
+            }
+            return nil
+        }
+    }
+
+
+    
     func addWorkReferenceToArtists(_ artists: [CKRecord.Reference], workRecord: CKRecord) async throws {
         let workReference = CKRecord.Reference(record: workRecord, action: .none)
         let artistRecordIDs = artists.map { $0.recordID }

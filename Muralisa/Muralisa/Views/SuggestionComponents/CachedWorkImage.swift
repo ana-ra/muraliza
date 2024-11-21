@@ -35,7 +35,7 @@ struct CachedWorkImage<Content: View>: View {
             // In case of success, can substitute this view with our own view
             // Ideally, it would probably be a Navigation link to the page of each work
             case .success(work: let work):
-                content(.success(Image(uiImage: work.image)))
+                content(.success(Image(uiImage: work.imageThumb)))
                     .transition(transition)
             case .failed(let error):
                 content(.failure(error))
