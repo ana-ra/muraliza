@@ -18,6 +18,7 @@ struct SuggestionView: View {
     @State var selectedArtist: Artist?
     @State var address: String = ""
     @State var distance: Double = -1
+    @State private var mostrarPerfil = false
     let locationService = LocationService()
     
     var body: some View {
@@ -74,6 +75,18 @@ struct SuggestionView: View {
         .task {
             await fetchData()
             print("refreshed")
+        }
+        .toolbar{
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    mostrarPerfil.toggle()
+                }) {
+                    Image(systemName: "person.crop.circle.fill")
+                }
+                .sheet(isPresented: $mostrarPerfil) {
+                    PerfilView()
+                }
+            }
         }
     }
 }
