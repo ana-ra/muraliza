@@ -10,6 +10,9 @@ import SwiftUI
 struct NextToYouSubview: View {
     @State var works: [Work]
     
+    @Binding var showCard: Bool
+    @Binding var cardWorkId: String
+    
     var body: some View {
         VStack(alignment:.leading){
             HStack{
@@ -25,9 +28,10 @@ struct NextToYouSubview: View {
                 HStack{
                     ForEach(works, id: \.self) { work in
                         Button {
-                            print("id: \(work.id)")
+                            showCard = true
+                            cardWorkId = work.id
                         } label: {
-                            Image(uiImage: work.image)
+                            Image(uiImage: work.imageThumb)
                                 .resizable()
                                 .frame(width: getWidth()/3, height: getHeight()/6)
                         }

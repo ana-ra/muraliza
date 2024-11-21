@@ -11,6 +11,7 @@ import CloudKit
 
 @Observable
 class RecommendationService: ObservableObject {
+    var initialFetchDone: Bool = false
     var works: [CKRecord] = []
     var workService = WorkService()
     var service = CloudKitService()
@@ -32,6 +33,7 @@ class RecommendationService: ObservableObject {
                               title: "",
                               workDescription: "",
                               image: UIImage(systemName: "photo.badge.exclamationmark")!,
+                              imageThumb: UIImage(systemName: "photo.badge.exclamationmark")!,
                               location: CLLocation(latitude: 0, longitude: 0),
                               tag: [""],
                               artist: nil,
@@ -41,6 +43,7 @@ class RecommendationService: ObservableObject {
                                                      title: "",
                                                      workDescription: "",
                                                      image: UIImage(systemName: "photo.badge.exclamationmark")!,
+                                                     imageThumb: UIImage(systemName: "photo.badge.exclamationmark")!,
                                                      location: CLLocation(latitude: 0, longitude: 0),
                                                      tag: [""],
                                                      artist: nil,
@@ -130,7 +133,7 @@ class RecommendationService: ObservableObject {
         let lastDate = defaults.value(forKey: "lastDateExhibited") as? Date
         var worksExhibited = defaults.value(forKey: "worksExhibited") as? [String] ?? []
         
-        if let lastDate = lastDate, let lastWork = worksExhibited.last, compareDates(lastDate, today) {
+        if let lastDate = lastDate, let lastWork = worksExhibited.last, !compareDates(lastDate, today) {
             todayWork = try await workService.fetchWorkFromRecordName(from: lastWork)
             return
         }

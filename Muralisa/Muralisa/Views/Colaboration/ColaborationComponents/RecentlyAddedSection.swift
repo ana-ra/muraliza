@@ -10,17 +10,20 @@ import SwiftUI
 struct RecentlyAddedSection: View {
     
     var works: [(String, Int, UUID)]
+    var numberOfRows: Int {
+        return min(works.count, 4)
+    }
     
     var body: some View {
         
         Section {
-            ForEach(works, id: \.2) { work in
+            ForEach(0..<numberOfRows, id: \.self) { index in
                 HStack {
-                    Text(work.0)
+                    Text(works[index].0)
                     
                     Spacer()
                     
-                    StatusComponent(status: work.1)
+                    StatusComponent(status: works[index].1)
                 }
                 .listRowSeparator(.visible)
             }
@@ -35,5 +38,5 @@ struct RecentlyAddedSection: View {
 
 
 #Preview {
-    RecentlyAddedSection(works: [("Bomb rua 2", 1, UUID()), ("Untitled", 0, UUID()), ("Grafite colorido", 2, UUID()), ("Wild hardcore", 0, UUID())])
+    RecentlyAddedSection(works: [("Bomb rua 2", 1, UUID()), ("Untitled", 0, UUID()), ("Grafite colorido", 2, UUID())])
 }

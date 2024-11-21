@@ -19,46 +19,99 @@ struct SuggestionView: View {
     @State var address: String = ""
     @State var distance: Double = -1
     let locationService = LocationService()
+    let workService = WorkService()
+    let artistService = ArtistService()
+    
+    @State var navigateToTagView: Bool = false
+    @State var selectedTag: String = ""
+    
+    @State var showCard: Bool = false
+    @State var cardWorkId: String = ""
+    @State var loadingCardView: Bool = true
+    @State var cardWork: Work?
+    @State var artistList: String = ""
     
     var body: some View {
         NavigationStack {
-            if isFetched {
-                ScrollView {
-                    VStack {
-                        ImageSubview(work: recommendationService.todayWork, isCompressed: $isCompressed)
-                            .zIndex(isZooming ? 1000 : 0)
-                        DescriptionSubview(work: recommendationService.todayWork)
-                        ArtistSubview(locationService: locationService,
-                                      locationManager: locationManager,
-                                      manager: manager,
-                                      workLocation: recommendationService.todayWork.location,
-                                      address: $address,
-                                      distance: $distance,
-                                      date: distanceDate(from: recommendationService.todayWork.creationDate),
-                                      showArtistSheet: $showArtistSheet, selectedArtist: $selectedArtist)
-                        TagsSubView(work: recommendationService.todayWork)
-                        
-                        VStack(spacing: 24) {
-                            if !recommendationService.worksByTodaysArtist.isEmpty {
-                                MoreFromSubview(works: $recommendationService.worksByTodaysArtist)
-                            }
+            ZStack {
+                if isFetched {
+                    ScrollView {
+                        VStack {
+                            ImageSubview(work: recommendationService.todayWork, isCompressed: $isCompressed)
+                                .zIndex(isZooming ? 1000 : 0)
+                            DescriptionSubview(work: recommendationService.todayWork)
+                            ArtistSubview(locationService: locationService,
+                                          locationManager: locationManager,
+                                          manager: manager,
+                                          workLocation: recommendationService.todayWork.location,
+                                          address: $address,
+                                          distance: $distance,
+                                          date: distanceDate(from: recommendationService.todayWork.creationDate),
+                                          showArtistSheet: $showArtistSheet, selectedArtist: $selectedArtist)
+                            TagsSubView(work: recommendationService.todayWork, navigateToTagView: $navigateToTagView, selectedTag: $selectedTag)
+                                .navigationDestination(isPresented: $navigateToTagView) {
+                                    TagView(tag: selectedTag)
+                                }
                             
-                            if !recommendationService.nearbyWorks.isEmpty {
-                                NextToYouSubview(works: recommendationService.nearbyWorks)
-                            }
-                            
-                            if !recommendationService.similarTagsWorks.isEmpty {
-                                GridSubview(workRecords: $recommendationService.similarTagsWorks)
+                            VStack(spacing: 24) {
+                                if !recommendationService.worksByTodaysArtist.isEmpty {
+                                    MoreFromSubview(works: $recommendationService.worksByTodaysArtist, showCard: $showCard, cardWorkId: $cardWorkId)
+                                }
+                                
+                                if !recommendationService.nearbyWorks.isEmpty {
+                                    NextToYouSubview(works: recommendationService.nearbyWorks, showCard: $showCard, cardWorkId: $cardWorkId)
+                                }
+                                
+                                if !recommendationService.similarTagsWorks.isEmpty {
+                                    GridSubview(workRecords: $recommendationService.similarTagsWorks, title: "Similares", showCard: $showCard, cardWorkId: $cardWorkId)
+                                }
                             }
                         }
+                        .animation(.easeInOut, value: isCompressed)
                     }
-                    .animation(.easeInOut, value: isCompressed)
+                    .navigationTitle("Sugestão")
+                    .toolbarBackgroundVisibility(isZooming ? .visible : .automatic, for: .navigationBar)
+                    .opacity(showCard ? 0.1 : 1)
+                    .animation(.easeInOut, value: showCard)
+                } else {
+                    VStack {
+                        Spacer()
+                        GifView(gifName: "fetchInicial")
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height: getHeight()/5)
+                        Spacer()
+                    }
+                    .navigationTitle("Sugestão")
                 }
-                .navigationTitle("Sugestão")
-                .toolbarBackgroundVisibility(isZooming ? .visible : .automatic, for: .navigationBar)
-            } else {
-                // TODO: Design Empty state view or fetching message
-                ProgressView("Fetching your daily works")
+                
+                if showCard {
+                    if loadingCardView {
+                        VStack {
+                            Spacer()
+                            GifView(gifName: "fetchInicial")
+                                .aspectRatio(contentMode: .fit)
+                                .frame(height: getHeight()/5)
+                            Spacer()
+                        }
+                        .onAppear {
+                            Task {
+                                await getCardWorkById(cardWorkId: cardWorkId)
+                                loadingCardView = false
+                            }
+                        }
+                        
+                    } else {
+                        if let cardWork = cardWork {
+                            CardView(image: cardWork.image, artist: artistList, title: cardWork.title ?? "", description: cardWork.workDescription ?? "",location: cardWork.location, tags: .constant(cardWork.tag), showCloseButton: true, showBottomElement: .route, showCard: $showCard)
+                        }
+                    }
+                }
+            }
+        }
+        .onChange(of: showCard) {
+            if showCard == false {
+                loadingCardView = true
+                artistList = ""
             }
         }
         .sheet(isPresented: $showArtistSheet) {
@@ -72,8 +125,11 @@ struct SuggestionView: View {
             print("refreshed")
         }
         .task {
-            await fetchData()
-            print("refreshed")
+            if recommendationService.initialFetchDone == false {
+                await fetchData()
+                print("refreshed")
+                recommendationService.initialFetchDone = true
+            }
         }
     }
 }
