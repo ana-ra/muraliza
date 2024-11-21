@@ -11,16 +11,16 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		7AC75B382CBD4EF20002F7C6 /* Muralisa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Muralisa.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7AC75B382CBD4EF20002F7C6 /* Muraliza.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Muraliza.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		20DA1FCA2CD51ABD00DF2AF4 /* Exceptions for "Muralisa" folder in "Muralisa" target */ = {
+		20DA1FCA2CD51ABD00DF2AF4 /* Exceptions for "Muralisa" folder in "Muraliza" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = 7AC75B372CBD4EF20002F7C6 /* Muralisa */;
+			target = 7AC75B372CBD4EF20002F7C6 /* Muraliza */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -28,7 +28,7 @@
 		7AC75B3A2CBD4EF20002F7C6 /* Muralisa */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				20DA1FCA2CD51ABD00DF2AF4 /* Exceptions for "Muralisa" folder in "Muralisa" target */,
+				20DA1FCA2CD51ABD00DF2AF4 /* Exceptions for "Muralisa" folder in "Muraliza" target */,
 			);
 			path = Muralisa;
 			sourceTree = "<group>";
@@ -58,7 +58,7 @@
 		7AC75B392CBD4EF20002F7C6 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				7AC75B382CBD4EF20002F7C6 /* Muralisa.app */,
+				7AC75B382CBD4EF20002F7C6 /* Muraliza.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -66,9 +66,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		7AC75B372CBD4EF20002F7C6 /* Muralisa */ = {
+		7AC75B372CBD4EF20002F7C6 /* Muraliza */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7AC75B462CBD4EF40002F7C6 /* Build configuration list for PBXNativeTarget "Muralisa" */;
+			buildConfigurationList = 7AC75B462CBD4EF40002F7C6 /* Build configuration list for PBXNativeTarget "Muraliza" */;
 			buildPhases = (
 				7AC75B342CBD4EF20002F7C6 /* Sources */,
 				7AC75B352CBD4EF20002F7C6 /* Frameworks */,
@@ -81,12 +81,12 @@
 			fileSystemSynchronizedGroups = (
 				7AC75B3A2CBD4EF20002F7C6 /* Muralisa */,
 			);
-			name = Muralisa;
+			name = Muraliza;
 			packageProductDependencies = (
 				537C27472CC927650004835E /* WrappingHStack */,
 			);
 			productName = Muralisa;
-			productReference = 7AC75B382CBD4EF20002F7C6 /* Muralisa.app */;
+			productReference = 7AC75B382CBD4EF20002F7C6 /* Muraliza.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -121,7 +121,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				7AC75B372CBD4EF20002F7C6 /* Muralisa */,
+				7AC75B372CBD4EF20002F7C6 /* Muraliza */,
 			);
 		};
 /* End PBXProject section */
@@ -278,13 +278,16 @@
 				DEVELOPMENT_TEAM = 4G6HA9J6S5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Muraliza;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				INFOPLIST_KEY_NSCameraUsageDescription = "O aplicativo precisa acessar a camera para utilizar na função de colaborar.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "O aplicativo precisa acessar a localização para adicionar novas obras ao acervo.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -310,13 +313,16 @@
 				DEVELOPMENT_TEAM = 4G6HA9J6S5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = Muraliza;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				INFOPLIST_KEY_NSCameraUsageDescription = "O aplicativo precisa acessar a camera para utilizar na função de colaborar.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "O aplicativo precisa acessar a localização para adicionar novas obras ao acervo.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIRequiresFullScreen = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -342,7 +348,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7AC75B462CBD4EF40002F7C6 /* Build configuration list for PBXNativeTarget "Muralisa" */ = {
+		7AC75B462CBD4EF40002F7C6 /* Build configuration list for PBXNativeTarget "Muraliza" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				7AC75B472CBD4EF40002F7C6 /* Debug */,
