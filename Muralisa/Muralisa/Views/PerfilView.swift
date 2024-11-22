@@ -12,6 +12,7 @@ struct PerfilView: View {
     @State var isNotificationOn = true
     @Query var user: [User]
     @Environment(\.modelContext) var context
+    var swiftDataService = SwiftDataService()
     
     var body: some View {
         NavigationStack {
@@ -39,7 +40,7 @@ struct PerfilView: View {
                                 
                             //Editar Butto
                             Button {
-                                
+                                swiftDataService.createTestUser(context: context)
                             } label: {
                                 Text("Editar foto")
                                     .font(.subheadline)
@@ -93,30 +94,33 @@ struct PerfilView: View {
                     }
                 }
                 
-                Section {
-                    NavigationLink {
-                        PerfilView()
-                    } label: {
-                        HStack {
-                            Text("Contribuições")
-                            Spacer()
-                            Text("Detalhes")
-                                .foregroundStyle(.secondary)
+                if user.first != nil {
+                    Section {
+                        NavigationLink {
+                            ContributionsView()
+                        } label: {
+                            HStack {
+                                Text("Contribuições")
+                                Spacer()
+                                Text("Detalhes")
+                                    .foregroundStyle(.secondary)
+                            }
                         }
-                    }
-                    
-                    NavigationLink {
-                        PerfilView()
-                    } label: {
-                        HStack {
-                            Text("Curtidas")
-                            Spacer()
-                            Text("Detalhes")
-                                .foregroundStyle(.secondary)
+                        
+                        NavigationLink {
+                            FavoritesView()
+                        } label: {
+                            HStack {
+                                Text("Curtidas")
+                                Spacer()
+                                Text("Detalhes")
+                                    .foregroundStyle(.secondary)
+                            }
                         }
+                        
                     }
-                    
                 }
+
             }
             .navigationBarTitle(Text("Perfil"), displayMode: .inline)
             .toolbar {

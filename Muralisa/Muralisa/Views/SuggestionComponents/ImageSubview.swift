@@ -7,8 +7,12 @@
 
 import SwiftUI
 import CoreLocation
+import SwiftData
 
 struct ImageSubview: View {
+    
+    @Query var user: [User]
+    @Environment(\.modelContext) var context
     
     @SceneStorage("isZooming") var isZooming: Bool = false
     
@@ -33,20 +37,51 @@ struct ImageSubview: View {
                     .cornerRadius(25)
                     .addPinchZoom()
                 
-                Button {
-                    isLiked.toggle()
-                } label: {
-                    ZStack{
-                        Circle()
-                            .frame(width: 50)
-                            .foregroundStyle( isLiked ? Color.accentColor : Color.gray.opacity(0.20) )
-                        Image(systemName: isLiked ? "heart.fill" : "heart.fill")
-                            .resizable()
-                            .foregroundStyle(Color.white)
-                            .frame(width: 16,height: 16,alignment: .trailing)
+                if let user = user.first {
+                    Button {
+                        isLiked.toggle()
+                    } label: {
+                        ZStack{
+                            Circle()
+                                .frame(width: 50)
+                                .foregroundStyle( isLiked ? Color.accentColor : Color.gray.opacity(0.20) )
+                            Image(systemName: isLiked ? "heart.fill" : "heart.fill")
+                                .resizable()
+                                .foregroundStyle(Color.white)
+                                .frame(width: 16,height: 16,alignment: .trailing)
+                            
+                        }.padding()
+                    }.onAppear {
+                        if let favoritesId = user.favoritesId {
+                            if favoritesId.contains(work.id) {
+                                isLiked = true
+                            } else {
+                                isLiked = false
+                            }
+                        } else {
+                            isLiked = false
+                        }
+
+                    }.onChange(of: isLiked) {
                         
-                    }.padding()
+                        if var favoritesId = user.favoritesId {
+                           
+                            if isLiked == false {
+                                favoritesId.removeAll { $0 == work.id }
+                                self.user.first?.favoritesId = favoritesId
+                            } else {
+                                favoritesId.append(work.id)
+                                self.user.first?.favoritesId = favoritesId
+                            }
+                            
+                        } else {
+                            if isLiked == true {
+                                self.user.first?.favoritesId = [self.work.id]
+                            }
+                        }
+                    }
                 }
+
                 
             }
             HStack {
