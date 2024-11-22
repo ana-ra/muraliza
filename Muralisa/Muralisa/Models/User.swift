@@ -19,8 +19,6 @@ class User {
     var favoritesId: [String]? = []
     var contributionsId: [String]? = []
     
-    //TODO: Add list of favorites and list of contrbutions
-
     init(id: String? = nil, name: String? = nil, username: String? = nil, email: String? = nil, notifications: Bool, photo: Data? = nil, favoritesId: [String]? = nil, contributionsId: [String]? = nil) {
         self.id = id
         self.name = name

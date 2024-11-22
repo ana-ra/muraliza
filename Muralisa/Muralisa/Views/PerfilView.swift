@@ -109,7 +109,7 @@ struct PerfilView: View {
                 if user.first != nil {
                     Section {
                         NavigationLink {
-                            ContributionsView()
+                            ContribuitionsView()
                         } label: {
                             HStack {
                                 Text("Contribuições")
