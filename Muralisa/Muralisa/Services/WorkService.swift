@@ -72,6 +72,20 @@ class WorkService: ObservableObject {
         return try await convertRecordToWork(record)
     }
     
+    func fetchListOfWorksFromListOfIds(IDs: [String]?) async throws -> [Work] {
+        print(IDs ?? "there is no favorites")
+        guard let IDs else {return []}
+        if IDs.isEmpty {return []}
+        
+        var works: [Work] = []
+        for id in IDs{
+            let work = try await fetchWorkFromRecordName(from: id)
+            works.append(work)
+        }
+        
+        return works
+    }
+    
     func convertRecordsToWorks(_ records: [CKRecord]) async throws -> [Work] {
         var works: [Work] = []
         for record in records {

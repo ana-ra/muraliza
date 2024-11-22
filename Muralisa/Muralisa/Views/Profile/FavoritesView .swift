@@ -30,17 +30,20 @@ struct FavoritesView: View {
                             .frame(height: getHeight()/5)
                         Spacer()
                     }
-                    .task {
-                        //TODO: fazer o request das obras e mudar status do loading
-                    }
                 }
                 else {
-                    
                     if !favorites.isEmpty  {
                         GridSubview(workRecords: $favorites, title: nil, showCard: $showCard, cardWorkId: .constant(""))
                     } else {
                         Text("Não há obras salvas")
                     }
+                }
+            }.task {
+                do {
+                    self.favorites = try await workService.fetchListOfWorksFromListOfIds(IDs: user.first?.favoritesId)
+                    self.isLoading = false
+                } catch {
+                    print("Error fetching favorites \(error.localizedDescription)")
                 }
             }
             .navigationBarTitle(Text("Curtidas"), displayMode: .inline)
@@ -59,5 +62,5 @@ struct FavoritesView: View {
 }
 
 #Preview {
-    ContributionsView()
+    FavoritesView()
 }
