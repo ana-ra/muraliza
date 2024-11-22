@@ -75,8 +75,14 @@ struct SuggestionView: View {
                     .opacity(showCard ? 0.1 : 1)
                     .animation(.easeInOut, value: showCard)
                 } else {
-                    // TODO: Design Empty state view or fetching message
-                    ProgressView("Fetching your daily works")
+                    VStack {
+                        Spacer()
+                        GifView(gifName: "fetchInicial")
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height: getHeight()/5)
+                        Spacer()
+                    }
+                    .navigationTitle("Sugestão")
                 }
                 
                 if showCard {
