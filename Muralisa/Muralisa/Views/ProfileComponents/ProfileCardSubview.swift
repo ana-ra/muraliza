@@ -20,7 +20,7 @@ struct ProfileCardSubview: View {
     }
     
     var body: some View {
-        Section {
+
             VStack {
                 HStack {
                     Text("\(totalWorks) Obras adicionadas")
@@ -40,7 +40,7 @@ struct ProfileCardSubview: View {
                         .foregroundStyle(.white)
                     Spacer()
                 }
-                .padding(.bottom, 24)
+                .padding(.bottom, 20)
                 
                 HStack {
                     
@@ -72,12 +72,21 @@ struct ProfileCardSubview: View {
                     }
                     .foregroundStyle(.white)
                 }
-                .padding(.horizontal, 26)
-                .padding(.bottom, 20)
+                .padding(.horizontal, 16)
+                .padding(.bottom, 18)
             }
-            .listRowBackground(Color.brandingSecondary)
+            .listRowBackground(
+                ZStack {
+                    Rectangle()
+                        .foregroundStyle(.brandingSecondary)
+                    Image(.profileCardBackground)
+                        .resizable()
+                        .renderingMode(.template)
+                        .scaledToFill()
+                        .foregroundStyle(.stripesCard)
+                }
+            )
         }
-    }
 }
 
 
