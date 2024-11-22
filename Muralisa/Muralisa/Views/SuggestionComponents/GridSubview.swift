@@ -12,6 +12,9 @@ struct GridSubview: View {
     @Binding var workRecords: [Work]
     var title: String?
     
+    @Binding var showCard: Bool
+    @Binding var cardWorkId: String
+    
     var fixedColumn = [
         GridItem(.flexible(),spacing: 0),
         GridItem(.flexible(),spacing: 0),
@@ -34,7 +37,8 @@ struct GridSubview: View {
                 LazyVGrid(columns: fixedColumn, spacing: 0) {
                     ForEach(workRecords, id: \.self) { work in
                         Button {
-                            print("id: \(work.id)")
+                            showCard = true
+                            cardWorkId = work.id
                         } label: {
                             Image(uiImage: work.imageThumb)
                                 .resizable()

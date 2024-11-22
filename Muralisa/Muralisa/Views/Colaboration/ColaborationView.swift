@@ -43,7 +43,7 @@ struct ColaborationView: View {
     let screens = ColaborationNavigationDestinations.allCases
     
     // Substituir por dados salvos no userDefaults/coreData das obras colaboradas, o status deve vir da variável de controle no banco de dados.
-    var works: [(String, Int, UUID)] = [("Teste", 1, UUID())]
+    var works: [(String, Int, UUID)] = []
     
     @State private var showingOptions = false
     
