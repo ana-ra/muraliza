@@ -10,6 +10,10 @@ import CloudKit
 
 struct GridSubview: View {
     @Binding var workRecords: [Work]
+    var title: String?
+    
+    @Binding var showCard: Bool
+    @Binding var cardWorkId: String
     
     var fixedColumn = [
         GridItem(.flexible(),spacing: 0),
@@ -19,21 +23,24 @@ struct GridSubview: View {
     
     var body: some View {
         VStack(alignment: .leading) {
-            HStack {
-                Text("Similares a Gustavo")
-                    .font(.title2)
-                    .fontWeight(.bold)
-                    .padding(.leading)
-                Spacer()
+            if let title = title {
+                HStack {
+                    Text(title)
+                        .font(.title2)
+                        .fontWeight(.bold)
+                        .padding(.leading)
+                    Spacer()
+                }
             }
             
             ScrollView {
                 LazyVGrid(columns: fixedColumn, spacing: 0) {
                     ForEach(workRecords, id: \.self) { work in
                         Button {
-                            print("id: \(work.id)")
+                            showCard = true
+                            cardWorkId = work.id
                         } label: {
-                            Image(uiImage: work.image)
+                            Image(uiImage: work.imageThumb)
                                 .resizable()
                                 .frame(width: getWidth()/3, height: getHeight()/6)
                         }

@@ -28,107 +28,88 @@ struct ReviewNewWorkView: View {
     
     var body: some View {
         VStack {
-            VStack {
-                if let image = colaborationViewModel.image {
-                    Image(uiImage: image)
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                        .frame(maxWidth: getWidth() - 80)
-                        .frame(maxHeight: tags.isEmpty ? getHeight()/3.2 : getHeight()/4.2)
-                        .cornerRadius(20)
-                        .padding(.top, 24)
-                        .padding(.bottom, 24)
-                        .clipped()
-                }
-                
-                HStack {
-                    Text("Artista:")
-                    Text(colaborationViewModel.artist == "" ? "Desconhecido" : colaborationViewModel.artist)
-                        .bold()
-                    
-                    Spacer()
-                }
-                .padding(.horizontal, 24)
-                
-                Group {
-                    Divider()
-                        .frame(height: 0.3)
-                        .overlay(Color.black)
-                }
-                .frame(width: getWidth() - 80)
-                .padding(.bottom, 4)
-                
-                HStack {
-                    
-                    Text("Título:")
-                    Text(colaborationViewModel.title)
-                        .bold()
-                    Spacer()
-                }
-                .padding(.horizontal, 24)
-                
-                Group {
-                    Divider()
-                        .frame(height: 0.305)
-                        .overlay(Color.black)
-                }
-                .frame(width: getWidth() - 80)
-                .padding(.bottom, 4)
-                
-                
-                WrappingHStack(alignment: .leading) {
-                    
-                    Text("Descrição:")
-                    Text(colaborationViewModel.description == "" ? "Sem descrição" : colaborationViewModel.description)
-                        .bold()
-                        .lineLimit(1)
-                }
-                .padding(.horizontal, 24)
-                .padding(.bottom, tags.isEmpty ? 24 : 0)
-                
-                if !tags.isEmpty {
-                    
-                    Group {
-                        Divider()
-                            .frame(height: 0.3)
-                            .overlay(Color.black)
-                    }
-                    .frame(width: getWidth() - 80)
-                    .padding(.bottom, 18)
-                    
-                    HStack(spacing: 24) {
-                        
-                        ForEach(tags, id: \.self) { tag in
-                            
-                            Text("\(tag)")
-                                .font(.subheadline)
-                                .foregroundStyle(Color.accentColor)
-                                .frame(width: (getWidth() - (32 + 48 + 48)) / 3)
-                                .padding(.vertical, 8)
-                                .background(
-                                    RoundedRectangle(cornerRadius: 40)
-                                        .foregroundStyle(Color.accentColor)
-                                        .opacity(0.15)
-                                )
-                        }
-                    }
-                    .padding(.horizontal, 24)
-                    .padding(.bottom, 24)
-                }
-                
-            }
-            .frame(width: getWidth() - 32)
-            .frame(maxHeight: getHeight()/1.8)
-            .background(
-                ZStack {
-                    RoundedRectangle(cornerRadius: 20)
-                        .stroke(lineWidth: 1)
-                    
-                    RoundedRectangle(cornerRadius: 20)
-                        .foregroundStyle(Color(red: 255/256, green: 237/256, blue: 237/256))
-                }
-            )
-            .padding(.vertical, 24)
+            CardView(image: colaborationViewModel.image, artist: colaborationViewModel.artist, title: colaborationViewModel.title, description: colaborationViewModel.description, tags: $tags, showCloseButton: false, showBottomElement: .none, showCard: .constant(true))
+//            VStack {
+//                if let image = colaborationViewModel.image {
+//                    Image(uiImage: image)
+//                        .resizable()
+//                        .aspectRatio(contentMode: .fill)
+//                        .frame(maxWidth: getWidth() - 80)
+//                        .cornerRadius(12)
+//                        .padding(.top, 24)
+//                        .padding(.bottom, 24)
+//                        .clipped()
+//                }
+//                
+//                HStack {
+//                    Text("Artista:")
+//                    Text(colaborationViewModel.artist == "" ? "Desconhecido" : colaborationViewModel.artist)
+//                        .bold()
+//                    
+//                    Spacer()
+//                }
+//                .padding(.horizontal, 24)
+//                .padding(.bottom, 16)
+//                
+//                
+//                HStack {
+//                    
+//                    Text("Título:")
+//                    Text(colaborationViewModel.title)
+//                        .bold()
+//                    Spacer()
+//                }
+//                .padding(.horizontal, 24)
+//                .padding(.bottom, 16)
+//                
+//                
+//                
+//                
+//                WrappingHStack(alignment: .leading) {
+//                    
+//                    Text("Descrição:")
+//                    Text(colaborationViewModel.description == "" ? "Sem descrição" : colaborationViewModel.description)
+//                        .bold()
+//                        .lineLimit(1)
+//                }
+//                .padding(.horizontal, 24)
+//                .padding(.bottom, tags.isEmpty ? 24 : 16)
+//                
+//                if !tags.isEmpty {
+//                    
+//                    
+//                    HStack(spacing: 24) {
+//                        
+//                        ForEach(tags, id: \.self) { tag in
+//                            
+//                            Text("\(tag)")
+//                                .font(.subheadline)
+//                                .foregroundStyle(Color.white)
+//                                .frame(width: (getWidth() - (32 + 48 + 48)) / 3)
+//                                .padding(.vertical, 8)
+//                                .background(
+//                                    RoundedRectangle(cornerRadius: 40)
+//                                        .foregroundStyle(Color.white)
+//                                        .opacity(0.25)
+//                                )
+//                        }
+//                    }
+//                    .padding(.horizontal, 24)
+//                    .padding(.bottom, 24)
+//                }
+//                
+//            }.foregroundStyle(.white)
+//            .frame(width: getWidth() - 32)
+//            .frame(maxHeight: getHeight()*4/7)
+//            .background(
+//                ZStack {
+//                    
+//                    Image("cardBackground")
+//                        .resizable()
+//                        .cornerRadius(32)
+//                }
+//            )
+////            .padding(.vertical, 8)
             
             
             HStack {
@@ -137,7 +118,7 @@ struct ReviewNewWorkView: View {
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                 Spacer()
-            }
+            }.padding(.top, 16)
             
             HStack {
                 Spacer()
@@ -168,10 +149,11 @@ struct ReviewNewWorkView: View {
                 Spacer()
                 Button {
                     colaborationViewModel.getArtistID(artistName: [colaborationViewModel.artist])
+                    colaborationViewModel.compressImage()
                     
                     Task {
                         do {
-                            let workRecord = try await workService.saveWork(title: colaborationViewModel.title, workDescription: colaborationViewModel.description, tag: tags, image: colaborationViewModel.image, location: colaborationViewModel.location!, artistReference: colaborationViewModel.artistsID)
+                            let workRecord = try await workService.saveWork(title: colaborationViewModel.title, workDescription: colaborationViewModel.description, tag: tags, image: colaborationViewModel.image, imageThumb: colaborationViewModel.imageThumb, location: colaborationViewModel.location!, artistReference: colaborationViewModel.artistsID)
                             
                             if let workRecord {
                                 try await artistService.addWorkReferenceToArtists(colaborationViewModel.artistsID, workRecord: workRecord)
@@ -198,14 +180,22 @@ struct ReviewNewWorkView: View {
             Spacer()
             
         }
+        .padding(.top, 8)
         .navigationTitle("Revisar")
         .navigationBarTitleDisplayMode(.inline)
     }
 }
 
 
-//#Preview {
-//    NavigationStack {
-//        NewWorkCardView(colaborationViewModel: ColaborationViewModel(), artist: "",title: "Tropical gang", descripition: "", image: UIImage(named: "ima"))
-//    }
-//}
+#Preview {
+    NavigationStack {
+        let colaborationViewModel = ColaborationViewModel()
+        ReviewNewWorkView(colaborationViewModel: colaborationViewModel)
+            .environment(ColaborationRouter())
+            .onAppear(){
+                colaborationViewModel.image = UIImage(named: "ima")
+                colaborationViewModel.description = "descripiton askdjfhlkajslhdfkjlasdklfaskhfalkjhsdkjfha"
+                colaborationViewModel.title = "title"
+            }
+    }
+}

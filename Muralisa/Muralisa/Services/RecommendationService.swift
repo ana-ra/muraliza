@@ -11,6 +11,7 @@ import CloudKit
 
 @Observable
 class RecommendationService: ObservableObject {
+    var initialFetchDone: Bool = false
     var works: [CKRecord] = []
     var workService = WorkService()
     var service = CloudKitService()
@@ -32,6 +33,7 @@ class RecommendationService: ObservableObject {
                               title: "",
                               workDescription: "",
                               image: UIImage(systemName: "photo.badge.exclamationmark")!,
+                              imageThumb: UIImage(systemName: "photo.badge.exclamationmark")!,
                               location: CLLocation(latitude: 0, longitude: 0),
                               tag: [""],
                               artist: nil,
@@ -41,6 +43,7 @@ class RecommendationService: ObservableObject {
                                                      title: "",
                                                      workDescription: "",
                                                      image: UIImage(systemName: "photo.badge.exclamationmark")!,
+                                                     imageThumb: UIImage(systemName: "photo.badge.exclamationmark")!,
                                                      location: CLLocation(latitude: 0, longitude: 0),
                                                      tag: [""],
                                                      artist: nil,

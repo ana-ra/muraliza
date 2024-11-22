@@ -9,25 +9,28 @@ import SwiftUI
 
 
 // Iremos definir essas tags em algum lugar, por enquanto hardcoded
-var tags = [
-    "Tipografia", "Bomb", "Psicodélico", "Abstrato", "Colorido",
-    "Natureza", "Sombrio", "Freestyle", "Tag", "Freehand",
-    "Poster", "Pontilhismo", "Surrealismo", "Persona", "Retrato",
-    "Branco e Preto", "Mural"
-]
+
 
 struct AddTagsSheet: View {
     @Environment(\.dismiss) var dismiss
     // Provavelmente irá receber esse valor e alterar
     @Binding var selectedTags: [String]
+    @State var newSelectedTags: [String] = []
+    
+    @State var tags = [
+        "Tipografia", "Bomb", "Psicodélico", "Abstrato", "Colorido",
+        "Natureza", "Sombrio", "Freestyle", "Tag", "Freehand",
+        "Poster", "Pontilhismo", "Surrealismo", "Persona", "Retrato",
+        "Branco e Preto", "Mural"
+    ]
     
     
     var body: some View {
         NavigationStack {
             List {
-                if !selectedTags.isEmpty {
+                if !newSelectedTags.isEmpty {
                     Section {
-                        ForEach(selectedTags, id:\.self) { tag in
+                        ForEach(newSelectedTags, id:\.self) { tag in
                             HStack {
                                 Button {
                                     removeTag(tag)
@@ -66,20 +69,8 @@ struct AddTagsSheet: View {
                         Text("Selecione as categorias que a obra adicionada mais se encaixa para adicioná-la como tag. Máximo de três categorias.")
                     }
                 }
-
-                Section {
-                    Button {
-                        // Por enquanto só volta, podemos implementar alguma lógica aqui
-                        dismiss()
-                    } label: {
-                        Text("Salvar")
-                    }
-                    .buttonStyle(CustomBorderedProminentButtonStyle(color: .accentColor, isFullScreen: true))
-                    .listRowBackground(Color.clear)
-                }
-                .padding(.horizontal, -16)
             }
-            .animation(.easeInOut, value: selectedTags.count)
+            .animation(.easeInOut, value: newSelectedTags.count)
             .navigationTitle("Adicionar Tags")
             .toolbarTitleDisplayMode(.inline)
             .toolbarBackgroundVisibility(.visible)
@@ -92,21 +83,37 @@ struct AddTagsSheet: View {
                     }
                     .padding()
                 }
+                
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        dismiss()
+                        selectedTags = newSelectedTags
+                    } label: {
+                        Text("OK")
+                            .bold()
+                    }
+                }
+            }
+            .onAppear {
+                newSelectedTags = selectedTags
+                for tag in newSelectedTags {
+                    self.tags.removeAll { $0 == tag }
+                }
             }
         }
     }
     
     private func addTag(_ tag: String) {
         // Limit of 3 tags per Work
-        if selectedTags.count < 3 {
-            selectedTags.append(tag)
-            tags.removeAll { $0 == tag }
+        if newSelectedTags.count < 3 {
+            newSelectedTags.append(tag)
+            self.tags.removeAll { $0 == tag }
         }
     }
     
     private func removeTag(_ tag: String) {
-        selectedTags.removeAll { $0 == tag }
-        tags.append(tag)
+        newSelectedTags.removeAll { $0 == tag }
+        self.tags.append(tag)
     }
 }
 
