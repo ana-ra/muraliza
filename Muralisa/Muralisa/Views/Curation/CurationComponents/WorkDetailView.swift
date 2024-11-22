@@ -18,13 +18,23 @@ struct WorkDetailView: View {
     var body: some View {
         ZStack {
             VStack(spacing: 24) {
-                Image(uiImage: work.image)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(maxHeight: getHeight() / 3)
-                    .frame(maxWidth: .infinity)
-                    .cornerRadius(25)
-                    .addPinchZoom()
+                if let image = work.image {
+                    Image(uiImage: image)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(maxHeight: getHeight() / 3)
+                        .frame(maxWidth: .infinity)
+                        .cornerRadius(25)
+                        .addPinchZoom()
+                } else {
+                    Image(uiImage: work.imageThumb)
+                        .resizable()
+                        .aspectRatio(contentMode: .fill)
+                        .frame(maxHeight: getHeight() / 3)
+                        .frame(maxWidth: .infinity)
+                        .cornerRadius(25)
+                        .addPinchZoom()
+                }
                 
                 VStack(spacing: 8) {
                     VStack(alignment: .leading, spacing: 8) {

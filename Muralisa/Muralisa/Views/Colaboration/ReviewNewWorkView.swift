@@ -168,10 +168,11 @@ struct ReviewNewWorkView: View {
                 Spacer()
                 Button {
                     colaborationViewModel.getArtistID(artistName: [colaborationViewModel.artist])
+                    colaborationViewModel.compressImage()
                     
                     Task {
                         do {
-                            let workRecord = try await workService.saveWork(title: colaborationViewModel.title, workDescription: colaborationViewModel.description, tag: tags, image: colaborationViewModel.image, location: colaborationViewModel.location!, artistReference: colaborationViewModel.artistsID)
+                            let workRecord = try await workService.saveWork(title: colaborationViewModel.title, workDescription: colaborationViewModel.description, tag: tags, image: colaborationViewModel.image, imageThumb: colaborationViewModel.imageThumb, location: colaborationViewModel.location!, artistReference: colaborationViewModel.artistsID)
                             
                             if let workRecord {
                                 try await artistService.addWorkReferenceToArtists(colaborationViewModel.artistsID, workRecord: workRecord)

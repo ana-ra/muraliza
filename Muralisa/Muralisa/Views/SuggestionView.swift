@@ -21,6 +21,9 @@ struct SuggestionView: View {
     @State private var mostrarPerfil = false
     let locationService = LocationService()
     
+    @State var navigateToTagView: Bool = false
+    @State var selectedTag: String = ""
+    
     var body: some View {
         NavigationStack {
             if isFetched {
@@ -37,7 +40,10 @@ struct SuggestionView: View {
                                       distance: $distance,
                                       date: distanceDate(from: recommendationService.todayWork.creationDate),
                                       showArtistSheet: $showArtistSheet, selectedArtist: $selectedArtist)
-                        TagsSubView(work: recommendationService.todayWork)
+                        TagsSubView(work: recommendationService.todayWork, navigateToTagView: $navigateToTagView, selectedTag: $selectedTag)
+                            .navigationDestination(isPresented: $navigateToTagView) {
+                                TagView(tag: selectedTag)
+                            }
                         
                         VStack(spacing: 24) {
                             if !recommendationService.worksByTodaysArtist.isEmpty {
@@ -49,7 +55,7 @@ struct SuggestionView: View {
                             }
                             
                             if !recommendationService.similarTagsWorks.isEmpty {
-                                GridSubview(workRecords: $recommendationService.similarTagsWorks)
+                                GridSubview(workRecords: $recommendationService.similarTagsWorks, title: "Similares")
                             }
                         }
                     }

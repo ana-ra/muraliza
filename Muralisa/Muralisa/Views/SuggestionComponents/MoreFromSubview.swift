@@ -27,7 +27,7 @@ struct MoreFromSubview: View {
                         Button {
                             print("id: \(work.id)")
                         } label: {
-                            Image(uiImage: work.image)
+                            Image(uiImage: work.imageThumb)
                                 .resizable()
                                 .frame(width: 143, height: 128)
                         }
