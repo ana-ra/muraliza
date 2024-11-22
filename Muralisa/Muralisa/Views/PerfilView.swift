@@ -12,7 +12,6 @@ struct PerfilView: View {
     @State var isNotificationOn = true
     @Query var user: [User]
     @Environment(\.modelContext) var context
-    var swiftDataService = SwiftDataService()
     
     var body: some View {
         NavigationStack {
@@ -40,7 +39,7 @@ struct PerfilView: View {
                                 
                             //Editar Butto
                             Button {
-//                                createTestUser()
+                                
                             } label: {
                                 Text("Editar foto")
                                     .font(.subheadline)
@@ -129,29 +128,6 @@ struct PerfilView: View {
                     }
                 }
             }
-        }
-    }
-    
-    //Função de teste
-    private func createTestUser() {
-        let imageData: Data? = UIImage(named: "ima")?.jpegData(compressionQuality: 1.0)
-        let newUser = User(
-            id: UUID().uuidString,
-            name: "John Doe",
-            username: "johndoe",
-            email: "johndoe@example.com",
-            notifications: true,
-            photo: imageData)
-        
-        // Adiciona o novo usuário ao contexto do Swift Data
-        context.insert(newUser)
-        
-        // Tenta salvar as mudanças
-        do {
-            try context.save()
-            print("User saved successfully!")
-        } catch {
-            print("Failed to save user: \(error.localizedDescription)")
         }
     }
 }
