@@ -13,12 +13,13 @@ struct ContributionsView: View {
     @State var contributions: [Work] = []
     @Query var user: [User]
     @Environment(\.modelContext) var context
+    @State var showCard = false
     
     var body: some View {
         NavigationStack {
             VStack {
                 if !contributions.isEmpty  {
-                    GridSubview(workRecords: $contributions)
+                    GridSubview(workRecords: $contributions, title: nil, showCard: $showCard, cardWorkId: .constant(""))
                 } else {
                     Text("Não há obras salvas")
                 }

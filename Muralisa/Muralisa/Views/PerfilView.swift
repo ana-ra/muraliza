@@ -18,7 +18,6 @@ struct PerfilView: View {
         NavigationStack {
             Form {
                 Section {
-
                     HStack {
                         Spacer()
                         VStack {
@@ -69,7 +68,6 @@ struct PerfilView: View {
                                 Text(String(email))
                                     .font(.subheadline)
                                     .foregroundStyle(Color.gray)
-                                    .padding(.top, 8)
                             }
 
                         }
@@ -78,6 +76,20 @@ struct PerfilView: View {
                 }
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
+                
+                if let user = user.first {
+                    if let contributions = user.contributionsId {
+                        Section {
+                            //TODO: fazer a contagem das obras
+                            ProfileCardSubview(approvedWorks: 859459, pendingWorks: 1234, rejectedWorks: 124, title: "Art Hunter")
+                        }
+                    } else {
+                        Section {
+                            ProfileCardSubview(approvedWorks: 0, pendingWorks: 0, rejectedWorks: 0, title: "Art Hunter")
+                        }
+                    }
+                }
+               
                 
                 Section {
                     HStack {
