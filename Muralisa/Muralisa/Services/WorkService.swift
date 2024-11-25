@@ -7,6 +7,20 @@ class WorkService: ObservableObject {
     var artistService = ArtistService()
     var pendingWorkRecords: [CKRecord] = []
     
+    func fetchCountOfWorksStatus(IDs: [String], status: Int) async throws -> Int {
+        let recordIDs = IDs.map {CKRecord.ID(recordName: $0)}
+        let records = try await ckService.fetchRecordsByIDsAndDesiredKeys(by: recordIDs, desiredKeys: ["Status"])
+        let works = try await convertRecordsToWorks(records)
+        
+        var count = 0
+        for work in works {
+            if work.status == status {
+                count += 1
+            }
+        }
+        return count
+    }
+    
     func fetchWorks(onWorkConverted: @escaping (Work) -> Void) async throws -> [Work] {
         let records = try await ckService.fetchRecordsByType(Work.recordType)
         var works: [Work] = []

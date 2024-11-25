@@ -13,6 +13,11 @@ struct PerfilView: View {
     @Query var user: [User]
     @Environment(\.modelContext) var context
     var swiftDataService = SwiftDataService()
+    var workService = WorkService()
+    @State var countApprovedWorks = 0
+    @State var countRejectedWorks = 0
+    @State var countPendingWorks = 0
+    
     
     var body: some View {
         NavigationStack {
@@ -58,7 +63,7 @@ struct PerfilView: View {
                                     .padding(.top, 8)
                             }
                             
-                            //usernmae
+                            //username
                             if let username = user.first?.username {
                                 Text(String("@\(username)"))
                             }
@@ -77,19 +82,13 @@ struct PerfilView: View {
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
                 
-                if let user = user.first {
-                    if let contributions = user.contributionsId {
-                        Section {
-                            //TODO: fazer a contagem das obras
-                            ProfileCardSubview(approvedWorks: 859459, pendingWorks: 1234, rejectedWorks: 124, title: "Art Hunter")
-                        }
-                    } else {
-                        Section {
-                            ProfileCardSubview(approvedWorks: 0, pendingWorks: 0, rejectedWorks: 0, title: "Art Hunter")
-                        }
-                    }
+                
+                Section {
+                    ProfileCardSubview(approvedWorks: countApprovedWorks,
+                                       pendingWorks: countPendingWorks,
+                                       rejectedWorks: countRejectedWorks,
+                                       title: "Art Hunter")
                 }
-               
                 
                 Section {
                     HStack {
@@ -143,6 +142,23 @@ struct PerfilView: View {
                         Text("Pronto")
                     }
                 }
+            }
+        }.onAppear {
+            Task {
+                if let user = self.user.first, let contributionsId = user.contributionsId {
+                    print("contributionsId", contributionsId)
+                    do {
+                        self.countPendingWorks = try await workService.fetchCountOfWorksStatus(IDs: contributionsId,
+                                                                                               status: 2)
+                        self.countApprovedWorks = try await workService.fetchCountOfWorksStatus(IDs: contributionsId,
+                                                                                                status: 1)
+                        self.countRejectedWorks = try await workService.fetchCountOfWorksStatus(IDs: contributionsId,
+                                                                                                status: 0)
+                    } catch {
+                        print("Error counting works status \(error.localizedDescription)")
+                    }
+                }
+                
             }
         }
     }
