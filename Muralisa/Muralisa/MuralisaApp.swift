@@ -11,52 +11,58 @@ import SwiftUI
 struct MuralisaApp: App {
     @State var networkMonitor = NetworkMonitor()
     @State var locationManager = LocationManager()
-
+    
     @State var colaborationRouter = ColaborationRouter()
     init(){
-      // override alerts tintColor bug
+        // override alerts tintColor bug
         UIView.appearance(whenContainedInInstancesOf: [UIAlertController.self]).tintColor = UIColor(.accent)
     }
     
     var body: some Scene {
         WindowGroup {
             TabView {
-                Tab("Sugestão", systemImage: "wand.and.rays.inverse") {
-                    NavigationStack {
-                        if networkMonitor.isConnected {
-                            if locationManager.authorizationStatus == .authorizedWhenInUse {
-                                SuggestionView()
-                            } else {
-                                DisabledLocationView(locationManager: locationManager)
-                                    .navigationTitle("Sugestão")
-                            }
+                NavigationStack {
+                    if networkMonitor.isConnected {
+                        if locationManager.authorizationStatus == .authorizedWhenInUse {
+                            SuggestionView()
                         } else {
-                            NoConnectionView()
+                            DisabledLocationView(locationManager: locationManager)
                                 .navigationTitle("Sugestão")
                         }
+                    } else {
+                        NoConnectionView()
+                            .navigationTitle("Sugestão")
                     }
                 }
+                .tabItem {
+                    Label("Sugestão", systemImage: "wand.and.rays.inverse")
+                }
                 
-                Tab("Colaborar", systemImage: "photo.badge.plus.fill") {
-                    NavigationStack(path: $colaborationRouter.navigationPath) {
-                        if networkMonitor.isConnected {
-                            if locationManager.authorizationStatus == .authorizedWhenInUse {
-                                ColaborationView()
-                                    .environment(colaborationRouter)
-                            } else {
-                                DisabledLocationView(locationManager: locationManager)
-                                    .navigationTitle("Colaborar")
-                            }
+                NavigationStack(path: $colaborationRouter.navigationPath) {
+                    if networkMonitor.isConnected {
+                        if locationManager.authorizationStatus == .authorizedWhenInUse {
+                            ColaborationView()
+                                .environment(colaborationRouter)
                         } else {
-                            NoConnectionView()
+                            DisabledLocationView(locationManager: locationManager)
                                 .navigationTitle("Colaborar")
                         }
+                    } else {
+                        NoConnectionView()
+                            .navigationTitle("Colaborar")
                     }
                 }
+                .tabItem {
+                    Label("Colaborar", systemImage: "photo.badge.plus.fill")
+                }
                 
-//                Tab("Curadoria", systemImage: "rectangle.and.text.magnifyingglass") {
-//                    CurationView()
-//                }
+                // Uncomment and modify as needed
+                // NavigationStack {
+                //     CurationView()
+                // }
+                // .tabItem {
+                //     Label("Curadoria", systemImage: "rectangle.and.text.magnifyingglass")
+                // }
             }
             .onDisappear {
                 deleteFilesInAssets()
@@ -73,18 +79,18 @@ extension MuralisaApp {
             print("Could not find caches directory.")
             return
         }
-
+        
         // Start searching for the Assets directory
         deleteFilesInAssetsDirectory(at: cachesDirectory)
     }
     
     func deleteFilesInAssetsDirectory(at url: URL) {
         let fileManager = FileManager.default
-
+        
         do {
             // List all contents in the current directory
             let filePaths = try fileManager.contentsOfDirectory(at: url, includingPropertiesForKeys: nil)
-
+            
             for filePath in filePaths {
                 // Check if the item is a directory
                 if (try? filePath.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == true {
@@ -104,14 +110,14 @@ extension MuralisaApp {
             print("Error accessing directory \(url.lastPathComponent): \(error)")
         }
     }
-
+    
     func deleteAllFilesInDirectory(at url: URL) {
         let fileManager = FileManager.default
-
+        
         do {
             // List all contents in the Assets directory
             let filePaths = try fileManager.contentsOfDirectory(at: url, includingPropertiesForKeys: nil)
-
+            
             for filePath in filePaths {
                 // Check if it's a file or a directory
                 if (try? filePath.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == false {
@@ -120,9 +126,9 @@ extension MuralisaApp {
                     print("Deleted file: \(filePath.lastPathComponent)")
                 }
             }
-
+            
             print("All files in \(url.lastPathComponent) have been deleted.")
-
+            
         } catch {
             print("Error deleting files in directory \(url.lastPathComponent): \(error)")
         }

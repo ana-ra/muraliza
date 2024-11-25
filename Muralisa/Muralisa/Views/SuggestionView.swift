@@ -70,7 +70,7 @@ struct SuggestionView: View {
                         .animation(.easeInOut, value: isCompressed)
                     }
                     .navigationTitle("Sugestão")
-                    .toolbarBackgroundVisibility(isZooming ? .visible : .automatic, for: .navigationBar)
+                    .toolbarBackground(isZooming ? .visible : .automatic, for: .navigationBar)
                     .opacity(showCard ? 0.1 : 1)
                     .animation(.easeInOut, value: showCard)
                 } else {
