@@ -146,25 +146,26 @@ struct SuggestionView: View {
                 recommendationService.initialFetchDone = true
             }
         }
-        .toolbar{
-            ToolbarItem(placement: .navigationBarTrailing) {
-                Button(action: {
-                    mostrarPerfil.toggle()
-                }) {
-                    if let user = user.first ,let photoData = user.photo, let uiImage = UIImage(data: photoData) {
-                        Image(uiImage: uiImage)
-                            .resizable()
-                            .frame(width: 32,height: 32,alignment: .trailing)
-                            .clipShape(Circle())
-                    } else {
-                        Image(systemName: "person.crop.circle.fill")
-                    }
-                }
-                .sheet(isPresented: $mostrarPerfil) {
-                    PerfilView()
-                }
-            }
-        }
+        // TODO: Integrate profile with the correct requests using cloudkit
+//        .toolbar{
+//            ToolbarItem(placement: .navigationBarTrailing) {
+//                Button(action: {
+//                    mostrarPerfil.toggle()
+//                }) {
+//                    if let user = user.first ,let photoData = user.photo, let uiImage = UIImage(data: photoData) {
+//                        Image(uiImage: uiImage)
+//                            .resizable()
+//                            .frame(width: 32,height: 32,alignment: .trailing)
+//                            .clipShape(Circle())
+//                    } else {
+//                        Image(systemName: "person.crop.circle.fill")
+//                    }
+//                }
+//                .sheet(isPresented: $mostrarPerfil) {
+//                    PerfilView()
+//                }
+//            }
+//        }
     }
 }
 

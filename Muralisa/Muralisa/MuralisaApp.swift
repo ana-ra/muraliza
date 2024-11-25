@@ -37,6 +37,7 @@ struct MuralisaApp: App {
                     if networkMonitor.isConnected {
                         if locationManager.authorizationStatus == .authorizedWhenInUse {
                             SuggestionView()
+                                .navigationTitle("Sugestão")
                         } else {
                             DisabledLocationView(locationManager: locationManager)
                                 .navigationTitle("Sugestão")
