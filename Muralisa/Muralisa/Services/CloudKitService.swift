@@ -73,8 +73,12 @@ class CloudKitService {
         let query = CKQuery(recordType: recordType, predicate: predicate)
         let queryOperation = CKQueryOperation(query: query)
         
-        if recordType == Work.recordType {
-            queryOperation.desiredKeys = ["Image_thumbnail"] // Fetch only the thumbnail field
+//        if recordType == Work.recordType {
+//            queryOperation.desiredKeys = ["Image_thumbnail"] // Fetch only the thumbnail field
+//        }
+        
+        if let keys = desiredKeys {
+            queryOperation.desiredKeys = keys
         }
 
         var fetchedRecords: [CKRecord] = []

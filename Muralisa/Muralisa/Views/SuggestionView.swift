@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct SuggestionView: View {
     @SceneStorage("isZooming") var isZooming: Bool = false
@@ -31,6 +32,7 @@ struct SuggestionView: View {
     @State var loadingCardView: Bool = true
     @State var cardWork: Work?
     @State var artistList: String = ""
+    @Query var user: [User]
     
     var body: some View {
         NavigationStack {
@@ -137,7 +139,14 @@ struct SuggestionView: View {
                 Button(action: {
                     mostrarPerfil.toggle()
                 }) {
-                    Image(systemName: "person.crop.circle.fill")
+                    if let user = user.first ,let photoData = user.photo, let uiImage = UIImage(data: photoData) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .frame(width: 32,height: 32,alignment: .trailing)
+                            .clipShape(Circle())
+                    } else {
+                        Image(systemName: "person.crop.circle.fill")
+                    }
                 }
                 .sheet(isPresented: $mostrarPerfil) {
                     PerfilView()
@@ -147,6 +156,4 @@ struct SuggestionView: View {
     }
 }
 
-#Preview {
-    SuggestionView()
-}
+

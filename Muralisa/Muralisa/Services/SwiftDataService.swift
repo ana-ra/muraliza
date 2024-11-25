@@ -19,7 +19,7 @@ class SwiftDataService {
             name: "John Doe",
             username: "johndoe",
             email: "johndoe@example.com",
-            notifications: true,
+            notifications: false,
             photo: imageData)
         
         // Adiciona o novo usuário ao contexto do Swift Data

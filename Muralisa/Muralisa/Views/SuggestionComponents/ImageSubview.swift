@@ -56,11 +56,13 @@ struct ImageSubview: View {
                             Circle()
                                 .frame(width: 50)
                                 .foregroundStyle( isLiked ? Color.accentColor : Color.gray.opacity(0.20) )
-                            Image(systemName: isLiked ? "heart.fill" : "heart.fill")
-                                .resizable()
-                                .foregroundStyle(Color.white)
-                                .frame(width: 16,height: 16,alignment: .trailing)
                             
+
+                                Image(systemName: isLiked ? "heart.fill" : "heart.fill")
+                                    .resizable()
+                                    .foregroundStyle(Color.white)
+                                    .frame(width: 16,height: 16,alignment: .trailing)
+
                         }.padding()
                     }.onAppear {
                         if let favoritesId = user.favoritesId {
@@ -80,7 +82,7 @@ struct ImageSubview: View {
                             if isLiked == false {
                                 favoritesId.removeAll { $0 == work.id }
                                 self.user.first?.favoritesId = favoritesId
-                            } else {
+                            } else if !favoritesId.contains(work.id) {
                                 favoritesId.append(work.id)
                                 self.user.first?.favoritesId = favoritesId
                             }
