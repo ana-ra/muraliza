@@ -40,7 +40,6 @@ struct ContribuitionsView: View {
                 }
             }.task {
                 do {
-                    //TODO: fazer request apenas da tumbnail
                     self.contribution = try await workService.fetchListOfWorksFromListOfIds(IDs: user.first?.contributionsId)
                     self.isLoading = false
                 } catch {

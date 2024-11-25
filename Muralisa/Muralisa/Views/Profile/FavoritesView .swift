@@ -41,7 +41,6 @@ struct FavoritesView: View {
             }.task {
                 do {
                     
-                    //TODO: fazer request apenas da tumbnail
                     self.favorites = try await workService.fetchListOfWorksFromListOfIds(IDs: user.first?.favoritesId)
                     self.isLoading = false
                 } catch {

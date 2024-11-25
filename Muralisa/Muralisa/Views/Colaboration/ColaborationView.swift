@@ -111,6 +111,8 @@ struct ColaborationView: View {
             }
         }
         .toolbar {
+            
+            //TODO: se não tiver logado, chamar a tela para fazer login
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     showingOptions = true
@@ -146,6 +148,7 @@ struct ColaborationView: View {
                             colaborationViewModel.location = CLLocation(latitude: latitude, longitude: longitude)
                         }
                     }
+                    pickerItem = nil
                     router.navigateTo(route: .newWork)
                     return
                 }
