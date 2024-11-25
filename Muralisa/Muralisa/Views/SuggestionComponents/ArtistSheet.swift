@@ -14,9 +14,13 @@ struct ArtistSheet: View {
     @Environment(\.dismiss) var dismiss
     @State var artist: Artist
     
+    @State private var biography: String = ""
+    @State private var socialMedia: String = ""
+    
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading) {
+                
                 HStack {
                     Text(artist.name)
                         .font(.title3)
@@ -29,41 +33,78 @@ struct ArtistSheet: View {
                             .symbolRenderingMode(.hierarchical)
                             .foregroundStyle(.gray)
                             .font(.title)
-//                            .scaleEffect(1.5)
                     }
                 }
                 .padding(.bottom, 16)
                 
-                if let biography = artist.biography, biography != "" {
-                    VStack(alignment: .leading) {
-                        Text("Sobre")
-                            .font(.body)
-                            .fontWeight(.semibold)
-                            .padding(.bottom, 16)
+                if biography == "" && socialMedia == "" {
+                    
+                    
+                    VStack {
+                        Image(.unknownArtist)
+                            .resizable()
+                            .renderingMode(.template)
+                            .foregroundStyle(.brandingSecondary)
+                            .scaledToFit()
+                            .opacity(0.4)
                         
-                        Text(biography)
+                        Text("Informações sobre o artista")
+                            .font(.headline)
+                            .foregroundStyle(.secondary)
+                            .bold()
+                            .padding(.bottom, 8)
+                        
+                        Text("Não foram encontradas em nosso banco de informações.")
                             .font(.body)
-                            .fontWeight(.regular)
-                            .padding(.bottom, 40)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
+                            .padding(.bottom, 16)
                     }
-                }
-                
-                if let instaHandle = artist.instagram, let instaLink = URL(string: "https://www.instagram.com/\(instaHandle)") {
-                    VStack(alignment: .leading) {
-                        Text("Redes Sociais")
-                            .font(.body)
-                            .fontWeight(.semibold)
-                            .padding(.bottom, 16)
-                        
-                        HStack {
-                            Image(systemName: "globe")
-                                .foregroundStyle(.black)
-                            Link(destination: instaLink, label: {
-                                Text("@\(instaHandle)")
-                            })
+                    
+                } else {
+                    
+                    if let biography = artist.biography, biography != "" {
+                        VStack(alignment: .leading) {
+                            Text("Sobre")
+                                .font(.body)
+                                .fontWeight(.semibold)
+                                .padding(.bottom, 16)
+                            
+                            Text(biography)
+                                .font(.body)
+                                .fontWeight(.regular)
+                                .padding(.bottom, 40)
                         }
                     }
-                    .padding(.bottom, 16)
+                    
+                    if let instaHandle = artist.instagram, let instaLink = URL(string: "https://www.instagram.com/\(instaHandle)") {
+                        VStack(alignment: .leading) {
+                            Text("Redes Sociais")
+                                .font(.body)
+                                .fontWeight(.semibold)
+                                .padding(.bottom, 16)
+                            
+                            HStack {
+                                Image(systemName: "globe")
+                                    .foregroundStyle(.black)
+                                Link(destination: instaLink, label: {
+                                    Text("@\(instaHandle)")
+                                })
+                            }
+                        }
+                        .padding(.bottom, 16)
+                    }
+                    
+                    Spacer()
+                }
+            }
+            .onAppear {
+                if let biography = artist.biography {
+                    self.biography = biography
+                }
+                
+                if let socialMedia = artist.instagram {
+                    self.socialMedia = socialMedia
                 }
                 
                 Spacer()
@@ -74,5 +115,5 @@ struct ArtistSheet: View {
 }
 
 #Preview {
-    ArtistSheet(artist: Artist(id: "", name: "Test", image: nil, biography: "This is the biography", works: ["394-13", "qjfaspo"], instagram: "gustavo_sacramento"))
+    ArtistSheet(artist: Artist(id: "", name: "Test", image: nil, biography: "", works: ["394-13", "qjfaspo"], instagram: ""))
 }

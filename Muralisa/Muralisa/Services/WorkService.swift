@@ -72,6 +72,25 @@ class WorkService: ObservableObject {
         return try await convertRecordToWork(record)
     }
     
+    func fetchListOfWorksFromListOfIds(IDs: [String]?) async throws -> [Work] {
+        guard let IDs else {return []}
+        if IDs.isEmpty {return []}
+        
+        let recordIDs = IDs.map {CKRecord.ID(recordName: $0)}
+        
+        let predicate = NSPredicate(format: "recordID IN %@", recordIDs)
+        
+        let thumbnailsAsCKRecord = try await ckService.fetchRecordsByType(
+            Work.recordType,
+            predicate: predicate,
+            desiredKeys: ["Image_thumbnail"]
+        )
+        
+        let thumbnailsAsWork = try await convertRecordsToWorks(thumbnailsAsCKRecord)
+        
+        return thumbnailsAsWork
+    }
+    
     func convertRecordsToWorks(_ records: [CKRecord]) async throws -> [Work] {
         var works: [Work] = []
         for record in records {

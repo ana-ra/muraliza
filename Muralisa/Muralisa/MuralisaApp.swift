@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct MuralisaApp: App {
@@ -13,6 +14,17 @@ struct MuralisaApp: App {
     @State var locationManager = LocationManager()
     
     @State var colaborationRouter = ColaborationRouter()
+    
+    //swiftData container
+    let container: ModelContainer = {
+        let schema = Schema([User.self])
+        do {
+            return try ModelContainer(for: schema, configurations: [])
+        } catch {
+            fatalError("Failed to create ModelContainer: \(error.localizedDescription)")
+        }
+    }()
+    
     init(){
         // override alerts tintColor bug
         UIView.appearance(whenContainedInInstancesOf: [UIAlertController.self]).tintColor = UIColor(.accent)
@@ -67,7 +79,7 @@ struct MuralisaApp: App {
             .onDisappear {
                 deleteFilesInAssets()
             }
-        }
+        }.modelContainer(container)
     }
 }
 

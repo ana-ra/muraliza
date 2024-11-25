@@ -204,6 +204,7 @@ struct NewWorkView: View {
                                         
                                     }
                                 }
+                                pickerItem = nil
                                 return
                             }
                         }
