@@ -57,16 +57,33 @@ struct MuralisaApp: App {
                 Tab("Curadoria", systemImage: "rectangle.and.text.magnifyingglass") {
                     CurationView()
                 }
+                Tab("Mapa", systemImage: "map"){
+                    NavigationStack{
+                        if networkMonitor.isConnected{
+                            if locationManager.authorizationStatus == .authorizedWhenInUse{
+                                MapView()
+                                    .environmentObject(locationManager) // Passando o LocationManager
+                                    .navigationTitle("Mapa")
+                            } else {
+                                DisabledLocationView(locationManager: locationManager)
+                                    .navigationTitle("Mapa")
+                            }
+                        } else{
+                            NoConnectionView()
+                                .navigationTitle("Mapa")
+                        }
+                    }
+                }
             }
             .onDisappear {
                 deleteFilesInAssets()
             }
+            .environmentObject(locationManager)
         }
     }
 }
 
 extension MuralisaApp {
-    // Entry point to start the search from the caches directory
     func deleteFilesInAssets() {
         let fileManager = FileManager.default
         guard let cachesDirectory = fileManager.urls(for: .cachesDirectory, in: .userDomainMask).first else {
@@ -74,7 +91,6 @@ extension MuralisaApp {
             return
         }
 
-        // Start searching for the Assets directory
         deleteFilesInAssetsDirectory(at: cachesDirectory)
     }
     
@@ -82,20 +98,15 @@ extension MuralisaApp {
         let fileManager = FileManager.default
 
         do {
-            // List all contents in the current directory
             let filePaths = try fileManager.contentsOfDirectory(at: url, includingPropertiesForKeys: nil)
 
             for filePath in filePaths {
-                // Check if the item is a directory
                 if (try? filePath.resourceValues(forKeys: [.isDirectoryKey]))?.isDirectory == true {
-                    // If it is the Assets directory, delete all files in it
                     if filePath.lastPathComponent == "Assets" {
                         print("Found Assets directory: \(filePath.path)")
-                        // Delete all files in the Assets directory
                         deleteAllFilesInDirectory(at: filePath)
-                        return // Stop searching after deleting
+                        return
                     } else {
-                        // Continue searching in this directory
                         deleteFilesInAssetsDirectory(at: filePath)
                     }
                 }

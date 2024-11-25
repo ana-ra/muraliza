@@ -9,11 +9,11 @@ import SwiftUI
 import CoreLocation
 import CloudKit
 
-class Work: NSObject {
+class Work: NSObject, Identifiable {
     static let recordType: String = "Artwork"
     
     static func == (lhs: Work, rhs: Work) -> Bool {
-        return lhs.id == rhs.id && lhs.id == rhs.id
+        return lhs.id == rhs.id
     }
     
     let id: String
@@ -39,4 +39,19 @@ class Work: NSObject {
         self.creationDate = creationDate
         self.status = status
     }
+    
+    convenience init(id: String, title: String?, location: CLLocation) {
+           self.init(
+               id: id,
+               title: title,
+               workDescription: nil,
+               image: nil,
+               imageThumb: UIImage(systemName: "photo")!,
+               location: location,
+               tag: [],
+               artist: nil,
+               creationDate: Date(),
+               status: 1
+           )
+       }
 }
