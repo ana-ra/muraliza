@@ -78,10 +78,18 @@ struct SuggestionView: View {
                         Spacer()
                         GifView(gifName: "fetchInicial")
                             .aspectRatio(contentMode: .fit)
-                            .frame(height: getHeight()/5)
+                            .frame(height: getHeight()/3)
+                            .padding()
+                            .background() {
+                                GifView(gifName: "muralizaNameFonts")
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(height: getHeight()/3)
+                                    .padding(.top, getHeight()/3 + 32)
+                            }
                         Spacer()
                     }
-                    .navigationTitle("Sugestão")
+                    .toolbar(.hidden, for: .navigationBar)
+                    .toolbar(.hidden, for: .tabBar)
                 }
                 
                 if showCard {
@@ -93,6 +101,8 @@ struct SuggestionView: View {
                                 .frame(height: getHeight()/5)
                             Spacer()
                         }
+                        .toolbar(.hidden, for: .navigationBar)
+                        .toolbar(.hidden, for: .tabBar)
                         .onAppear {
                             Task {
                                 await getCardWorkById(cardWorkId: cardWorkId)

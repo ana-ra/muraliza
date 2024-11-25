@@ -18,7 +18,7 @@ struct DescriptionSubview: View {
                 if let title = work.title {
                     Text(title)
                         .padding(.top)
-                        .font(Font.title)
+                        .font(.title2)
                         .fontWeight(.bold)
                     
                     if let description = work.workDescription {
@@ -30,7 +30,7 @@ struct DescriptionSubview: View {
                     if let description = work.workDescription {
                         Text("Sem Título")
                             .padding(.top)
-                            .font(Font.title)
+                            .font(.title2)
                             .fontWeight(.bold)
                         
                         Text(description)
