@@ -42,9 +42,10 @@ struct PerfilView: View {
                                     .frame(width: getHeight()/5)
                             }
                                 
-                            //Editar Butto
+                            //Editar Photo Button
                             Button {
-                                swiftDataService.createTestUser(context: context)
+
+                                //TODO: Change Image
                             } label: {
                                 Text("Editar foto")
                                     .font(.subheadline)
@@ -66,11 +67,17 @@ struct PerfilView: View {
                             //username
                             if let username = user.first?.username {
                                 Text(String("@\(username)"))
+                            } else {
+                                Text("Username desconhecido")
                             }
                         
                             //email
                             if let email = user.first?.email {
                                 Text(String(email))
+                                    .font(.subheadline)
+                                    .foregroundStyle(Color.gray)
+                            } else {
+                                Text("Email desconhecido")
                                     .font(.subheadline)
                                     .foregroundStyle(Color.gray)
                             }

@@ -11,31 +11,8 @@ import UIKit
 
 class SwiftDataService {
     
-    //Função de teste
-    func createTestUser(context: ModelContext) {
-        let imageData: Data? = UIImage(named: "ima")?.jpegData(compressionQuality: 1.0)
-        let newUser = User(
-            id: UUID().uuidString,
-            name: "John Doe",
-            username: "johndoe",
-            email: "johndoe@example.com",
-            notifications: false,
-            photo: imageData)
-        
-        // Adiciona o novo usuário ao contexto do Swift Data
-        context.insert(newUser)
-        
-        // Tenta salvar as mudanças
-        do {
-            try context.save()
-            print("User saved successfully!")
-        } catch {
-            print("Failed to save user: \(error.localizedDescription)")
-        }
-    }
-    
     // MARK: - Create
-    func createUser(id: String, name: String, username: String, email: String, notifications: Bool = true, photo: Data? = nil, context: ModelContext) {
+    func createUser(id: String, name: String? = nil, username: String, email: String? = nil, notifications: Bool = true, photo: Data? = nil, context: ModelContext) {
         let newUser = User(id: id, name: name, username: username, email: email, notifications: notifications, photo: photo)
         context.insert(newUser)
         saveContext(context: context)

@@ -33,6 +33,7 @@ struct SuggestionView: View {
     @State var cardWork: Work?
     @State var artistList: String = ""
     @Query var user: [User]
+    @State var showLogin = false
     
     var body: some View {
         NavigationStack {
@@ -121,6 +122,9 @@ struct SuggestionView: View {
                 }
             }
         }
+        .fullScreenCover(isPresented: $showLogin) {
+            LoginView()
+        }
         .onChange(of: showCard) {
             if showCard == false {
                 loadingCardView = true
@@ -147,7 +151,11 @@ struct SuggestionView: View {
         .toolbar{
             ToolbarItem(placement: .navigationBarTrailing) {
                 Button(action: {
-                    mostrarPerfil.toggle()
+                    if user.first == nil {
+                        showLogin = true
+                    } else {
+                        mostrarPerfil.toggle()
+                    }
                 }) {
                     if let user = user.first ,let photoData = user.photo, let uiImage = UIImage(data: photoData) {
                         Image(uiImage: uiImage)
