@@ -45,20 +45,24 @@ struct PerfilView: View {
                             //Editar Photo Button
                             Button {
 
-                                //TODO: Change Image
+                                //TODO: trocar imagem ao clicar no botão (precisa implementar troca dos outros dados tbm)
+                                
+                                //função só de teste
+                                self.swiftDataService.deleteAllUsers(context: context)
+                                
                             } label: {
                                 Text("Editar foto")
                                     .font(.subheadline)
                             }
                             
                             //name
-                            if let name = user.first?.name {
+                            if let user = user.first, let name = user.name  {
                                 Text(name)
                                     .font(.title3)
                                     .bold()
                                     .padding(.top, 8)
                             } else {
-                                Text("Desconhecido")
+                                Text("Nome desconhecido")
                                     .font(.title3)
                                     .bold()
                                     .padding(.top, 8)

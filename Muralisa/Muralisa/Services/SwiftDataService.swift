@@ -12,7 +12,7 @@ import UIKit
 class SwiftDataService {
     
     // MARK: - Create
-    func createUser(id: String, name: String? = nil, username: String, email: String? = nil, notifications: Bool = true, photo: Data? = nil, context: ModelContext) {
+    func createUser(id: String, name: String? = nil, username: String? = nil, email: String? = nil, notifications: Bool = true, photo: Data? = nil, context: ModelContext) {
         let newUser = User(id: id, name: name, username: username, email: email, notifications: notifications, photo: photo)
         context.insert(newUser)
         saveContext(context: context)

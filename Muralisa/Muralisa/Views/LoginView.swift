@@ -28,14 +28,13 @@ struct LoginView: View {
                         switch auth.credential {
                         case let credential as ASAuthorizationAppleIDCredential:
                             let email = credential.email
-                            let name = credential.fullName?.description
+                            let name = credential.fullName?.givenName
                             let userId = credential.user
-                            let username = credential.user
                             
                             if user.first != nil {
                                 swiftDataService.deleteAllUsers(context: context)
                             }
-                            swiftDataService.createUser(id: userId, name: name, username: username, email: email, context: context)
+                            swiftDataService.createUser(id: userId, name: name, email: email, context: context)
                             
                         default:
                             break
