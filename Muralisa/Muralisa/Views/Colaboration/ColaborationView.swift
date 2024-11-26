@@ -8,6 +8,7 @@
 import SwiftUI
 import PhotosUI
 import CoreLocation
+import SwiftData
 
 
 enum ColaborationNavigationDestinations: String, CaseIterable, Hashable {
@@ -39,6 +40,8 @@ struct ColaborationView: View {
     
     @StateObject var colaborationViewModel = ColaborationViewModel()
     @State var locationManager = LocationManager()
+    @State var showLogin = false
+    @Query var user: [User]
     
     let screens = ColaborationNavigationDestinations.allCases
     
@@ -109,13 +112,19 @@ struct ColaborationView: View {
                 }
                 .listRowSeparator(.hidden)
             }
+        } .fullScreenCover(isPresented: $showLogin) {
+            LoginView()
         }
         .toolbar {
             
             //TODO: se não tiver logado, chamar a tela para fazer login
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    showingOptions = true
+                    if user.first == nil {
+                        self.showLogin = true
+                    } else {
+                        showingOptions = true
+                    }
                 } label: {
                     Image(systemName: "plus")
                 }

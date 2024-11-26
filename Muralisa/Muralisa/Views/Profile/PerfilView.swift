@@ -47,9 +47,6 @@ struct PerfilView: View {
 
                                 //TODO: trocar imagem ao clicar no botão (precisa implementar troca dos outros dados tbm)
                                 
-                                //função só de teste
-                                self.swiftDataService.deleteAllUsers(context: context)
-                                
                             } label: {
                                 Text("Editar foto")
                                     .font(.subheadline)
@@ -141,6 +138,22 @@ struct PerfilView: View {
                         }
                         
                     }
+                }
+                
+                Section {
+                    Button {
+                        print(user)
+                        swiftDataService.deleteAllUsers(context: context)
+                        print(user)
+                    } label: {
+                        HStack {
+                            Spacer()
+                            Text("Finalizar sessão")
+                                .foregroundColor(.red)
+                            Spacer()
+                        }
+                    }
+
                 }
 
             }
