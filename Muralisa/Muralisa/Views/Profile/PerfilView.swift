@@ -134,21 +134,21 @@ struct PerfilView: View {
                     }
                 }
                 
-                Section {
-                    Button {
-                        print(user)
-                        swiftDataService.deleteAllUsers(context: context)
-                        print(user)
-                    } label: {
-                        HStack {
-                            Spacer()
-                            Text("Finalizar sessão")
-                                .foregroundColor(.red)
-                            Spacer()
-                        }
-                    }
-
-                }
+//                Section {
+//                    Button {
+//                        print(user)
+//                        swiftDataService.deleteAllUsers(context: context)
+//                        print(user)
+//                    } label: {
+//                        HStack {
+//                            Spacer()
+//                            Text("Finalizar sessão")
+//                                .foregroundColor(.red)
+//                            Spacer()
+//                        }
+//                    }
+//
+//                }
 
             }
             .navigationBarTitle(Text("Perfil"), displayMode: .inline)
