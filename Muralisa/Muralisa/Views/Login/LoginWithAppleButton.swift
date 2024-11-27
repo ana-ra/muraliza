@@ -15,7 +15,7 @@ struct LoginWithAppleButton: View {
     var swiftDataService = SwiftDataService()
     
     var body: some View {
-        SignInWithAppleButton(.continue) { request in
+        SignInWithAppleButton(.signIn) { request in
             request.requestedScopes = [.email, .fullName]
         } onCompletion: { result in
             
@@ -41,11 +41,9 @@ struct LoginWithAppleButton: View {
                 print(error)
             }
             
-        }.signInWithAppleButtonStyle (
-            colorScheme == .dark ? .white : .black
-        )
-        .frame(width: 50, height: 100)
-        .padding()
-        .cornerRadius(8)
+        }
+        
+        .signInWithAppleButtonStyle (
+            colorScheme == .dark ? .white : .black)
     }
 }

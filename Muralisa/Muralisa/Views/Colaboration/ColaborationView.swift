@@ -165,6 +165,9 @@ struct ColaborationView: View {
             AccessCameraView(colaborationViewModel: colaborationViewModel, navigate: $navigateFromCamera)
                 .background(.black)
         }
+        .fullScreenCover(isPresented: $showLogin) {
+            LoginView(showLogin: $showLogin)
+        }
         .onChange(of: navigateFromCamera) {
             if navigateFromCamera == true {
                 router.navigateTo(route: .newWork)
