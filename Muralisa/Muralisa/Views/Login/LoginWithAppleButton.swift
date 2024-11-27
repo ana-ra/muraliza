@@ -27,10 +27,7 @@ struct LoginWithAppleButton: View {
                     let email = credential.email
                     let name = credential.fullName?.givenName
                     let userId = credential.user
-                    
-                    if user.first != nil {
-                        swiftDataService.deleteAllUsers(context: context)
-                    }
+
                     swiftDataService.createUser(id: userId, name: name, email: email, context: context)
                     
                 default:
