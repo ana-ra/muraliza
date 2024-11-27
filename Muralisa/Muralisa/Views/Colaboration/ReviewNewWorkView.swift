@@ -9,6 +9,7 @@ import SwiftUI
 import WrappingHStack
 import CoreLocation
 import CloudKit
+import SwiftData
 
 struct ReviewNewWorkView: View {
     
@@ -24,6 +25,8 @@ struct ReviewNewWorkView: View {
     
     @State private var showTagsModal: Bool = false
     @State private var showAlert: Bool = false
+    
+    @Query var user: [User]
     
     
     var body: some View {
@@ -154,6 +157,20 @@ struct ReviewNewWorkView: View {
                     Task {
                         do {
                             let workRecord = try await workService.saveWork(title: colaborationViewModel.title, workDescription: colaborationViewModel.description, tag: tags, image: colaborationViewModel.image, imageThumb: colaborationViewModel.imageThumb, location: colaborationViewModel.location!, artistReference: colaborationViewModel.artistsID)
+                            
+                            
+                            //Saves new contribution to user local persistence
+                            if let workRecord = workRecord, let user = user.first {
+                                                                
+                                if let contributionsId = user.contributionsId {
+                                    print("contributionsId", contributionsId)
+                                    var newContributionsId = contributionsId
+                                    newContributionsId.append(workRecord.recordID.recordName)
+                                    self.user.first?.contributionsId = newContributionsId
+                                } else {
+                                    self.user.first?.contributionsId = [workRecord.recordID.recordName]
+                                }
+                            }
                             
                             if let workRecord {
                                 try await artistService.addWorkReferenceToArtists(colaborationViewModel.artistsID, workRecord: workRecord)

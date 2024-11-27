@@ -99,8 +99,8 @@ struct ArtistSubview: View {
                 ProgressView()
             } else {
                 Text(address)
-                    .font(.title)
-                    .padding(.bottom, 2)
+                    .font(.body)
+                    .padding(.bottom, 4)
             }
             
             // Distance
@@ -108,10 +108,11 @@ struct ArtistSubview: View {
                 if distance == -1 {
                     ProgressView()
                 } else {
-                    Text("Esta obra está há \(distance >= 1000 ? Int(distance / 1000) : Int(distance)) \(distance >= 1000 ? "km" : "m") perto de você")
+                    Text("Esta obra está há \(distance >= 1000 ? Int(distance / 1000) : Int(distance)) \(distance >= 1000 ? "km" : "m") perto de você.")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
-                        .padding(.trailing)
+                        .padding(.trailing, 32)
+                        .multilineTextAlignment(.leading)
                     
                     Spacer()
                     
@@ -122,6 +123,7 @@ struct ArtistSubview: View {
                         }
                     } label: {
                         Text("Ver rotas")
+                            .font(.subheadline)
                     }
                     .confirmationDialog("Abrir no Maps", isPresented: $hasRoute, titleVisibility: .visible, presenting: dialogDetail) { links in
                         if let appleMapsLink = links.0 {
@@ -146,7 +148,8 @@ struct ArtistSubview: View {
             }
         }
         .animation(.easeInOut, value: manager.currentState)
-        .padding()
+        .padding(.horizontal)
+        .padding(.top)
         .task {
             // Just to indicate it's loading
             address = ""

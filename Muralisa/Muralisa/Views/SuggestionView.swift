@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct SuggestionView: View {
     @SceneStorage("isZooming") var isZooming: Bool = false
@@ -18,6 +19,7 @@ struct SuggestionView: View {
     @State var selectedArtist: Artist?
     @State var address: String = ""
     @State var distance: Double = -1
+    @State private var mostrarPerfil = false
     let locationService = LocationService()
     let workService = WorkService()
     let artistService = ArtistService()
@@ -30,6 +32,7 @@ struct SuggestionView: View {
     @State var loadingCardView: Bool = true
     @State var cardWork: Work?
     @State var artistList: String = ""
+    @Query var user: [User]
     
     var body: some View {
         NavigationStack {
@@ -78,10 +81,18 @@ struct SuggestionView: View {
                         Spacer()
                         GifView(gifName: "fetchInicial")
                             .aspectRatio(contentMode: .fit)
-                            .frame(height: getHeight()/5)
+                            .frame(height: getHeight()/3)
+                            .padding()
+                            .background() {
+                                GifView(gifName: "muralizaNameFonts")
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(height: getHeight()/3)
+                                    .padding(.top, getHeight()/3 + 32)
+                            }
                         Spacer()
                     }
-                    .navigationTitle("Sugestão")
+                    .toolbar(.hidden, for: .navigationBar)
+                    .toolbar(.hidden, for: .tabBar)
                 }
                 
                 if showCard {
@@ -93,6 +104,8 @@ struct SuggestionView: View {
                                 .frame(height: getHeight()/5)
                             Spacer()
                         }
+                        .toolbar(.hidden, for: .navigationBar)
+                        .toolbar(.hidden, for: .tabBar)
                         .onAppear {
                             Task {
                                 await getCardWorkById(cardWorkId: cardWorkId)
@@ -131,9 +144,26 @@ struct SuggestionView: View {
                 recommendationService.initialFetchDone = true
             }
         }
+        .toolbar{
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    mostrarPerfil.toggle()
+                }) {
+                    if let user = user.first ,let photoData = user.photo, let uiImage = UIImage(data: photoData) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .frame(width: 32,height: 32,alignment: .trailing)
+                            .clipShape(Circle())
+                    } else {
+                        Image(systemName: "person.crop.circle.fill")
+                    }
+                }
+                .sheet(isPresented: $mostrarPerfil) {
+                    PerfilView()
+                }
+            }
+        }
     }
 }
 
-#Preview {
-    SuggestionView()
-}
+
