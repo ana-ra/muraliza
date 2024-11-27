@@ -164,6 +164,9 @@ struct SuggestionView: View {
                             .clipShape(Circle())
                     } else {
                         Image(systemName: "person.crop.circle.fill")
+                            .resizable()
+                            .frame(width: 32,height: 32,alignment: .trailing)
+                            .clipShape(Circle())
                     }
                 }
                 .sheet(isPresented: $mostrarPerfil) {
@@ -172,4 +175,8 @@ struct SuggestionView: View {
             }
         }
     }
+}
+
+#Preview {
+    SuggestionView()
 }
