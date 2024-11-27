@@ -157,8 +157,8 @@ struct SuggestionView: View {
                         mostrarPerfil.toggle()
                     }
                 }) {
-                    if let user = user.first ,let photoData = user.photo, let uiImage = UIImage(data: photoData) {
-                        Image(uiImage: uiImage)
+                    if user.first != nil {
+                        Image("PerfilPhoto")
                             .resizable()
                             .frame(width: 32,height: 32,alignment: .trailing)
                             .clipShape(Circle())

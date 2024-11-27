@@ -29,14 +29,14 @@ struct PerfilView: View {
                         VStack {
                             
                             //photo
-                            if let photoData = user.first?.photo, let uiImage = UIImage(data: photoData) {
-                                Image(uiImage: uiImage)
+                            if let photoData = user.first{
+                                Image("PerfilPhoto")
                                     .resizable()
                                     .scaledToFill()
                                     .clipShape(Circle())
-                                    .frame(width: getHeight() / 6)
+                                    .frame(width: getHeight()/5)
                             } else {
-                                Image("PerfilPhoto")
+                                Image(systemName: "person.crop.circle.fill")
                                     .resizable()
                                     .scaledToFill()
                                     .clipShape(Circle())
