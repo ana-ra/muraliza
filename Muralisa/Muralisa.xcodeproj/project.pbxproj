@@ -14,9 +14,22 @@
 		7AC75B382CBD4EF20002F7C6 /* Muralisa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Muralisa.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		7A25A4702CF6497500004347 /* Exceptions for "Muralisa" folder in "Muralisa" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 7AC75B372CBD4EF20002F7C6 /* Muralisa */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		7AC75B3A2CBD4EF20002F7C6 /* Muralisa */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				7A25A4702CF6497500004347 /* Exceptions for "Muralisa" folder in "Muralisa" target */,
+			);
 			path = Muralisa;
 			sourceTree = "<group>";
 		};
@@ -265,6 +278,7 @@
 				DEVELOPMENT_TEAM = 4G6HA9J6S5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Muralisa/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "O aplicativo precisa acessar a camera para utilizar na função de colaborar.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "O aplicativo precisa acessar a localização para adicionar novas obras ao acervo.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -297,6 +311,7 @@
 				DEVELOPMENT_TEAM = 4G6HA9J6S5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Muralisa/Info.plist;
 				INFOPLIST_KEY_NSCameraUsageDescription = "O aplicativo precisa acessar a camera para utilizar na função de colaborar.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "O aplicativo precisa acessar a localização para adicionar novas obras ao acervo.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

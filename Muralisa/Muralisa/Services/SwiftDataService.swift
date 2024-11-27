@@ -13,7 +13,7 @@ class SwiftDataService {
     
     // MARK: - Create
     func createUser(id: String, name: String? = nil, username: String? = nil, email: String? = nil, notifications: Bool = true, photo: Data? = nil, context: ModelContext) {
-        let newUser = User(id: id, name: name, username: username, email: email, notifications: notifications, photo: photo)
+        let newUser = User(id: id, name: name, email: email, notifications: notifications, photo: photo)
         context.insert(newUser)
         saveContext(context: context)
     }
@@ -44,9 +44,7 @@ class SwiftDataService {
         if let name = data["name"] as? String {
             user.name = name
         }
-        if let username = data["username"] as? String {
-            user.username = username
-        }
+
         if let email = data["email"] as? String {
             user.email = email
         }

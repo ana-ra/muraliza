@@ -17,6 +17,7 @@ struct PerfilView: View {
     @State var countApprovedWorks = 0
     @State var countRejectedWorks = 0
     @State var countPendingWorks = 0
+    @Binding var showLogin: Bool
     
     
     var body: some View {
@@ -63,13 +64,6 @@ struct PerfilView: View {
                                     .font(.title3)
                                     .bold()
                                     .padding(.top, 8)
-                            }
-                            
-                            //username
-                            if let username = user.first?.username {
-                                Text(String("@\(username)"))
-                            } else {
-                                Text("Username desconhecido")
                             }
                         
                             //email
@@ -162,6 +156,7 @@ struct PerfilView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         dismiss()
+                        self.showLogin = false
                     } label: {
                         Text("Pronto")
                     }
@@ -187,8 +182,3 @@ struct PerfilView: View {
         }
     }
 }
-
-#Preview {
-    PerfilView()
-}
-

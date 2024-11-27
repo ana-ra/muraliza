@@ -13,6 +13,7 @@ struct LoginView: View {
     var swiftDataService = SwiftDataService()
     @Environment(\.modelContext) var context
     @Environment(\.dismiss) var dismiss
+    @Binding var showLogin: Bool
     
     var body: some View {
         NavigationStack {
@@ -24,6 +25,7 @@ struct LoginView: View {
                     ToolbarItem(placement: .navigationBarLeading) {
                         Button(action: {
                             dismiss() // Fecha a view
+                            showLogin = false
                         }) {
                             Image(systemName: "xmark")
                                 .font(.headline)
@@ -32,8 +34,4 @@ struct LoginView: View {
                 }
         }
     }
-}
-
-#Preview {
-    LoginView()
 }

@@ -112,8 +112,6 @@ struct ColaborationView: View {
                 }
                 .listRowSeparator(.hidden)
             }
-        } .fullScreenCover(isPresented: $showLogin) {
-            LoginView()
         }
         .toolbar {
             

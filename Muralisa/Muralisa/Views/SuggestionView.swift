@@ -123,7 +123,7 @@ struct SuggestionView: View {
             }
         }
         .fullScreenCover(isPresented: $showLogin) {
-            LoginView()
+            LoginView(showLogin: $showLogin)
         }
         .onChange(of: showCard) {
             if showCard == false {
@@ -167,11 +167,9 @@ struct SuggestionView: View {
                     }
                 }
                 .sheet(isPresented: $mostrarPerfil) {
-                    PerfilView()
+                    PerfilView(showLogin: $showLogin)
                 }
             }
         }
     }
 }
-
-
