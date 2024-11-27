@@ -36,7 +36,7 @@ struct PerfilView: View {
                                     .clipShape(Circle())
                                     .frame(width: getHeight() / 6)
                             } else {
-                                Image(systemName: "person.circle.fill")
+                                Image("PerfilPhoto")
                                     .resizable()
                                     .scaledToFill()
                                     .clipShape(Circle())
@@ -44,14 +44,14 @@ struct PerfilView: View {
                             }
                                 
                             //Editar Photo Button
-                            Button {
-
-                                //TODO: trocar imagem ao clicar no botão (precisa implementar troca dos outros dados tbm)
-                                
-                            } label: {
-                                Text("Editar foto")
-                                    .font(.subheadline)
-                            }
+//                            Button {
+//
+//                                //TODO: trocar imagem ao clicar no botão (precisa implementar troca dos outros dados tbm)
+//                                
+//                            } label: {
+//                                Text("Editar foto")
+//                                    .font(.subheadline)
+//                            }
                             
                             //name
                             if let user = user.first, let name = user.name  {
