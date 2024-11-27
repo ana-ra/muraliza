@@ -18,8 +18,9 @@ struct MuralisaApp: App {
     //swiftData container
     let container: ModelContainer = {
         let schema = Schema([User.self])
+        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false, cloudKitDatabase: .private("iCloud.muralisa2"))
         do {
-            return try ModelContainer(for: schema, configurations: [])
+            return try ModelContainer(for: schema, configurations: [modelConfiguration])
         } catch {
             fatalError("Failed to create ModelContainer: \(error.localizedDescription)")
         }
