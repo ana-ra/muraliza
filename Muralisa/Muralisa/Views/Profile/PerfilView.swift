@@ -85,9 +85,9 @@ struct PerfilView: View {
                 
                 
                 Section {
-                    ProfileCardSubview(approvedWorks: countApprovedWorks,
-                                       pendingWorks: countPendingWorks,
-                                       rejectedWorks: countRejectedWorks,
+                    ProfileCardSubview(approvedWorks: $countApprovedWorks,
+                                       pendingWorks: $countPendingWorks,
+                                       rejectedWorks: $countRejectedWorks,
                                        title: "Art Hunter")
                 }
                 

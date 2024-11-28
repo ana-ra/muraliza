@@ -206,6 +206,18 @@ class WorkService: ObservableObject {
         try await ckService.modifyRecords(updatedRecords)
         print("Successfully updated \(updatedRecords.count) records with Image_thumbnail.")
     }
+    
+    func fetchWorksByDistanceLocation(
+        userLocation: CLLocation?,
+        radius: CGFloat
+    ) async throws -> [Work] {
+        guard let userLocation = userLocation else { return [] }
+        
+        let predicate = NSPredicate(format: "distanceToLocation:fromLocation:(Location, %@) < %f AND Status == 1", userLocation, radius)
+        
+        let records = try await ckService.fetchRecordsByType(Work.recordType, predicate: predicate)
+        return try await convertRecordsToWorks(records)
+    }
 
     // Function to post a new Work type to CloudKit
     func saveWork(

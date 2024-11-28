@@ -9,9 +9,9 @@ import SwiftUI
 
 struct ProfileCardSubview: View {
     
-    @State var approvedWorks: Int
-    @State var pendingWorks: Int
-    @State var rejectedWorks: Int
+    @Binding var approvedWorks: Int
+    @Binding var pendingWorks: Int
+    @Binding var rejectedWorks: Int
     
     @State var title: String
     
@@ -92,6 +92,6 @@ struct ProfileCardSubview: View {
 
 #Preview {
     Form {
-        ProfileCardSubview(approvedWorks: 789, pendingWorks: 112, rejectedWorks: 948, title: "Art hunter")
+        ProfileCardSubview(approvedWorks: .constant(789), pendingWorks: .constant(112), rejectedWorks: .constant(948), title: "Art hunter")
     }
 }
