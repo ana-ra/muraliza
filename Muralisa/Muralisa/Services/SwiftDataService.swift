@@ -72,7 +72,7 @@ class SwiftDataService {
     }
     
     // MARK: - Save Context
-    private func saveContext(context: ModelContext) {
+    func saveContext(context: ModelContext) {
         do {
             try context.save()
             print("Changes saved successfully!")
