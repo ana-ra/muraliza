@@ -34,6 +34,8 @@ struct SuggestionView: View {
     @State var artistList: String = ""
     @Query var user: [User]
     
+    @AppStorage("showOnboarding") var showOnboarding: Bool = true
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -120,6 +122,9 @@ struct SuggestionView: View {
                     }
                 }
             }
+        }
+        .fullScreenCover(isPresented: $showOnboarding) {
+            OnboardingTab(showOnboarding: $showOnboarding)
         }
         .onChange(of: showCard) {
             if showCard == false {
