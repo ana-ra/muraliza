@@ -40,7 +40,6 @@ struct FavoritesView: View {
                 }
             }.task {
                 do {
-                    
                     self.favorites = try await workService.fetchListOfWorksFromListOfIds(IDs: user.first?.favoritesId)
                     self.isLoading = false
                 } catch {

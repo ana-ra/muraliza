@@ -23,6 +23,8 @@ struct ImageSubview: View {
     @State private var scale: CGFloat = 1.0
     
     @Binding var isCompressed: Bool
+    
+    var swiftDataService = SwiftDataService()
 
     var body: some View {
         VStack(alignment:.leading) {
@@ -81,15 +83,17 @@ struct ImageSubview: View {
                            
                             if isLiked == false {
                                 favoritesId.removeAll { $0 == work.id }
-                                self.user.first?.favoritesId = favoritesId
+                                swiftDataService.updateUser(user, withData: ["favoritesId" : favoritesId], context: context)
+                                
                             } else if !favoritesId.contains(work.id) {
                                 favoritesId.append(work.id)
-                                self.user.first?.favoritesId = favoritesId
+                                swiftDataService.updateUser(user, withData: ["favoritesId" : favoritesId], context: context)
                             }
                             
                         } else {
                             if isLiked == true {
-                                self.user.first?.favoritesId = [self.work.id]
+                                swiftDataService.updateUser(user, withData: ["favoritesId" : [self.work.id]], context: context)
+
                             }
                         }
                     }

@@ -19,7 +19,6 @@ struct PerfilView: View {
     @State var countPendingWorks = 0
     @Binding var showLogin: Bool
     
-    
     var body: some View {
         NavigationStack {
             Form {
@@ -29,7 +28,7 @@ struct PerfilView: View {
                         VStack {
                             
                             //photo
-                            if let photoData = user.first{
+                            if user.first != nil{
                                 Image("PerfilPhoto")
                                     .resizable()
                                     .scaledToFill()
@@ -99,7 +98,8 @@ struct PerfilView: View {
                                 .onAppear{
                                     isNotificationOn = notificationOn}
                                 .onChange(of: isNotificationOn) {
-                                    user.first?.notifications = isNotificationOn
+                                    swiftDataService.updateUser(user.first!, withData: ["notifications" : isNotificationOn], context: context)
+                                    
                                 }
                         } else {
                             Toggle("Notificações", isOn: $isNotificationOn)
