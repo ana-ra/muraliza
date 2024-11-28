@@ -12,6 +12,7 @@ struct LoginWithAppleButton: View {
     @Environment(\.colorScheme) var colorScheme
     @Query var user: [User]
     @Environment(\.modelContext) var context
+    @Binding var dismiss: Bool
     var swiftDataService = SwiftDataService()
     
     var body: some View {
@@ -29,7 +30,7 @@ struct LoginWithAppleButton: View {
                     let userId = credential.user
 
                     swiftDataService.createUser(id: userId, name: name, email: email, context: context)
-                    
+                    dismiss = true
                 default:
                     break
                 }

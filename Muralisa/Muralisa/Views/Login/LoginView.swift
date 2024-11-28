@@ -14,6 +14,7 @@ struct LoginView: View {
     @Environment(\.modelContext) var context
     @Environment(\.dismiss) var dismiss
     @Binding var showLogin: Bool
+    @State var dismissView: Bool = false
     
     var body: some View {
         NavigationStack {
@@ -29,9 +30,15 @@ struct LoginView: View {
                     .padding(.horizontal)
                     .padding(.bottom)
                 
-                LoginWithAppleButton()
+                LoginWithAppleButton(dismiss: $dismissView)
                     .frame(width: getWidth()*0.7, height: 50)
                     .padding(.horizontal)
+                    .onChange(of: dismissView) {
+                        if dismissView == true {
+                            dismiss()
+                            dismissView = false
+                        }
+                    }
                 
                 Button {
                     dismiss() // Fecha a view
