@@ -30,6 +30,7 @@ struct OnboardingContent: View {
                 } label: {
                     Text("Muralizar")
                         .frame(width: getWidth()*0.75)
+                        .padding(.vertical, 4)
                 }.buttonStyle(.borderedProminent)
                     .padding(.vertical, 40)
                     .padding(.horizontal)

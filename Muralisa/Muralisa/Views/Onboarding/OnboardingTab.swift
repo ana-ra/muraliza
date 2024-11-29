@@ -12,7 +12,7 @@ struct OnboardingTab: View {
     @Binding var showOnboarding: Bool
     var body: some View {
         
-        let overlayBg = colorScheme == .dark ? Color.black.opacity(0.3) : Color.white.opacity(0.1)
+        let overlayBg = colorScheme == .dark ? Color.black.opacity(0.3) : Color.white.opacity(0.2)
         VStack {
             TabView {
                 OnboardingContent(showOnboarding: $showOnboarding, sfSymbol: "lineweight", titleText: "Receba sugestões diárias de arte urbana", descriptionText: "Explore outras obras baseadas em recomendações a partir do artista, de proximidades à obra e mais!", button: false).tag(0)
