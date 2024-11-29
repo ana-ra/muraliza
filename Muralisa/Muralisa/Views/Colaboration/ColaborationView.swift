@@ -42,7 +42,7 @@ struct ColaborationView: View {
     @StateObject var colaborationViewModel = ColaborationViewModel()
     @State var locationManager = LocationManager()
     @State var showLogin = false
-    @Query var user: [User]
+
     
     let screens = ColaborationNavigationDestinations.allCases
     
