@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		533DFD022CF9E9FE00298C2E /* Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = 533DFD012CF9E9FE00298C2E /* Shimmer */; };
 		537C27482CC927650004835E /* WrappingHStack in Frameworks */ = {isa = PBXBuildFile; productRef = 537C27472CC927650004835E /* WrappingHStack */; };
 /* End PBXBuildFile section */
 
@@ -40,6 +41,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				533DFD022CF9E9FE00298C2E /* Shimmer in Frameworks */,
 				537C27482CC927650004835E /* WrappingHStack in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -84,6 +86,7 @@
 			name = Muralisa;
 			packageProductDependencies = (
 				537C27472CC927650004835E /* WrappingHStack */,
+				533DFD012CF9E9FE00298C2E /* Shimmer */,
 			);
 			productName = Muralisa;
 			productReference = 7AC75B382CBD4EF20002F7C6 /* Muralisa.app */;
@@ -115,6 +118,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				537C27462CC927650004835E /* XCRemoteSwiftPackageReference "WrappingHStack" */,
+				533DFD002CF9E9FE00298C2E /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 7AC75B392CBD4EF20002F7C6 /* Products */;
@@ -356,6 +360,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		533DFD002CF9E9FE00298C2E /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/markiv/SwiftUI-Shimmer";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.5.1;
+			};
+		};
 		537C27462CC927650004835E /* XCRemoteSwiftPackageReference "WrappingHStack" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/ksemianov/WrappingHStack";
@@ -367,6 +379,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		533DFD012CF9E9FE00298C2E /* Shimmer */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 533DFD002CF9E9FE00298C2E /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */;
+			productName = Shimmer;
+		};
 		537C27472CC927650004835E /* WrappingHStack */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 537C27462CC927650004835E /* XCRemoteSwiftPackageReference "WrappingHStack" */;
