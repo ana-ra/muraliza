@@ -13,7 +13,7 @@ struct StatusComponent: View {
     
     var body: some View {
         switch status {
-        case 0:
+        case 2:
             
             HStack {
                 Image(systemName: "clock.fill")
@@ -48,7 +48,7 @@ struct StatusComponent: View {
             )
             .padding(.vertical, 2)
             .frame(width: 120)
-        case 2:
+        case 0:
             
             HStack {
                 Image(systemName: "x.circle.fill")
