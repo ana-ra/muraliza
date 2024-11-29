@@ -39,6 +39,8 @@ struct SuggestionView: View {
     
     private var workPlaceholder: Work = Work(id: "", title: "Title", workDescription: "Description placeholder", image: UIImage(resource: .perfilPhoto), imageThumb: UIImage(resource: .perfilPhoto), location: CLLocation(latitude: -24, longitude: 43), tag: ["Tipografia", "Color", "Psicodélico"], artist: nil, creationDate: Date(), status: 2)
     
+    @AppStorage("showOnboarding") var showOnboarding: Bool = true
+    
     var body: some View {
         NavigationStack {
             ZStack {
@@ -132,6 +134,9 @@ struct SuggestionView: View {
         }
         .fullScreenCover(isPresented: $showLogin) {
             LoginView(showLogin: $showLogin)
+        }
+        .fullScreenCover(isPresented: $showOnboarding) {
+            OnboardingTab(showOnboarding: $showOnboarding)
         }
         .onChange(of: showCard) {
             if showCard == false {
