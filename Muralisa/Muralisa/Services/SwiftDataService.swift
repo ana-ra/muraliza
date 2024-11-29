@@ -44,16 +44,43 @@ class SwiftDataService {
         if let name = data["name"] as? String {
             user.name = name
         }
-
+        
         if let email = data["email"] as? String {
             user.email = email
         }
+        
         if let notifications = data["notifications"] as? Bool {
             user.notifications = notifications
         }
+        
         if let photo = data["photo"] as? Data {
             user.photo = photo
         }
+        
+        if let favoritesId = data["favoritesId"] as? [String] {
+            user.favoritesId = favoritesId
+        }
+        
+        if let contributionsId = data["contributionsId"] as? [String] {
+            user.contributionsId = contributionsId
+        }
+        
+        saveContext(context: context)
+    }
+    
+    func updateFavorites(for user: User, adding workId: String, context: ModelContext) {
+        var favorites = user.favoritesId ?? []
+        if !favorites.contains(workId) {
+            favorites.append(workId)
+            user.favoritesId = favorites
+            saveContext(context: context)
+        }
+    }
+    
+    func updateFavorites(for user: User, removing workId: String, context: ModelContext) {
+        var favorites = user.favoritesId ?? []
+        favorites.removeAll { $0 == workId }
+        user.favoritesId = favorites
         saveContext(context: context)
     }
     
@@ -72,7 +99,7 @@ class SwiftDataService {
     }
     
     // MARK: - Save Context
-    func saveContext(context: ModelContext) {
+    private func saveContext(context: ModelContext) {
         do {
             try context.save()
             print("Changes saved successfully!")

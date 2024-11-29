@@ -83,18 +83,16 @@ struct ImageSubview: View {
                            
                             if isLiked == false {
                                 favoritesId.removeAll { $0 == work.id }
-                                self.user.first?.favoritesId = favoritesId
-                                swiftDataService.saveContext(context: context)
-//                                swiftDataService.updateUser(user, withData: ["favoritesId" : favoritesId], context: context)
+                                swiftDataService.updateUser(self.user.first!, withData: ["favoritesId" : favoritesId], context: context)
                                 
                             } else if !favoritesId.contains(work.id) {
                                 favoritesId.append(work.id)
-                                swiftDataService.updateUser(user, withData: ["favoritesId" : favoritesId], context: context)
+                                swiftDataService.updateUser(self.user.first!, withData: ["favoritesId" : favoritesId], context: context)
                             }
                             
                         } else {
                             if isLiked == true {
-                                swiftDataService.updateUser(user, withData: ["favoritesId" : [self.work.id]], context: context)
+                                swiftDataService.updateUser(self.user.first!, withData: ["favoritesId" : [self.work.id]], context: context)
 
                             }
                         }
