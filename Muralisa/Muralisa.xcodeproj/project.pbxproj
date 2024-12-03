@@ -262,7 +262,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Muralisa/Preview Content\"";
-				DEVELOPMENT_TEAM = J7T48SP5FT;
+				DEVELOPMENT_TEAM = 4G6HA9J6S5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "O aplicativo precisa acessar a camera para utilizar na função de colaborar.";
@@ -294,7 +294,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Muralisa/Preview Content\"";
-				DEVELOPMENT_TEAM = J7T48SP5FT;
+				DEVELOPMENT_TEAM = 4G6HA9J6S5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "O aplicativo precisa acessar a camera para utilizar na função de colaborar.";
