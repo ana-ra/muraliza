@@ -27,8 +27,7 @@ struct MapView: View {
             Map(coordinateRegion: $mapRegion, annotationItems: works) { work in
                 MapAnnotation(coordinate: work.location.coordinate) {
                     VStack {
-                        Image(systemName: "mappin")
-                            .foregroundColor(Color.accentColor)
+                        Image("pin")
                             .onTapGesture {
                                 selectedWorkId = work.id // Armazena o ID da obra
                                 showCard = true
@@ -67,7 +66,6 @@ struct MapView: View {
                         showBottomElement: .route,
                         showCard: $showCard
                     )
-                    .transition(.move(edge: .bottom))
                     .zIndex(1)
                 }
             }
