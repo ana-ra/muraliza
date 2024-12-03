@@ -17,7 +17,7 @@ struct PerfilView: View {
     @State var countApprovedWorks = 0
     @State var countRejectedWorks = 0
     @State var countPendingWorks = 0
-    
+    @Binding var showLogin: Bool
     
     var body: some View {
         NavigationStack {
@@ -28,49 +28,50 @@ struct PerfilView: View {
                         VStack {
                             
                             //photo
-                            if let photoData = user.first?.photo, let uiImage = UIImage(data: photoData) {
-                                Image(uiImage: uiImage)
+                            if user.first != nil{
+                                Image("PerfilPhoto")
                                     .resizable()
                                     .scaledToFill()
                                     .clipShape(Circle())
-                                    .frame(width: getHeight() / 6)
+                                    .frame(width: getHeight()/5)
                             } else {
-                                Image(systemName: "person.circle.fill")
+                                Image(systemName: "person.crop.circle.fill")
                                     .resizable()
                                     .scaledToFill()
                                     .clipShape(Circle())
                                     .frame(width: getHeight()/5)
                             }
                                 
-                            //Editar Butto
-                            Button {
-                                swiftDataService.createTestUser(context: context)
-                            } label: {
-                                Text("Editar foto")
-                                    .font(.subheadline)
-                            }
+                            //Editar Photo Button
+//                            Button {
+//
+//                                //TODO: trocar imagem ao clicar no botão (precisa implementar troca dos outros dados tbm)
+//                                
+//                            } label: {
+//                                Text("Editar foto")
+//                                    .font(.subheadline)
+//                            }
                             
                             //name
-                            if let name = user.first?.name {
+                            if let user = user.first, let name = user.name  {
                                 Text(name)
                                     .font(.title3)
                                     .bold()
                                     .padding(.top, 8)
                             } else {
-                                Text("Desconhecido")
+                                Text("Nome desconhecido")
                                     .font(.title3)
                                     .bold()
                                     .padding(.top, 8)
-                            }
-                            
-                            //username
-                            if let username = user.first?.username {
-                                Text(String("@\(username)"))
                             }
                         
                             //email
                             if let email = user.first?.email {
                                 Text(String(email))
+                                    .font(.subheadline)
+                                    .foregroundStyle(Color.gray)
+                            } else {
+                                Text("Email desconhecido")
                                     .font(.subheadline)
                                     .foregroundStyle(Color.gray)
                             }
@@ -97,7 +98,8 @@ struct PerfilView: View {
                                 .onAppear{
                                     isNotificationOn = notificationOn}
                                 .onChange(of: isNotificationOn) {
-                                    user.first?.notifications = isNotificationOn
+                                    swiftDataService.updateUser(user.first!, withData: ["notifications" : isNotificationOn], context: context)
+                                    
                                 }
                         } else {
                             Toggle("Notificações", isOn: $isNotificationOn)
@@ -131,6 +133,22 @@ struct PerfilView: View {
                         
                     }
                 }
+                
+//                Section {
+//                    Button {
+//                        print(user)
+//                        swiftDataService.deleteAllUsers(context: context)
+//                        print(user)
+//                    } label: {
+//                        HStack {
+//                            Spacer()
+//                            Text("Finalizar sessão")
+//                                .foregroundColor(.red)
+//                            Spacer()
+//                        }
+//                    }
+//
+//                }
 
             }
             .navigationBarTitle(Text("Perfil"), displayMode: .inline)
@@ -138,6 +156,7 @@ struct PerfilView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         dismiss()
+                        self.showLogin = false
                     } label: {
                         Text("Pronto")
                     }
@@ -163,8 +182,3 @@ struct PerfilView: View {
         }
     }
 }
-
-#Preview {
-    PerfilView()
-}
-

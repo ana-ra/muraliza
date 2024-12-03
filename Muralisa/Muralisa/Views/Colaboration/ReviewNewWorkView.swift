@@ -25,6 +25,8 @@ struct ReviewNewWorkView: View {
     
     @State private var showTagsModal: Bool = false
     @State private var showAlert: Bool = false
+    var swiftDataService = SwiftDataService()
+    @Environment(\.modelContext) var context
     
     @Query var user: [User]
     
@@ -166,9 +168,9 @@ struct ReviewNewWorkView: View {
                                     print("contributionsId", contributionsId)
                                     var newContributionsId = contributionsId
                                     newContributionsId.append(workRecord.recordID.recordName)
-                                    self.user.first?.contributionsId = newContributionsId
+                                    swiftDataService.updateUser(user, withData: ["contributionsId" : newContributionsId], context: context)
                                 } else {
-                                    self.user.first?.contributionsId = [workRecord.recordID.recordName]
+                                    swiftDataService.updateUser(user, withData: ["contributionsId" : [workRecord.recordID.recordName]], context: context)
                                 }
                             }
                             

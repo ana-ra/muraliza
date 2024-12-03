@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		533DFD022CF9E9FE00298C2E /* Shimmer in Frameworks */ = {isa = PBXBuildFile; productRef = 533DFD012CF9E9FE00298C2E /* Shimmer */; };
 		537C27482CC927650004835E /* WrappingHStack in Frameworks */ = {isa = PBXBuildFile; productRef = 537C27472CC927650004835E /* WrappingHStack */; };
 /* End PBXBuildFile section */
 
@@ -14,9 +15,22 @@
 		7AC75B382CBD4EF20002F7C6 /* Muralisa.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Muralisa.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		7A25A4702CF6497500004347 /* Exceptions for "Muralisa" folder in "Muralisa" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 7AC75B372CBD4EF20002F7C6 /* Muralisa */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		7AC75B3A2CBD4EF20002F7C6 /* Muralisa */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				7A25A4702CF6497500004347 /* Exceptions for "Muralisa" folder in "Muralisa" target */,
+			);
 			path = Muralisa;
 			sourceTree = "<group>";
 		};
@@ -27,6 +41,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				533DFD022CF9E9FE00298C2E /* Shimmer in Frameworks */,
 				537C27482CC927650004835E /* WrappingHStack in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -71,6 +86,7 @@
 			name = Muralisa;
 			packageProductDependencies = (
 				537C27472CC927650004835E /* WrappingHStack */,
+				533DFD012CF9E9FE00298C2E /* Shimmer */,
 			);
 			productName = Muralisa;
 			productReference = 7AC75B382CBD4EF20002F7C6 /* Muralisa.app */;
@@ -102,6 +118,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				537C27462CC927650004835E /* XCRemoteSwiftPackageReference "WrappingHStack" */,
+				533DFD002CF9E9FE00298C2E /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 7AC75B392CBD4EF20002F7C6 /* Products */;
@@ -265,13 +282,15 @@
 				DEVELOPMENT_TEAM = 4G6HA9J6S5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Muralisa/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "O aplicativo precisa acessar a camera para utilizar na função de colaborar.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "O aplicativo precisa acessar a localização para adicionar novas obras ao acervo";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -297,13 +316,15 @@
 				DEVELOPMENT_TEAM = 4G6HA9J6S5;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Muralisa/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSCameraUsageDescription = "O aplicativo precisa acessar a camera para utilizar na função de colaborar.";
 				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "O aplicativo precisa acessar a localização para adicionar novas obras ao acervo";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -341,6 +362,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		533DFD002CF9E9FE00298C2E /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/markiv/SwiftUI-Shimmer";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.5.1;
+			};
+		};
 		537C27462CC927650004835E /* XCRemoteSwiftPackageReference "WrappingHStack" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/ksemianov/WrappingHStack";
@@ -352,6 +381,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		533DFD012CF9E9FE00298C2E /* Shimmer */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 533DFD002CF9E9FE00298C2E /* XCRemoteSwiftPackageReference "SwiftUI-Shimmer" */;
+			productName = Shimmer;
+		};
 		537C27472CC927650004835E /* WrappingHStack */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 537C27462CC927650004835E /* XCRemoteSwiftPackageReference "WrappingHStack" */;

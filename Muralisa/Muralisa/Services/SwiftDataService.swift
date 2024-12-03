@@ -11,32 +11,9 @@ import UIKit
 
 class SwiftDataService {
     
-    //Função de teste
-    func createTestUser(context: ModelContext) {
-        let imageData: Data? = UIImage(named: "ima")?.jpegData(compressionQuality: 1.0)
-        let newUser = User(
-            id: UUID().uuidString,
-            name: "John Doe",
-            username: "johndoe",
-            email: "johndoe@example.com",
-            notifications: false,
-            photo: imageData)
-        
-        // Adiciona o novo usuário ao contexto do Swift Data
-        context.insert(newUser)
-        
-        // Tenta salvar as mudanças
-        do {
-            try context.save()
-            print("User saved successfully!")
-        } catch {
-            print("Failed to save user: \(error.localizedDescription)")
-        }
-    }
-    
     // MARK: - Create
-    func createUser(id: String, name: String, username: String, email: String, notifications: Bool = true, photo: Data? = nil, context: ModelContext) {
-        let newUser = User(id: id, name: name, username: username, email: email, notifications: notifications, photo: photo)
+    func createUser(id: String, name: String? = nil, username: String? = nil, email: String? = nil, notifications: Bool = true, photo: Data? = nil, context: ModelContext) {
+        let newUser = User(id: id, name: name, email: email, notifications: notifications, photo: photo)
         context.insert(newUser)
         saveContext(context: context)
     }
@@ -67,18 +44,43 @@ class SwiftDataService {
         if let name = data["name"] as? String {
             user.name = name
         }
-        if let username = data["username"] as? String {
-            user.username = username
-        }
+        
         if let email = data["email"] as? String {
             user.email = email
         }
+        
         if let notifications = data["notifications"] as? Bool {
             user.notifications = notifications
         }
+        
         if let photo = data["photo"] as? Data {
             user.photo = photo
         }
+        
+        if let favoritesId = data["favoritesId"] as? [String] {
+            user.favoritesId = favoritesId
+        }
+        
+        if let contributionsId = data["contributionsId"] as? [String] {
+            user.contributionsId = contributionsId
+        }
+        
+        saveContext(context: context)
+    }
+    
+    func updateFavorites(for user: User, adding workId: String, context: ModelContext) {
+        var favorites = user.favoritesId ?? []
+        if !favorites.contains(workId) {
+            favorites.append(workId)
+            user.favoritesId = favorites
+            saveContext(context: context)
+        }
+    }
+    
+    func updateFavorites(for user: User, removing workId: String, context: ModelContext) {
+        var favorites = user.favoritesId ?? []
+        favorites.removeAll { $0 == workId }
+        user.favoritesId = favorites
         saveContext(context: context)
     }
     
