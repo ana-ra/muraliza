@@ -91,21 +91,21 @@ struct PerfilView: View {
                                        title: "Art Hunter")
                 }
                 
-                Section {
-                    HStack {
-                        if let notificationOn = user.first?.notifications {
-                            Toggle("Notificações", isOn: $isNotificationOn)
-                                .onAppear{
-                                    isNotificationOn = notificationOn}
-                                .onChange(of: isNotificationOn) {
-                                    swiftDataService.updateUser(user.first!, withData: ["notifications" : isNotificationOn], context: context)
-                                    
-                                }
-                        } else {
-                            Toggle("Notificações", isOn: $isNotificationOn)
-                        }
-                    }
-                }
+//                Section {
+//                    HStack {
+//                        if let notificationOn = user.first?.notifications {
+//                            Toggle("Notificações", isOn: $isNotificationOn)
+//                                .onAppear{
+//                                    isNotificationOn = notificationOn}
+//                                .onChange(of: isNotificationOn) {
+//                                    swiftDataService.updateUser(user.first!, withData: ["notifications" : isNotificationOn], context: context)
+//                                    
+//                                }
+//                        } else {
+//                            Toggle("Notificações", isOn: $isNotificationOn)
+//                        }
+//                    }
+//                }
                 
                 if user.first != nil {
                     Section {
