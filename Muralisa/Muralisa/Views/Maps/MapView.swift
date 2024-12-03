@@ -36,6 +36,8 @@ struct MapView: View {
                     }
                 }
             }
+            .opacity(showCard ? 0.1 : 1)
+            .animation(.easeInOut, value: showCard)
             .onAppear {
                 fetchPins()
             }
@@ -43,10 +45,10 @@ struct MapView: View {
             if showCard {
                 if loadingCardView {
                     VStack {
-//                        Spacer()
-//                        GifView(gifName: "fetchInicial")
-//                            .aspectRatio(contentMode: .fit)
-//                            .frame(height: getHeight() / 2)
+                        Spacer()
+                        GifView(gifName: "fetchInicial")
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height: getHeight() / 5)
                         Spacer()
                     }
                     .onAppear {
