@@ -81,8 +81,8 @@ struct NewWorkLoadingView: View {
         } message: {
             Text("Nosso time de curadoria está avaliando sua colaboração")
         }
-        .toolbarBackground(.hidden, for: .navigationBar)
-        .toolbarBackground(.hidden, for: .tabBar)
+        .toolbarVisibility(.hidden, for: .tabBar)
+        .toolbarVisibility(.hidden, for: .navigationBar)
     }
     
     // Repeats three times and then stops

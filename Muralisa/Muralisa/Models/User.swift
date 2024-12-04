@@ -12,17 +12,15 @@ import SwiftUI
 class User {
     var id: String?
     var name: String?
-    var username: String?
     var email: String?
     var notifications: Bool = true
     @Attribute(.externalStorage) var photo: Data?
     var favoritesId: [String]? = []
     var contributionsId: [String]? = []
     
-    init(id: String? = nil, name: String? = nil, username: String? = nil, email: String? = nil, notifications: Bool, photo: Data? = nil, favoritesId: [String]? = nil, contributionsId: [String]? = nil) {
+    init(id: String? = nil, name: String? = nil, email: String? = nil, notifications: Bool, photo: Data? = nil, favoritesId: [String]? = nil, contributionsId: [String]? = nil) {
         self.id = id
         self.name = name
-        self.username = username
         self.email = email
         self.notifications = notifications
         self.photo = photo

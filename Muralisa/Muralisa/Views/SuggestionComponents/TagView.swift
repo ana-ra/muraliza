@@ -90,9 +90,7 @@ struct TagView: View {
                         .onAppear {
                             Task {
                                 await getCardWorkById(cardWorkId: cardWorkId)
-                                withAnimation {
-                                    loadingCardView = false
-                                }
+                                loadingCardView = false
                             }
                         }
                     } else {

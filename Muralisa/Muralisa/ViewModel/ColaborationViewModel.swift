@@ -9,10 +9,14 @@ import Foundation
 import SwiftUI
 import CloudKit
 import CoreLocation
+import SwiftData
 
 @Observable
 class ColaborationViewModel: ObservableObject {
     var artistServivce = ArtistService()
+    var workService = WorkService()
+    var ckService = CloudKitService()
+    var swiftDataService = SwiftDataService()
     
     var artistList: [(id: String, name: String)] = []
     var artists: [String] = []
@@ -63,5 +67,23 @@ class ColaborationViewModel: ObservableObject {
         } else {
             print("image is nil")
         }
+    }
+    
+    func getRecentlyAddedWorks(IDs: [String]) async throws -> [(String, Int)] {
+        var recentlyAddedWorks: [(String, Int)] = []
+        
+        let recordIDs = IDs.map {CKRecord.ID(recordName: $0)}
+        
+        let records = try await ckService.fetchRecordsByIDsAndDesiredKeys(by: recordIDs, desiredKeys: ["Title", "Status"])
+        let works = try await workService.convertRecordsToWorks(records)
+        
+        for work in works {
+            recentlyAddedWorks.append((work.title ?? "", work.status))
+            print(work.title ?? "")
+            print(work.status)
+        }
+        recentlyAddedWorks.reverse()
+        
+        return recentlyAddedWorks
     }
 }

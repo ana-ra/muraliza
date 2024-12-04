@@ -8,7 +8,7 @@
 import SwiftUI
 import PhotosUI
 import CoreLocation
-
+import SwiftData
 
 enum ColaborationNavigationDestinations: String, CaseIterable, Hashable {
     case newWork
@@ -36,14 +36,18 @@ class ColaborationRouter {
 struct ColaborationView: View {
     
     @Environment(ColaborationRouter.self) var router
+    @Query var user: [User]
+    @Environment(\.modelContext) var context
     
     @StateObject var colaborationViewModel = ColaborationViewModel()
     @State var locationManager = LocationManager()
+    @State var showLogin = false
+
     
     let screens = ColaborationNavigationDestinations.allCases
     
     // Substituir por dados salvos no userDefaults/coreData das obras colaboradas, o status deve vir da variável de controle no banco de dados.
-    var works: [(String, Int, UUID)] = []
+    @State var works: [(String, Int)] = []
     
     @State private var showingOptions = false
     
@@ -103,7 +107,7 @@ struct ColaborationView: View {
                             .listRowBackground(Color.clear)
                     }
                     
-                    RecentlyAddedSection(works: works)
+                    RecentlyAddedSection(works: $works)
                         .listSectionSeparator(.hidden)
                     
                 }
@@ -115,7 +119,11 @@ struct ColaborationView: View {
             //TODO: se não tiver logado, chamar a tela para fazer login
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    showingOptions = true
+                    if user.first == nil {
+                        self.showLogin = true
+                    } else {
+                        showingOptions = true
+                    }
                 } label: {
                     Image(systemName: "plus")
                 }
@@ -158,6 +166,9 @@ struct ColaborationView: View {
             AccessCameraView(colaborationViewModel: colaborationViewModel, navigate: $navigateFromCamera)
                 .background(.black)
         }
+        .fullScreenCover(isPresented: $showLogin) {
+            LoginView(showLogin: $showLogin)
+        }
         .onChange(of: navigateFromCamera) {
             if navigateFromCamera == true {
                 router.navigateTo(route: .newWork)
@@ -180,6 +191,28 @@ struct ColaborationView: View {
         })
         .onAppear {
             colaborationViewModel.location = locationManager.location
+            Task {
+                if let user = self.user.first, let contributionsId = user.contributionsId {
+                    print("contributionsId: \(contributionsId)")
+                    do {
+                        self.works = try await colaborationViewModel.getRecentlyAddedWorks(IDs: contributionsId)
+                    } catch {
+                        print("Error fetching contributions: \(error.localizedDescription)")
+                    }
+                }
+            }
+        }
+        .refreshable {
+            Task {
+                if let user = self.user.first, let contributionsId = user.contributionsId {
+                    print("contributionsId: \(contributionsId)")
+                    do {
+                        self.works = try await colaborationViewModel.getRecentlyAddedWorks(IDs: contributionsId)
+                    } catch {
+                        print("Error fetching contributions: \(error.localizedDescription)")
+                    }
+                }
+            }
         }
     }
 }

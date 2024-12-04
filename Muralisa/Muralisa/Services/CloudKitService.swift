@@ -252,6 +252,53 @@ class CloudKitService {
         }
     }
     
+    func fetchPinsByDistance(ofType recordType: String, userPosition: CLLocation?, radius: CGFloat) async throws -> [Work] {
+        var resultArray: [Work] = []
+
+        guard let location = userPosition else { return resultArray }
+
+        let predicate = NSPredicate(
+            format: "distanceToLocation:fromLocation:(Location, %@) < %f AND Status == 1",
+            location, radius
+        )
+        
+        let query = CKQuery(recordType: recordType, predicate: predicate)
+        let queryOperation = CKQueryOperation(query: query)
+        
+        queryOperation.resultsLimit = 10
+        queryOperation.desiredKeys = ["Title", "Location"]
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            queryOperation.recordMatchedBlock = { recordID, result in
+                switch result {
+                case .success(let record):
+                    if let id = record.recordID.recordName as String?,
+                       let title = record["Title"] as? String,
+                       let location = record["Location"] as? CLLocation {
+                        let work = Work(id: id, title: title, location: location)
+                         resultArray.append(work)
+                    }
+                case .failure(let error):
+                    print("Error fetching pin record \(recordID): \(error.localizedDescription)")
+                }
+            }
+
+            queryOperation.queryResultBlock = { result in
+                switch result {
+                case .success:
+                    continuation.resume(returning: resultArray)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+
+            databasePublic.add(queryOperation)
+        }
+    }
+
+    
+
+    
     // Helper function to fetch records
     func fetchRecordsByIDsAndDesiredKeys(by recordIDs: [CKRecord.ID], desiredKeys: [String]) async throws -> [CKRecord] {
         return try await withCheckedThrowingContinuation { continuation in

@@ -7,6 +7,8 @@
 
 import SwiftUI
 import SwiftData
+import CoreLocation
+import Shimmer
 
 struct SuggestionView: View {
     @SceneStorage("isZooming") var isZooming: Bool = false
@@ -33,6 +35,11 @@ struct SuggestionView: View {
     @State var cardWork: Work?
     @State var artistList: String = ""
     @Query var user: [User]
+    @State var showLogin = false
+    
+    private var workPlaceholder: Work = Work(id: "", title: "Title", workDescription: "Description placeholder", image: UIImage(resource: .perfilPhoto), imageThumb: UIImage(resource: .perfilPhoto), location: CLLocation(latitude: -24, longitude: 43), tag: ["Tipografia", "Color", "Psicodélico"], artist: nil, creationDate: Date(), status: 2)
+    
+    @AppStorage("showOnboarding") var showOnboarding: Bool = true
     
     var body: some View {
         NavigationStack {
@@ -73,26 +80,30 @@ struct SuggestionView: View {
                         .animation(.easeInOut, value: isCompressed)
                     }
                     .navigationTitle("Sugestão")
-                    .toolbarBackground(isZooming ? .visible : .automatic, for: .navigationBar)
+                    .toolbarBackgroundVisibility(isZooming ? .visible : .automatic, for: .navigationBar)
                     .opacity(showCard ? 0.1 : 1)
                     .animation(.easeInOut, value: showCard)
+                   
                 } else {
-                    VStack {
-                        Spacer()
-                        GifView(gifName: "fetchInicial")
-                            .aspectRatio(contentMode: .fit)
-                            .frame(height: getHeight()/3)
-                            .padding()
-                            .background() {
-                                GifView(gifName: "muralizaNameFonts")
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(height: getHeight()/3)
-                                    .padding(.top, getHeight()/3 + 32)
-                            }
-                        Spacer()
+                    ScrollView {
+                        VStack {
+                            ImageSubview(work: workPlaceholder, isCompressed: $isCompressed)
+                            DescriptionSubview(work: workPlaceholder)
+                            ArtistSubview(locationService: locationService,
+                                          locationManager: locationManager,
+                                          manager: manager,
+                                          workLocation: workPlaceholder.location,
+                                          address: .constant("Av. Barão de Itapura, 1123 - Botafogo, Campinas - SP"),
+                                          distance: .constant(11500),
+                                          date: "Há menos de 1 dia",
+                                          showArtistSheet: .constant(false), selectedArtist: $selectedArtist)
+                            TagsSubView(work: workPlaceholder, navigateToTagView: .constant(false), selectedTag: .constant(""))
+                            
+                        }
+                        .navigationTitle("Sugestão")
+                        .redacted(reason: .placeholder)
+                        .shimmering()
                     }
-                    .toolbar(.hidden, for: .navigationBar)
-                    .toolbar(.hidden, for: .tabBar)
                 }
                 
                 if showCard {
@@ -109,9 +120,7 @@ struct SuggestionView: View {
                         .onAppear {
                             Task {
                                 await getCardWorkById(cardWorkId: cardWorkId)
-                                withAnimation {
-                                    loadingCardView = false
-                                }
+                                loadingCardView = false
                             }
                         }
                         
@@ -122,6 +131,12 @@ struct SuggestionView: View {
                     }
                 }
             }
+        }
+        .fullScreenCover(isPresented: $showLogin) {
+            LoginView(showLogin: $showLogin)
+        }
+        .fullScreenCover(isPresented: $showOnboarding) {
+            OnboardingTab(showOnboarding: $showOnboarding)
         }
         .onChange(of: showCard) {
             if showCard == false {
@@ -135,10 +150,10 @@ struct SuggestionView: View {
                     .presentationDetents([.medium, .large])
             }
         }
-//        .refreshable {
-//            await fetchData()
-//            print("refreshed")
-//        }
+        .refreshable {
+            await fetchData()
+            print("refreshed")
+        }
         .task {
             if recommendationService.initialFetchDone == false {
                 await fetchData()
@@ -146,27 +161,35 @@ struct SuggestionView: View {
                 recommendationService.initialFetchDone = true
             }
         }
-        // TODO: Integrate profile with the correct requests using cloudkit
-//        .toolbar{
-//            ToolbarItem(placement: .navigationBarTrailing) {
-//                Button(action: {
-//                    mostrarPerfil.toggle()
-//                }) {
-//                    if let user = user.first ,let photoData = user.photo, let uiImage = UIImage(data: photoData) {
-//                        Image(uiImage: uiImage)
-//                            .resizable()
-//                            .frame(width: 32,height: 32,alignment: .trailing)
-//                            .clipShape(Circle())
-//                    } else {
-//                        Image(systemName: "person.crop.circle.fill")
-//                    }
-//                }
-//                .sheet(isPresented: $mostrarPerfil) {
-//                    PerfilView()
-//                }
-//            }
-//        }
+        .toolbar{
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    if user.first == nil {
+                        showLogin = true
+                    } else {
+                        mostrarPerfil.toggle()
+                    }
+                }) {
+                    if user.first != nil {
+                        Image("PerfilPhoto")
+                            .resizable()
+                            .frame(width: 32,height: 32,alignment: .trailing)
+                            .clipShape(Circle())
+                    } else {
+                        Image(systemName: "person.crop.circle.fill")
+                            .resizable()
+                            .frame(width: 32,height: 32,alignment: .trailing)
+                            .clipShape(Circle())
+                    }
+                }
+                .sheet(isPresented: $mostrarPerfil) {
+                    PerfilView(showLogin: $showLogin)
+                }
+            }
+        }
     }
 }
 
-
+#Preview {
+    SuggestionView()
+}

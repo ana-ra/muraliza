@@ -13,6 +13,11 @@ struct PerfilView: View {
     @Query var user: [User]
     @Environment(\.modelContext) var context
     var swiftDataService = SwiftDataService()
+    var workService = WorkService()
+    @State var countApprovedWorks = 0
+    @State var countRejectedWorks = 0
+    @State var countPendingWorks = 0
+    @Binding var showLogin: Bool
     
     var body: some View {
         NavigationStack {
@@ -23,49 +28,50 @@ struct PerfilView: View {
                         VStack {
                             
                             //photo
-                            if let photoData = user.first?.photo, let uiImage = UIImage(data: photoData) {
-                                Image(uiImage: uiImage)
+                            if user.first != nil{
+                                Image("PerfilPhoto")
                                     .resizable()
                                     .scaledToFill()
                                     .clipShape(Circle())
-                                    .frame(width: getHeight() / 6)
+                                    .frame(width: getHeight()/5)
                             } else {
-                                Image(systemName: "person.circle.fill")
+                                Image(systemName: "person.crop.circle.fill")
                                     .resizable()
                                     .scaledToFill()
                                     .clipShape(Circle())
                                     .frame(width: getHeight()/5)
                             }
                                 
-                            //Editar Butto
-                            Button {
-                                swiftDataService.createTestUser(context: context)
-                            } label: {
-                                Text("Editar foto")
-                                    .font(.subheadline)
-                            }
+                            //Editar Photo Button
+//                            Button {
+//
+//                                //TODO: trocar imagem ao clicar no botão (precisa implementar troca dos outros dados tbm)
+//                                
+//                            } label: {
+//                                Text("Editar foto")
+//                                    .font(.subheadline)
+//                            }
                             
                             //name
-                            if let name = user.first?.name {
+                            if let user = user.first, let name = user.name  {
                                 Text(name)
                                     .font(.title3)
                                     .bold()
                                     .padding(.top, 8)
                             } else {
-                                Text("Desconhecido")
+                                Text("Nome desconhecido")
                                     .font(.title3)
                                     .bold()
                                     .padding(.top, 8)
-                            }
-                            
-                            //usernmae
-                            if let username = user.first?.username {
-                                Text(String("@\(username)"))
                             }
                         
                             //email
                             if let email = user.first?.email {
                                 Text(String(email))
+                                    .font(.subheadline)
+                                    .foregroundStyle(Color.gray)
+                            } else {
+                                Text("Email desconhecido")
                                     .font(.subheadline)
                                     .foregroundStyle(Color.gray)
                             }
@@ -77,34 +83,29 @@ struct PerfilView: View {
                 .listRowBackground(Color.clear)
                 .listRowSeparator(.hidden)
                 
-                if let user = user.first {
-                    if let contributions = user.contributionsId {
-                        Section {
-                            //TODO: fazer a contagem das obras
-                            ProfileCardSubview(approvedWorks: 859459, pendingWorks: 1234, rejectedWorks: 124, title: "Art Hunter")
-                        }
-                    } else {
-                        Section {
-                            ProfileCardSubview(approvedWorks: 0, pendingWorks: 0, rejectedWorks: 0, title: "Art Hunter")
-                        }
-                    }
-                }
-               
                 
                 Section {
-                    HStack {
-                        if let notificationOn = user.first?.notifications {
-                            Toggle("Notificações", isOn: $isNotificationOn)
-                                .onAppear{
-                                    isNotificationOn = notificationOn}
-                                .onChange(of: isNotificationOn) {
-                                    user.first?.notifications = isNotificationOn
-                                }
-                        } else {
-                            Toggle("Notificações", isOn: $isNotificationOn)
-                        }
-                    }
+                    ProfileCardSubview(approvedWorks: $countApprovedWorks,
+                                       pendingWorks: $countPendingWorks,
+                                       rejectedWorks: $countRejectedWorks,
+                                       title: "Art Hunter")
                 }
+                
+//                Section {
+//                    HStack {
+//                        if let notificationOn = user.first?.notifications {
+//                            Toggle("Notificações", isOn: $isNotificationOn)
+//                                .onAppear{
+//                                    isNotificationOn = notificationOn}
+//                                .onChange(of: isNotificationOn) {
+//                                    swiftDataService.updateUser(user.first!, withData: ["notifications" : isNotificationOn], context: context)
+//                                    
+//                                }
+//                        } else {
+//                            Toggle("Notificações", isOn: $isNotificationOn)
+//                        }
+//                    }
+//                }
                 
                 if user.first != nil {
                     Section {
@@ -132,6 +133,22 @@ struct PerfilView: View {
                         
                     }
                 }
+                
+//                Section {
+//                    Button {
+//                        print(user)
+//                        swiftDataService.deleteAllUsers(context: context)
+//                        print(user)
+//                    } label: {
+//                        HStack {
+//                            Spacer()
+//                            Text("Finalizar sessão")
+//                                .foregroundColor(.red)
+//                            Spacer()
+//                        }
+//                    }
+//
+//                }
 
             }
             .navigationBarTitle(Text("Perfil"), displayMode: .inline)
@@ -139,16 +156,29 @@ struct PerfilView: View {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         dismiss()
+                        self.showLogin = false
                     } label: {
                         Text("Pronto")
                     }
                 }
             }
+        }.onAppear {
+            Task {
+                if let user = self.user.first, let contributionsId = user.contributionsId {
+                    print("contributionsId", contributionsId)
+                    do {
+                        self.countPendingWorks = try await workService.fetchCountOfWorksStatus(IDs: contributionsId,
+                                                                                               status: 2)
+                        self.countApprovedWorks = try await workService.fetchCountOfWorksStatus(IDs: contributionsId,
+                                                                                                status: 1)
+                        self.countRejectedWorks = try await workService.fetchCountOfWorksStatus(IDs: contributionsId,
+                                                                                                status: 0)
+                    } catch {
+                        print("Error counting works status \(error.localizedDescription)")
+                    }
+                }
+                
+            }
         }
     }
 }
-
-#Preview {
-    PerfilView()
-}
-

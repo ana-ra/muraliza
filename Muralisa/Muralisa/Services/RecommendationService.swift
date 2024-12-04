@@ -32,8 +32,8 @@ class RecommendationService: ObservableObject {
         self.todayWork = Work(id: UUID().uuidString,
                               title: "",
                               workDescription: "",
-                              image: UIImage(systemName: "photo")!,
-                              imageThumb: UIImage(systemName: "photo")!,
+                              image: UIImage(systemName: "photo.badge.exclamationmark")!,
+                              imageThumb: UIImage(systemName: "photo.badge.exclamationmark")!,
                               location: CLLocation(latitude: 0, longitude: 0),
                               tag: [""],
                               artist: nil,
@@ -42,8 +42,8 @@ class RecommendationService: ObservableObject {
         self.similarTagsWorks = [Work(id: UUID().uuidString,
                                                      title: "",
                                                      workDescription: "",
-                                                     image: UIImage(systemName: "photo")!,
-                                                     imageThumb: UIImage(systemName: "photo")!,
+                                                     image: UIImage(systemName: "photo.badge.exclamationmark")!,
+                                                     imageThumb: UIImage(systemName: "photo.badge.exclamationmark")!,
                                                      location: CLLocation(latitude: 0, longitude: 0),
                                                      tag: [""],
                                                      artist: nil,
@@ -78,7 +78,6 @@ class RecommendationService: ObservableObject {
         
         let resultRecords = try await service.fetchRecordsByArtistExceptOne(artistsReference: artists, except: todayWork.id)
         worksByTodaysArtist = try await workService.convertRecordsToWorks(resultRecords)
-        print(worksByTodaysArtist)
     }
     
     private func addNewRandomWorkToExhibitedList(chooseRandomWorkFrom: [CKRecord], exhibitedList: [String]) async throws {

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct RecentlyAddedSection: View {
     
-    var works: [(String, Int, UUID)]
+    @Binding var works: [(String, Int)]
     var numberOfRows: Int {
         return min(works.count, 4)
     }
@@ -38,5 +38,5 @@ struct RecentlyAddedSection: View {
 
 
 #Preview {
-    RecentlyAddedSection(works: [("Bomb rua 2", 1, UUID()), ("Untitled", 0, UUID()), ("Grafite colorido", 2, UUID())])
+    RecentlyAddedSection(works: .constant([("Bomb rua 2", 1), ("Untitled", 0), ("Grafite colorido", 2)]))
 }

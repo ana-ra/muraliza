@@ -7,6 +7,20 @@ class WorkService: ObservableObject {
     var artistService = ArtistService()
     var pendingWorkRecords: [CKRecord] = []
     
+    func fetchCountOfWorksStatus(IDs: [String], status: Int) async throws -> Int {
+        let recordIDs = IDs.map {CKRecord.ID(recordName: $0)}
+        let records = try await ckService.fetchRecordsByIDsAndDesiredKeys(by: recordIDs, desiredKeys: ["Status"])
+        let works = try await convertRecordsToWorks(records)
+        
+        var count = 0
+        for work in works {
+            if work.status == status {
+                count += 1
+            }
+        }
+        return count
+    }
+    
     func fetchWorks(onWorkConverted: @escaping (Work) -> Void) async throws -> [Work] {
         let records = try await ckService.fetchRecordsByType(Work.recordType)
         var works: [Work] = []
@@ -139,8 +153,8 @@ class WorkService: ObservableObject {
             id: id,
             title: title,
             workDescription: description,
-            image: image ?? UIImage(systemName: "photo")!,
-            imageThumb: imageThumb ?? UIImage(systemName: "photo")!,
+            image: image ?? UIImage(systemName: "photo.badge.exclamationmark")!,
+            imageThumb: imageThumb ?? UIImage(systemName: "photo.badge.exclamationmark")!,
             location: location,
             tag: tag,
             artist: artistReference,
@@ -191,6 +205,18 @@ class WorkService: ObservableObject {
         // Save all updated records back to CloudKit
         try await ckService.modifyRecords(updatedRecords)
         print("Successfully updated \(updatedRecords.count) records with Image_thumbnail.")
+    }
+    
+    func fetchWorksByDistanceLocation(
+        userLocation: CLLocation?,
+        radius: CGFloat
+    ) async throws -> [Work] {
+        guard let userLocation = userLocation else { return [] }
+        
+        let predicate = NSPredicate(format: "distanceToLocation:fromLocation:(Location, %@) < %f AND Status == 1", userLocation, radius)
+        
+        let records = try await ckService.fetchRecordsByType(Work.recordType, predicate: predicate)
+        return try await convertRecordsToWorks(records)
     }
 
     // Function to post a new Work type to CloudKit

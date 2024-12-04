@@ -106,8 +106,6 @@ struct ArtistSheet: View {
                 if let socialMedia = artist.instagram {
                     self.socialMedia = socialMedia
                 }
-                
-                Spacer()
             }
         }
         .padding(16)
