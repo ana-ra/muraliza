@@ -3,11 +3,13 @@ import MapKit
 import CoreLocation
 
 struct MapView: View {
+    @EnvironmentObject var locationManager: LocationManager
     @State private var works: [Work] = []
-    @State private var mapRegion = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: -22.8312, longitude: -47.0445),
-        span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+    
+    private let initialPosition: MapCameraPosition = .userLocation(
+        fallback: .camera(MapCamera(centerCoordinate: CLLocationCoordinate2D(latitude: -22.8312, longitude: -47.0445), distance: 10000))
     )
+    
     @State private var userLocation: CLLocation? = CLLocation(
         latitude: -22.8312, longitude: -47.0445
     )
@@ -24,24 +26,28 @@ struct MapView: View {
 
     var body: some View {
         ZStack {
-            Map(coordinateRegion: $mapRegion, annotationItems: works) { work in
-                MapAnnotation(coordinate: work.location.coordinate) {
-                    VStack {
-                        Image("pin")
-                            .onTapGesture {
-                                selectedWorkId = work.id // Armazena o ID da obra
-                                showCard = true
-                                loadingCardView = true
-                            }
+            Map(initialPosition: initialPosition) {
+                ForEach(works) { work in
+                    Annotation("Artwork", coordinate: work.location.coordinate) {
+                        VStack {
+                            Image("pin")
+                                .onTapGesture {
+                                    selectedWorkId = work.id // Armazena o ID da obra
+                                    showCard = true
+                                    loadingCardView = true
+                                }
+                        }
                     }
                 }
+                
+                UserAnnotation()
             }
             .opacity(showCard ? 0.1 : 1)
             .animation(.easeInOut, value: showCard)
             .onAppear {
                 fetchPins()
             }
-            
+
             if showCard {
                 if loadingCardView {
                     VStack {
@@ -75,7 +81,7 @@ struct MapView: View {
     }
 
     private func fetchPins() {
-        guard let userLocation = userLocation else { return }
+        guard let userLocation = locationManager.location else { return }
         
         Task {
             do {

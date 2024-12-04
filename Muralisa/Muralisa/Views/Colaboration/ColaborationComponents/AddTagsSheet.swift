@@ -73,7 +73,7 @@ struct AddTagsSheet: View {
             .animation(.easeInOut, value: newSelectedTags.count)
             .navigationTitle("Adicionar Tags")
             .toolbarTitleDisplayMode(.inline)
-            .toolbarBackgroundVisibility(.visible)
+            .toolbarBackground(.visible)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {

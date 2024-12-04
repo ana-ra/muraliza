@@ -34,64 +34,74 @@ struct MuralisaApp: App {
     var body: some Scene {
         WindowGroup {
             TabView {
-                Tab("Sugestão", systemImage: "wand.and.rays.inverse") {
-                    NavigationStack {
-                        if networkMonitor.isConnected {
-                            if locationManager.authorizationStatus == .authorizedWhenInUse {
-                                SuggestionView()
-                            } else {
-                                DisabledLocationView(locationManager: locationManager)
-                                    .navigationTitle("Sugestão")
-                            }
+                // Suggestion Tab
+                NavigationStack {
+                    if networkMonitor.isConnected {
+                        if locationManager.authorizationStatus == .authorizedWhenInUse {
+                            SuggestionView()
                         } else {
-                            NoConnectionView()
+                            DisabledLocationView(locationManager: locationManager)
                                 .navigationTitle("Sugestão")
                         }
+                    } else {
+                        NoConnectionView()
+                            .navigationTitle("Sugestão")
                     }
                 }
+                .tabItem {
+                    Label("Sugestão", systemImage: "wand.and.rays.inverse")
+                }
                 
-                Tab("Colaborar", systemImage: "photo.badge.plus.fill") {
-                    NavigationStack(path: $colaborationRouter.navigationPath) {
-                        if networkMonitor.isConnected {
-                            if locationManager.authorizationStatus == .authorizedWhenInUse {
-                                ColaborationView()
-                                    .environment(colaborationRouter)
-                            } else {
-                                DisabledLocationView(locationManager: locationManager)
-                                    .navigationTitle("Colaborar")
-                            }
+                // Collaboration Tab
+                NavigationStack(path: $colaborationRouter.navigationPath) {
+                    if networkMonitor.isConnected {
+                        if locationManager.authorizationStatus == .authorizedWhenInUse {
+                            ColaborationView()
+                                .environment(colaborationRouter)
                         } else {
-                            NoConnectionView()
+                            DisabledLocationView(locationManager: locationManager)
                                 .navigationTitle("Colaborar")
                         }
+                    } else {
+                        NoConnectionView()
+                            .navigationTitle("Colaborar")
                     }
+                }
+                .tabItem {
+                    Label("Colaborar", systemImage: "photo.badge.plus.fill")
                 }
                 
-                Tab("Curadoria", systemImage: "rectangle.and.text.magnifyingglass") {
-                    CurationView()
-                }
-                Tab("Mapa", systemImage: "map"){
-                    NavigationStack{
-                        if networkMonitor.isConnected{
-                            if locationManager.authorizationStatus == .authorizedWhenInUse{
-                                MapView()
-                                    .environmentObject(locationManager) // Passando o LocationManager
-                                    .navigationTitle("Mapa")
-                            } else {
-                                DisabledLocationView(locationManager: locationManager)
-                                    .navigationTitle("Mapa")
-                            }
-                        } else{
-                            NoConnectionView()
+//                // Curation Tab
+//                CurationView()
+//                    .tabItem {
+//                        Label("Curadoria", systemImage: "rectangle.and.text.magnifyingglass")
+//                    }
+                
+                // Map Tab
+                NavigationStack {
+                    if networkMonitor.isConnected {
+                        if locationManager.authorizationStatus == .authorizedWhenInUse {
+                            MapView()
+                                .environmentObject(locationManager) // Passing LocationManager
+                                .navigationTitle("Mapa")
+                        } else {
+                            DisabledLocationView(locationManager: locationManager)
                                 .navigationTitle("Mapa")
                         }
+                    } else {
+                        NoConnectionView()
+                            .navigationTitle("Mapa")
                     }
+                }
+                .tabItem {
+                    Label("Mapa", systemImage: "map")
                 }
             }
             .onDisappear {
                 deleteFilesInAssets()
             }
-        }.modelContainer(container)
+        }
+        .modelContainer(container)
     }
 }
 

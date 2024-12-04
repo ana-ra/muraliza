@@ -80,7 +80,7 @@ struct SuggestionView: View {
                         .animation(.easeInOut, value: isCompressed)
                     }
                     .navigationTitle("Sugestão")
-                    .toolbarBackgroundVisibility(isZooming ? .visible : .automatic, for: .navigationBar)
+                    .toolbarBackground(isZooming ? .visible : .automatic, for: .navigationBar)
                     .opacity(showCard ? 0.1 : 1)
                     .animation(.easeInOut, value: showCard)
                    
@@ -115,8 +115,8 @@ struct SuggestionView: View {
                                 .frame(height: getHeight()/5)
                             Spacer()
                         }
-                        .toolbar(.hidden, for: .navigationBar)
-                        .toolbar(.hidden, for: .tabBar)
+//                        .toolbar(.hidden, for: .navigationBar)
+//                        .toolbar(.hidden, for: .tabBar)
                         .onAppear {
                             Task {
                                 await getCardWorkById(cardWorkId: cardWorkId)
@@ -149,10 +149,6 @@ struct SuggestionView: View {
                 ArtistSheet(artist: selectedArtist)
                     .presentationDetents([.medium, .large])
             }
-        }
-        .refreshable {
-            await fetchData()
-            print("refreshed")
         }
         .task {
             if recommendationService.initialFetchDone == false {
