@@ -48,6 +48,8 @@ struct CardView: View {
                     } label: {
                         Image(systemName: "x.circle.fill")
                             .foregroundStyle(.thinMaterial)
+                            .scaleEffect(1.5)
+                            .scaledToFit()
                     }
                 }
             }
@@ -63,7 +65,9 @@ struct CardView: View {
                         .frame(height: getHeight() / 3.8)
                         .cornerRadius(12)
                         .padding(.bottom, 24)
+                        .addPinchZoom()
                 }
+                .zIndex(1000)
             }
             
             HStack {

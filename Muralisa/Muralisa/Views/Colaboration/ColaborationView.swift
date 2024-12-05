@@ -147,13 +147,15 @@ struct ColaborationView: View {
                     
                     if let image = CIImage(data: data) {
                         
-                        let properties = image.properties
+                        let properties = image.properties                        
                         
                         if let gps = properties[kCGImagePropertyGPSDictionary as String] as? [String: Any] {
                             let latitude = gps[kCGImagePropertyGPSLatitude as String] as! Double
                             let longitude = gps[kCGImagePropertyGPSLongitude as String] as! Double
-                            
-                            colaborationViewModel.location = CLLocation(latitude: latitude, longitude: longitude)
+                            let latitudeRef = gps[kCGImagePropertyGPSLatitudeRef as String] as! String
+                            let longitudeRef = gps[kCGImagePropertyGPSLongitudeRef as String] as! String
+
+                            colaborationViewModel.location = CLLocation(latitude: (latitudeRef == "S" ? -latitude : latitude), longitude: (longitudeRef == "W" ? -longitude : longitude))
                         }
                     }
                     pickerItem = nil
